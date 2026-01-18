@@ -1,0 +1,42 @@
+FROM alpine:latest AS builder
+
+# --- Install vcpkg --- #
+RUN apk --no-cache --upgrade add \
+    build-base cmake ninja zip unzip curl git tar pkgconfig bash linux-headers gcompat perl
+
+RUN git clone https://github.com/microsoft/vcpkg.git \
+    && ./vcpkg/bootstrap-vcpkg.sh \
+    && mkdir /vcpkg/packagesCache
+
+ENV VCPKG_ROOT=/vcpkg
+ENV VCPKG_FORCE_SYSTEM_BINARIES=1
+ENV VCPKG_DEFAULT_BINARY_CACHE=/vcpkg/packagesCache
+ENV VCPKG_BINARY_SOURCES="clear;files,${VCPKG_DEFAULT_BINARY_CACHE},readwrite"
+ENV PATH=$PATH:$VCPKG_ROOT
+
+# --- Create Executable --- #
+
+# Need to investigate binary caching
+
+WORKDIR /app
+
+COPY src/ vcpkg/ ./src/
+
+RUN --mount=type=cache,target=${VCPKG_DEFAULT_BINARY_CACHE} \
+    cmake -B ./build -S ./src \
+    -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
+
+RUN cmake --build build
+
+# --- Create Final Container --- #
+#FROM alpine:3.14
+
+WORKDIR /wwwroot
+#COPY --from=builder /app/build/WebAppDevKit ./
+COPY  ./containerRootFiles/ ./
+
+ENV PORT=80
+
+EXPOSE $PORT
+
+CMD ["../app/build/WebAppDevKit"]
