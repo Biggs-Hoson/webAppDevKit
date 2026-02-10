@@ -1,11 +1,69 @@
 #include <drogon/drogon.h>
+#include <drogon/HttpRequest.h>
+#include <drogon/HttpResponse.h>
+
+#include "./routing/RouteNode.h"
+
+
+// dedicated hosts, all others to the main PathNode
+
+
+void commonHandler(
+    const drogon::HttpRequestPtr& req,
+    std::function<void(const drogon::HttpResponsePtr&)>&& callback
+)
+{
+    std::string path = req->getPath();
+    std::string host = req->getHeader("Host");
+
+
+
+    auto resp = drogon::HttpResponse::newHttpResponse();
+
+
+
+    callback(resp);
+}
+
+
+
 int main() {
-    //Set HTTP listener address and port
-    drogon::app().addListener("0.0.0.0", 80);
-    //Load config file
-    //drogon::app().loadConfigFile("../config.json");
-    //drogon::app().loadConfigFile("../config.yaml");
-    //Run HTTP framework,the method will block in the internal event loop
+    drogon::app().loadConfigFile("./config.json");
+    drogon::app().registerHandler("/{path:.*}", &commonHandler);
     drogon::app().run();
     return 0;
 }
+
+/*
+    Json::Value headers;
+
+    for (const std::pair<const std::string, const std::string> &header : req->headers()) {
+        headers[header.first] = header.second;
+    }
+
+    Json::Value json;
+    json["path"] = req->path();
+    json["method"] = req->methodString();
+    json["headers"] = headers;
+
+*/
+
+/*
+    Response types:
+    newHttpJsonResponse(json);
+    newHttpResponse
+*/
+
+/*
+    Request Methods
+    getMethod()
+    getParameter(const std::string &key)
+    getPath()
+    getBody() or getJsonObject()
+    getHeader("Host")
+
+    getCookies()
+    cookies()
+
+    
+*/
