@@ -7,9 +7,11 @@ cd "$SCRIPT_DIR" || exit 1
 
 cd ../backEnd
 
-# Any other files need to be copied across to containerRootFiles here
+if [ -f ../artefacts/webappdevkit.tar ]; then
+    rm ../artefacts/webappdevkit.tar
+fi
 
 # Build docker image
-docker build -t webappdevkit -f ./docker/DockerFile --progress=plain ./ 
+podman build -t webappdevkit -f ./docker/DockerFile --net=host --progress=plain ./ 
 
 cd $current_dir

@@ -33,7 +33,7 @@ RUN cmake --build build
 
 WORKDIR /wwwroot
 #COPY --from=builder /app/build/WebAppDevKit ./
-COPY  ./containerRootFiles/ ./
+COPY  ./serverRoot/ ./
 
 ENV PORT=80
 

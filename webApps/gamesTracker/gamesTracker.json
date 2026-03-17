@@ -1,0 +1,27 @@
+{
+  "backend": {
+    "relationalData": {
+    	"TableName": {
+        "columns": [
+          { "name": "col1", "type": "varchar20", "nullable": true, "constraints": ["PK"]}
+        ]
+      }
+    },
+    "unstructuredData": {
+			
+    },
+    "linkedServices": {
+  	
+    },
+    "apiEndpoints": {
+			
+    }
+},
+	"frontend": {
+		"routeMap": {
+			"*": {
+				"domain.* /": ""
+			}
+		}
+	}
+}
