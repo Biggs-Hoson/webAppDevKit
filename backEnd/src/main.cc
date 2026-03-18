@@ -1,16 +1,145 @@
+#include <string>
+#include <memory>
+#include <vector>
+
 #include <drogon/drogon.h>
 #include <drogon/HttpRequest.h>
 #include <drogon/HttpResponse.h>
 #include <drogon/HttpTypes.h>
 
+
 #include "./routing/RouteNode.h"
 
+std::string HtmlErrorPage(const std::string& message){
+	return "<html>" + message + "</html>";
+};
 
+void RouteRequest(drogon::HttpRequestPtr& req, drogon::HttpResponse& resp) {
 
-// dedicated hosts, all others to the main PathNode
+	std::string host = req->getHeader("Host");
 
+	/*for (DomainRouteNode& DomainNode: DomainNodes)
+    {
+        int responseCode = DomainNode.RouteRequest(req, resp, host, host.size() - 1);
+
+        if (responseCode != 0) {
+            return;
+        }
+    }*/
+
+    // Top Level 404 error, other 404 errors should be handled in the DomainNode with either a raise or return based on the app's route design.
+    throw std::make_pair(404, "Domain could not be found");
+};
+
+void HandleErrorResponse(std::shared_ptr<drogon::HttpResponse> resp, drogon::ContentType& desiredResponseType, int errorCode, std::string& errorMessage)
+{
+    resp->setStatusCode(static_cast<drogon::HttpStatusCode>(errorCode));
+
+    switch(desiredResponseType)
+    {
+        case drogon::CT_TEXT_HTML:
+            resp->setContentTypeCode(drogon::CT_TEXT_HTML);
+            resp->setBody(HtmlErrorPage(errorMessage));
+            break;
+
+        case drogon::CT_APPLICATION_JSON:
+        default:
+            resp->setContentTypeCode(drogon::CT_APPLICATION_JSON);
+            resp->setBody("\"Error Message\":\"" + errorMessage + "\"}");
+            break;
+    }
+};
+
+std::string GetDefaultErrorMessage(int& errorCode) {
+	switch(errorCode)
+    {
+		case 404:
+			return "Resource not found.";
+		case 500:
+            return "Something went wrong with the server. The specific problem could not be identified.";
+		default:
+			return "Something went wrong with your request. The problem could not be identified.";
+	}
+};
 
 void commonHandler(
+    const drogon::HttpRequestPtr& req,
+    std::function<void(const drogon::HttpResponsePtr&)>&& callback
+)
+{
+    // Create HTTP response
+    std::shared_ptr<drogon::HttpResponse> resp = drogon::HttpResponse::newHttpResponse();
+
+    drogon::ContentType desiredResponseType = drogon::CT_TEXT_HTML; // Detect response type in future
+
+    try
+    {
+        if (true)
+        {
+            throw std::pair<int, std::string>(503, "Server routing is not functioning currently.");
+        }
+        
+        //RouteRequest(req, resp);
+    }
+    catch (int& errorCode)
+    {
+        std::string defaultErrorMessage = GetDefaultErrorMessage(errorCode);
+
+        HandleErrorResponse(resp, desiredResponseType, errorCode, defaultErrorMessage);
+    }
+    catch (std::pair<int, std::string>& errorCodeMessage)
+    {
+        HandleErrorResponse(resp, desiredResponseType, errorCodeMessage.first, errorCodeMessage.second);
+    }
+    catch (std::exception& e) // Can add specific types of errors here if they correspond to specific HTML Codes.
+    {
+        std::string exceptionMessage = e.what();
+        HandleErrorResponse(resp, desiredResponseType, 500, exceptionMessage);
+    }
+    catch (...)
+    {
+        std::string exceptionMessage = GetDefaultErrorMessage(500);
+        HandleErrorResponse(resp, desiredResponseType, 500, exceptionMessage);
+    }
+
+    callback(resp);
+};
+
+int main() {
+    drogon::app().loadConfigFile("./config.json");
+    drogon::app().registerHandler("/{path:.*}", &commonHandler);
+    drogon::app().run();
+    return 0;
+}
+
+
+
+/*
+    Response types:
+    newHttpJsonResponse(json);
+    newHttpResponse()
+    newFileResponse("./views/index.html");
+*/
+
+/*
+    Request Methods:
+    getMethod()
+    getParameter(const std::string &key)
+    getPath()
+    getBody() or getJsonObject()
+    getHeader("Host")
+
+    getCookies()
+    cookies()
+
+    
+
+    
+*/
+
+/* Respond with request aspects
+
+void requestJsonMirrorHandler(
     const drogon::HttpRequestPtr& req,
     std::function<void(const drogon::HttpResponsePtr&)>&& callback
 )
@@ -31,56 +160,8 @@ void commonHandler(
     json["headers"] = headers;
 
     auto resp = drogon::HttpResponse::newHttpJsonResponse(json);
-    //drogon::HttpResponse::newFileResponse("./views/index.html");
+    
     callback(resp);
-    
+};
 
-    //resp->setStatusCode(drogon::k200OK);
-    //resp->setContentTypeCode(drogon::CT_TEXT_HTML);
-    //resp->setBody(path + " " + host);
-
-    //callback(resp);
-}
-
-
-
-int main() {
-    drogon::app().loadConfigFile("./config.json");
-    drogon::app().registerHandler("/{path:.*}", &commonHandler);
-    drogon::app().run();
-    return 0;
-}
-
-/*
-    Json::Value headers;
-
-    for (const std::pair<const std::string, const std::string> &header : req->headers()) {
-        headers[header.first] = header.second;
-    }
-
-    Json::Value json;
-    json["path"] = req->path();
-    json["method"] = req->methodString();
-    json["headers"] = headers;
-
-*/
-
-/*
-    Response types:
-    newHttpJsonResponse(json);
-    newHttpResponse()
-*/
-
-/*
-    Request Methods
-    getMethod()
-    getParameter(const std::string &key)
-    getPath()
-    getBody() or getJsonObject()
-    getHeader("Host")
-
-    getCookies()
-    cookies()
-
-    
 */
