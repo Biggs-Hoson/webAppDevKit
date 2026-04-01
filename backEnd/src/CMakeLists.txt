@@ -61,6 +61,9 @@ target_include_directories(${PROJECT_NAME}
                                    ${CMAKE_CURRENT_SOURCE_DIR}/models)
 target_sources(${PROJECT_NAME}
                PRIVATE
+                AppManager/AppManager.cc
+                Routing/RouteNode/RouteNode.cc
+                Routing/MatchClass/MatchClass.cc
                ${SRC_DIR}
                ${CTL_SRC}
                ${FILTER_SRC}

@@ -1,0 +1,6 @@
+CompileFlags:
+  Add: 
+    - -I/root/tooling/drogon
+    - -I/root/tooling/drogon/lib/inc
+    - -I/usr/include/jsoncpp/
+    - -std=c++20
