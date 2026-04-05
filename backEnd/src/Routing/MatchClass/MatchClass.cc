@@ -1,14 +1,16 @@
 #include <string>
+#include <iostream>
 
 #include "MatchClass.h"
 
-MatchStaticPath::MatchStaticPath(const std::string& _path)
+
+MatchStaticPath::MatchStaticPath(const std::string _path)
 	: Path(_path), PathLength(Path.size()) { };
 
-
 int MatchStaticPath::MatchRequest(std::string& _testPath) {
-	if (_testPath.rfind(Path, 0) != 0) {
-    	return 0;
+    
+    if (_testPath.compare(0, PathLength, Path) != 0) {
+        return 0;
     }
     
     if (_testPath[PathLength] == '/')
@@ -16,5 +18,29 @@ int MatchStaticPath::MatchRequest(std::string& _testPath) {
     	return PathLength + 1;
     }
     
-    return PathLength;
+    return 0;
+};
+
+
+MatchStaticDomain::MatchStaticDomain(const std::string _domain)
+	: Domain(_domain), DomainLength(Domain.size()) { };
+
+int MatchStaticDomain::MatchRequest(std::string& _testDomain)
+{
+    std::cout << Domain << std::endl;
+    std::cout << DomainLength << std::endl;
+    std::cout << _testDomain << std::endl;
+
+    if (_testDomain.compare(_testDomain.size() - DomainLength, DomainLength, Domain) != 0)
+    {
+        return 0;
+    }
+    
+    return DomainLength;
+
+    if (_testDomain[_testDomain.size() - DomainLength] == '.')
+    {
+    	return DomainLength + 1;
+    }
+    
 };

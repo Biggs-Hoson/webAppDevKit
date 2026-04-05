@@ -1,3 +1,4 @@
+#include <iostream>
 #include <string>
 #include <memory>
 #include <vector>
@@ -13,6 +14,7 @@
 
 
 std::vector<RouteNode> DomainNodes;
+Json::Value RouteMapJson;   
 
 std::string HtmlErrorPage(const std::string& message){
 	return "<html>" + message + "</html>";
@@ -20,13 +22,11 @@ std::string HtmlErrorPage(const std::string& message){
 
 void RouteRequest(const drogon::HttpRequestPtr& req, drogon::HttpResponsePtr& resp) {
 
-	// std::string host = req->getHeader("Host");
-
-    std::string path = req->getPath();
+	std::string host = req->getHeader("Host");
 
 	for (RouteNode& DomainNode: DomainNodes)
     {
-        int responseCode = DomainNode.RouteRequest(req, resp, PATH, path);
+        int responseCode = DomainNode.RouteRequest(req, resp, DOMAIN, host);
 
         if (responseCode != 0) {
             return;
@@ -37,7 +37,7 @@ void RouteRequest(const drogon::HttpRequestPtr& req, drogon::HttpResponsePtr& re
     throw std::make_pair(404, "Domain could not be found");
 };
 
-void HandleErrorResponse(std::shared_ptr<drogon::HttpResponse> resp, drogon::ContentType& desiredResponseType, int errorCode, std::string& errorMessage)
+void HandleErrorResponse(std::shared_ptr<drogon::HttpResponse> resp, drogon::ContentType& desiredResponseType, int errorCode, const std::string& errorMessage)
 {
     resp->setStatusCode(static_cast<drogon::HttpStatusCode>(errorCode));
 
@@ -68,15 +68,12 @@ std::string GetDefaultErrorMessage(int errorCode) {
 	}
 };
 
-Json::Value RouteMapJson;   
 
 void commonHandler(
     const drogon::HttpRequestPtr& req,
     std::function<void(const drogon::HttpResponsePtr&)>&& callback
 )
 {
-    std::cout << "Request recieved.";
-
     // Create HTTP response
     drogon::HttpResponsePtr resp = drogon::HttpResponse::newHttpResponse();
 
@@ -84,13 +81,13 @@ void commonHandler(
 
     try
     {
-        if (true)
+        if (false)
         {
-            throw std::pair<int, std::string>(503, "Server routing is not functioning currently.");
+            throw std::pair(503, "Server routing is not functioning currently.");
         }
         if (DomainNodes.size() == 0)
         {
-            throw std::pair<int, std::string>(503, "Server has no domains set up for routing.");
+            throw std::pair(503, "Server has no domains set up for routing.");
         }
         
         RouteRequest(req, resp);
@@ -101,16 +98,21 @@ void commonHandler(
 
         HandleErrorResponse(resp, desiredResponseType, errorCode, defaultErrorMessage);
     }
-    catch (std::pair<int, std::string>& errorCodeMessage)
+    catch (const std::pair<int, const std::string>& errorCodeMessage)
     {
         HandleErrorResponse(resp, desiredResponseType, errorCodeMessage.first, errorCodeMessage.second);
     }
-    catch (std::exception& e) // Can add specific types of errors here if they correspond to specific HTML Codes.
+    catch (const std::pair<int, const char*>& errorCodeMessage)
     {
-        std::string exceptionMessage = e.what();
+        std::string errorMessage = std::string(errorCodeMessage.second);
+        HandleErrorResponse(resp, desiredResponseType, errorCodeMessage.first, errorMessage);
+    }
+    catch (const std::exception& e) // Can add specific types of errors here if they correspond to specific HTML Codes.
+    {
+        std::string exceptionMessage = std::string(e.what());
         HandleErrorResponse(resp, desiredResponseType, 500, exceptionMessage);
     }
-    catch (...)
+    catch (...) 
     {
         std::string exceptionMessage = GetDefaultErrorMessage(500);
         HandleErrorResponse(resp, desiredResponseType, 500, exceptionMessage);
@@ -120,9 +122,8 @@ void commonHandler(
 };
 
 
-
-
-std::string RouteMapJsonStr= "[{\"path\": \"1\",\"subRoutes\": [{ \"path\": \"a\"},{ \"path\": \"b\"},{ \"path\": \"c\"}]},{\"path\": \"2\",\"subRoutes\": [{ \"path\": \"a\"},{ \"path\": \"b\"},{ \"path\": \"c\"}]}]";
+std::string RouteMapJsonStr = "[{\"domain\":\"williamlewin.dev\"},{\"domain\":\"william.dev\"}]";
+//"[{\"path\": \"1\",\"subRoutes\": [{ \"path\": \"a\"},{ \"path\": \"b\"},{ \"path\": \"c\"}]},{\"path\": \"2\",\"subRoutes\": [{ \"path\": \"a\"},{ \"path\": \"b\"},{ \"path\": \"c\"}]}]";
 
 
 
@@ -138,21 +139,32 @@ int main() {
             << reader.getFormattedErrorMessages();
         return 1;
     }
-
-    std::cout << RouteMapJson.type();
-
+    
     AppManager serverAppManager(DomainNodes);
 
     serverAppManager.DeployApp(RouteMapJson);
 
-    //serverAppManager.ActivateApp();
+    try
+    {
+        serverAppManager.ActivateApp();
+    }
+    catch (const std::pair<int, const char*>& errorCodeMessage)
+    {
+        std::string errorMessage = std::string(errorCodeMessage.second);
+        std::cout << errorMessage << std::endl;
+        return 0;
+    }
+    catch (const std::pair<int, std::string>& errorCodeMessage)
+    {
+        std::string errorMessage = std::string(errorCodeMessage.second);
+        std::cout << errorMessage << std::endl;
+        return 0;
+    }
+
 
     drogon::app().loadConfigFile("./config.json");
-    drogon::app().registerHandler("/{path:.*}", &commonHandler);
+    drogon::app().registerHandlerViaRegex(".*", &commonHandler);
     drogon::app().run();
-
-
-
 
     return 0;
 }
@@ -208,5 +220,10 @@ void requestJsonMirrorHandler(
     
     callback(resp);
 };
+
+
+
+curl -X GET http://192.168.1.252 -H "Origin: http://williamlewin.dev"
+
 
 */

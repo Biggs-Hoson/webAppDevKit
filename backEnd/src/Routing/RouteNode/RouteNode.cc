@@ -1,29 +1,81 @@
 #include "RouteNode.h"
 
+constexpr struct JsonKeyNodeType {
+    const char* key;
+    RouteSection value;
+} JsonKeyNodeTypeMap[] = {
+    {"domain", RouteSection::DOMAIN},
+    {"path", RouteSection::PATH}
+};
 
-RouteNode::RouteNode(
-	Json::Value& _nodeData)
+
+RouteNode::RouteNode(Json::Value& _nodeData, RouteSection& parentType, std::string& currentRoute)
 {
-    NodeRouteSection = PATH;
+    bool typeFound;
 
-    std::string path = _nodeData["path"].asString();
-
-    // Select Match Object, for now stick to static paths
-    RouteMatchObj = std::make_unique<MatchStaticPath>(path);
-
-	Json::Value& subRoutesJson = _nodeData["subRoutes"];
-
-	// Construct subpaths
-	if (!subRoutesJson.isArray()) {
-    	throw std::make_pair(500, "Server RouteMap is badly formatted.");
+    for (const auto& KeyType : JsonKeyNodeTypeMap) {
+        if (_nodeData.isMember(KeyType.key)) {
+            if (typeFound) {
+                ThrowFormatError(500, "Ambiguous node type at: " + currentRoute);
+            }
+            typeFound = true;
+            NodeRouteSection =KeyType.value;
+        }
+    }
+    
+    if (!typeFound)
+    {
+        ThrowFormatError(500, "No node type set at: " + currentRoute);
     }
 
-    for (Json::ArrayIndex i = 0; i < subRoutesJson.size(); ++i) {
-        SubRoutes.push_back(RouteNode(
-            subRoutesJson[i]
-        ));
+    std::string NewRoute;
+    std::string MatchCriteria;
+
+    switch (NodeRouteSection) {
+        case DOMAIN:
+
+            MatchCriteria = _nodeData["domain"].asString();
+            
+            NewRoute = MatchCriteria + "." + currentRoute;
+
+            if (parentType == PATH)
+            {
+                ThrowFormatError(500, "Cannot have domains node below path nodes at node: " + currentRoute);
+            }
+
+            // Select Match Object, for now stick to static paths
+            RouteMatchObj = std::make_unique<MatchStaticDomain>(MatchCriteria);
+
+            break;
+        case PATH:
+
+            MatchCriteria = _nodeData["path"].asString();
+            
+            NewRoute = currentRoute + "/" + MatchCriteria;
+
+            // Select Match Object, for now stick to static paths
+            RouteMatchObj = std::make_unique<MatchStaticPath>(MatchCriteria);
+            break;
+    }
+
+
+    if (_nodeData.isMember("subRoutes"))
+    {
+        SetSubRoutes(_nodeData["subRoutes"], NewRoute);
     }
 };
+
+void RouteNode::SetSubRoutes(Json::Value& _subRoutes, std::string& _newRoute)
+{    
+    // Construct subpaths
+	if (!_subRoutes.isArray()) {
+        ThrowFormatError();
+    }
+
+    for (Json::ArrayIndex i = 0; i < _subRoutes.size(); ++i) {
+        SubRoutes.push_back(RouteNode(_subRoutes[i], NodeRouteSection, _newRoute));
+    }
+}
 
 
 int RouteNode::RouteRequest(const drogon::HttpRequestPtr& req, drogon::HttpResponsePtr& resp, RouteSection currentRouteSection, std::string& routingStr)
@@ -34,13 +86,17 @@ int RouteNode::RouteRequest(const drogon::HttpRequestPtr& req, drogon::HttpRespo
 	}
     
     int matchResult = RouteMatchObj->MatchRequest(routingStr);
-    
+
+    std::cout << matchResult << std::endl;
+
     if (matchResult == 0){
-    	// Match Unsuccessfull, return 0 to attempt next RouteNode
+    	// Match Unsuccessful, return 0 to attempt next RouteNode
         return 0;
     }
     
     // Match Successful
+
+    std::cout << "Matched!" << std::endl;
     
     if (routingStr.size() == matchResult) // No More routingStr to match, if domain, move to routing path, if path resolve request
     {
@@ -77,7 +133,7 @@ std::string RouteNode::GetRemainingRoute(std::string _routingStr, int matchedCha
 int RouteNode::ResolveRequest(const drogon::HttpRequestPtr& req, drogon::HttpResponsePtr& resp)
 {
     resp->setContentTypeCode(drogon::CT_TEXT_HTML);
-    resp->setBody("<html> Endpoint found at path: " + req->getPath() + "</html>");
+    resp->setBody("<html> Endpoint found at host: " + req->getHeader("Host") + "</html>");
     
     return 200;
 };
@@ -92,4 +148,9 @@ int RouteNode::RouteRemainingRequest(const drogon::HttpRequestPtr& req, drogon::
 	}
 
     return 404;
+}
+
+void RouteNode::ThrowFormatError(const int errorCode, const std::string ErrorMessage)
+{
+    throw std::make_pair(errorCode, ErrorMessage);
 }

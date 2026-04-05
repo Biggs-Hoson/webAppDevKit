@@ -10,14 +10,26 @@ class MatchClass {
 
 class MatchStaticPath : public MatchClass {
 	public:
-    	MatchStaticPath(const std::string&);
+    	MatchStaticPath(const std::string);
 
-        int MatchRequest(std::string& _testPath) override;
+        int MatchRequest(std::string&) override;
 
 	private:
     	std::string Path;
 		
         int PathLength;
+};
+
+class MatchStaticDomain : public MatchClass {
+	public:
+    	MatchStaticDomain(const std::string);
+
+        int MatchRequest(std::string&) override;
+
+	private:
+    	std::string Domain;
+		
+        int DomainLength;
 };
 
 #endif

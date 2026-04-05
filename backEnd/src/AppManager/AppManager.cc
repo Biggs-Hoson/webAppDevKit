@@ -22,6 +22,9 @@ void AppManager::ActivateApp()
     for (Json::ArrayIndex i = 0; i < RouteMap.size(); ++i) {
         Json::Value NodeJson = RouteMap[i];
 
-        DomainNodes.push_back(RouteNode(NodeJson));
+        std::string str = "";
+        RouteSection sec = DOMAIN;
+
+        DomainNodes.push_back(RouteNode(NodeJson, sec, str));
     }
 };
