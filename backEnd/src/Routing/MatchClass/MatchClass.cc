@@ -1,5 +1,4 @@
 #include <string>
-#include <iostream>
 
 #include "MatchClass.h"
 
@@ -27,10 +26,6 @@ MatchStaticDomain::MatchStaticDomain(const std::string _domain)
 
 int MatchStaticDomain::MatchRequest(std::string& _testDomain)
 {
-    std::cout << Domain << std::endl;
-    std::cout << DomainLength << std::endl;
-    std::cout << _testDomain << std::endl;
-
     if (_testDomain.compare(_testDomain.size() - DomainLength, DomainLength, Domain) != 0)
     {
         return 0;
