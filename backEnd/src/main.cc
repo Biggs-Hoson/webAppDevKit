@@ -121,46 +121,13 @@ void commonHandler(
     callback(resp);
 };
 
-
-std::string RouteMapJsonStr = "[{\"domain\":\"williamlewin.dev\"},{\"domain\":\"william.dev\"}]";
-//"[{\"path\": \"1\",\"subRoutes\": [{ \"path\": \"a\"},{ \"path\": \"b\"},{ \"path\": \"c\"}]},{\"path\": \"2\",\"subRoutes\": [{ \"path\": \"a\"},{ \"path\": \"b\"},{ \"path\": \"c\"}]}]";
-
-
-
 int main() {
-
-    // Construct Basic JSON route for now:
-    Json::Reader reader;
-
-    bool parsingSuccessful = reader.parse( RouteMapJsonStr.c_str(), RouteMapJson);
-    if ( !parsingSuccessful )
-    {
-        std::cout << "Failed to parse"
-            << reader.getFormattedErrorMessages();
-        return 1;
-    }
     
     AppManager serverAppManager(DomainNodes);
 
-    serverAppManager.DeployApp(RouteMapJson);
+    serverAppManager.GetDomainsFromConfig();
 
-    try
-    {
-        serverAppManager.ActivateApp();
-    }
-    catch (const std::pair<int, const char*>& errorCodeMessage)
-    {
-        std::string errorMessage = std::string(errorCodeMessage.second);
-        std::cout << errorMessage << std::endl;
-        return 0;
-    }
-    catch (const std::pair<int, std::string>& errorCodeMessage)
-    {
-        std::string errorMessage = std::string(errorCodeMessage.second);
-        std::cout << errorMessage << std::endl;
-        return 0;
-    }
-
+    serverAppManager.DeployApp("myNotes");
 
     drogon::app().loadConfigFile("./config.json");
     drogon::app().registerHandlerViaRegex(".*", &commonHandler);

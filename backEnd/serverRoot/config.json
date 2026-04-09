@@ -77,5 +77,10 @@
         "enable_request_stream": false
     },
     "plugins": [],
-    "custom_config": {}
+    "custom_config": {
+        "domains":
+        [
+            "williamlewin.dev"
+        ]
+    }
 }

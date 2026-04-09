@@ -1,0 +1,33 @@
+{
+  "appName": "myNotes",
+  "databaseObjects": {
+    "relationalData": [
+      {
+        "tableName": ""
+      }
+    ]
+  },
+  "endpoints": {
+    
+  },
+  "routeMap": [
+    {
+      "defaultRoute": "notes.*",
+      "endpoint":
+      {
+        "type": "html",
+        "content": "<html><h2>Welcome to the notes home page.</h2></html>"
+      },
+      "subRoutes": [
+        {
+          "path": "*",
+          "endpoint":
+          {
+            "type": "file",
+            "content": "testPage.html"
+          }
+        }
+      ]
+    }
+  ]
+}
