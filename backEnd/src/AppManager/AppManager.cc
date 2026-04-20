@@ -29,15 +29,15 @@ void AppManager::DeployApp(std::string appName) {
     
     // Deploy each routeTree
     for (Json::ArrayIndex i = 0; i < RouteMap.size(); ++i) {
-        Json::Value& NodeJson = RouteMap[i];
+        Json::Value& RootNodeJson = RouteMap[i];
 
-        // Determine if app can be deployed from a path or if it must be deployed at the domain level
+        // Determine if this specific routeNode can be deployed from a path or if it must be deployed at the domain level.
 
         bool domainDeployment = false;
 
-        if (NodeJson.isMember("subRoutes"))
+        if (RootNodeJson.isMember("subRoutes"))
         {
-            Json::Value& nodeSubRoutes = NodeJson["subRoutes"];
+            Json::Value& nodeSubRoutes = RootNodeJson["subRoutes"];
 
             if (!nodeSubRoutes.isArray()) {
                 throw std::make_pair(500, appName + " routeMap is badly formatted");
@@ -53,14 +53,38 @@ void AppManager::DeployApp(std::string appName) {
             }
         }
 
+        // Temp:
+        bool defaultDeployment = true;
+
+        std::string matchCriteria;
+
+        if (defaultDeployment)
+        {
+            if (!RootNodeJson.isMember("defaultRoute"))
+            {
+                throw std::make_pair(500, "A root node in the " + appName + ".json routeMap does not have a defaultRoute property.");
+            }
+
+            if (!RootNodeJson["defaultRoute"].isString()) {
+                throw std::make_pair(500, "DefaultRoute is not a string.");
+            }
+
+            matchCriteria = RootNodeJson["defaultRoute"].asString();
+
+            matchCriteria.replace(matchCriteria.find("*"), 1, "*");
+
+            std::cout << matchCriteria;
+        }
+        else
+        {
+        
+        }
+
         RouteSection sec = DOMAIN;
 
-
         // Need to plan the collective routeMap system 
-        DomainNodes.push_back(RouteNode(NodeJson, sec, str));
+        DomainNodes.push_back(RouteNode(RootNodeJson, sec, ServerDomains[0]));
     }
-
-    "defaultRoute";
 };
 
 void AppManager::GetDomainsFromConfig()

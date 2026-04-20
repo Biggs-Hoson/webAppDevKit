@@ -31,6 +31,8 @@ RouteNode::RouteNode(Json::Value& _nodeData, RouteSection& parentType, std::stri
     std::string NewRoute;
     std::string MatchCriteria;
 
+
+    // This will need a rework when I introduce different Match criteria
     switch (NodeRouteSection) {
         case DOMAIN:
 
@@ -44,7 +46,7 @@ RouteNode::RouteNode(Json::Value& _nodeData, RouteSection& parentType, std::stri
             }
 
             // Select Match Object, for now stick to static paths
-            RouteMatchObj = std::make_unique<MatchStaticDomain>(MatchCriteria);
+            RouteMatchObj = std::make_unique<MatchStaticString>(MatchCriteria);
 
             break;
         case PATH:
@@ -54,7 +56,7 @@ RouteNode::RouteNode(Json::Value& _nodeData, RouteSection& parentType, std::stri
             NewRoute = currentRoute + "/" + MatchCriteria;
 
             // Select Match Object, for now stick to static paths
-            RouteMatchObj = std::make_unique<MatchStaticPath>(MatchCriteria);
+            RouteMatchObj = std::make_unique<MatchStaticString>(MatchCriteria);
             break;
     }
 
@@ -77,30 +79,28 @@ void RouteNode::SetSubRoutes(Json::Value& _subRoutes, std::string& _newRoute)
     }
 }
 
-
-int RouteNode::RouteRequest(const drogon::HttpRequestPtr& req, drogon::HttpResponsePtr& resp, RouteSection currentRouteSection, std::string& routingStr)
+int RouteNode::RouteRequest(
+const drogon::HttpRequestPtr& req,
+drogon::HttpResponsePtr& resp,
+RouteSection currentRouteSection, 
+std::vector<std::string>::iterator& nextSection,
+std::vector<std::string>::iterator& finalSection)
 {
 	if (currentRouteSection != NodeRouteSection)
     {
     	return 0;
 	}
-    
-    int matchResult = RouteMatchObj->MatchRequest(routingStr);
 
-    std::cout << matchResult << std::endl;
-
-    if (matchResult == 0){
+    if (!RouteMatchObj->MatchRequest(nextSection, finalSection)){
     	// Match Unsuccessful, return 0 to attempt next RouteNode
         return 0;
     }
     
     // Match Successful
-
-    std::cout << "Matched!" << std::endl;
     
-    if (routingStr.size() == matchResult) // No More routingStr to match, if domain, move to routing path, if path resolve request
+    if (nextSection == finalSection) // No More routingStr to match, if domain, move to routing path, if path resolve request
     {
-    	if (NodeRouteSection == DOMAIN)
+    	if (NodeRouteSection == DOMAIN) // This can be extracted with a std::func
         {
         	// Check if there is any path and route it if needed
             std::string path = req->getPath();
@@ -108,26 +108,43 @@ int RouteNode::RouteRequest(const drogon::HttpRequestPtr& req, drogon::HttpRespo
             if (path.size() > 0 && path != "/")
             {
                 std::string path = req->getPath();
+	            std::vector<std::string> pathVec = SplitOnChar(path, '/');
+
+                std::vector<std::string>::iterator pathBegin = pathVec.begin();
+                std::vector<std::string>::iterator pathEnd = pathVec.end();
 
             	// Route Path
-            	return RouteRemainingRequest(req, resp, PATH, path);
+            	return RouteRequestInSubroutes(req, resp, PATH, pathBegin, pathEnd);
             
             }
         }
         
         return ResolveRequest(req, resp);
     }
+
+    if (NodeRouteSection == DOMAIN)
+    {
+        --nextSection;
+    }
+    else{
+        ++nextSection;
+    }
     
-    std::string remainingRoute = GetRemainingRoute(routingStr, matchResult);
-    
-	return RouteRemainingRequest(req, resp, NodeRouteSection, remainingRoute);
+	return RouteRequestInSubroutes(req, resp, NodeRouteSection, nextSection, finalSection);
 };
 
-std::string RouteNode::GetRemainingRoute(std::string _routingStr, int matchedCharacterCount)
-{
-	// For paths only right now
-    
-    return _routingStr.substr(matchedCharacterCount);
+
+
+std::vector<std::string> RouteNode::SplitOnChar(const std::string& s, const char c) {
+    std::vector<std::string> parts;
+    std::stringstream ss(s);
+    std::string item;
+
+    while (std::getline(ss, item, c)) {
+        if (!item.empty())
+            parts.push_back(item);
+    }
+    return parts;
 }
 
 int RouteNode::ResolveRequest(const drogon::HttpRequestPtr& req, drogon::HttpResponsePtr& resp)
@@ -138,19 +155,24 @@ int RouteNode::ResolveRequest(const drogon::HttpRequestPtr& req, drogon::HttpRes
     return 200;
 };
 
-int RouteNode::RouteRemainingRequest(const drogon::HttpRequestPtr& req, drogon::HttpResponsePtr& resp, RouteSection currentRouteSection, std::string& routingStr)
+int RouteNode::RouteRequestInSubroutes(
+    const drogon::HttpRequestPtr& req,
+    drogon::HttpResponsePtr& resp,
+    RouteSection currentRouteSection,
+    std::vector<std::string>::iterator& nextSection,
+    std::vector<std::string>::iterator& finalSection)
 {
 	for (RouteNode& subRoute : SubRoutes){
-		int responseCode = subRoute.RouteRequest(req, resp, currentRouteSection, routingStr);
+		int responseCode = subRoute.RouteRequest(req, resp, currentRouteSection, nextSection, finalSection);
 		if (responseCode != 0) {
 			return responseCode;
 		}
 	}
 
     return 404;
-}
+};
 
 void RouteNode::ThrowFormatError(const int errorCode, const std::string ErrorMessage)
 {
     throw std::make_pair(errorCode, ErrorMessage);
-}
+};

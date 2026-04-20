@@ -2,34 +2,27 @@
 #define MATCH_CLASS_H
 
 #include <string>
+#include <vector>
 
 class MatchClass {
 	public: 
-        virtual int MatchRequest(std::string&) = 0;
+        virtual bool MatchRequest(
+			std::vector<std::string>::iterator&,
+			std::vector<std::string>::iterator&
+		) = 0;
 };
 
-class MatchStaticPath : public MatchClass {
+class MatchStaticString : public MatchClass {
 	public:
-    	MatchStaticPath(const std::string);
+    	MatchStaticString(const std::string);
 
-        int MatchRequest(std::string&) override;
+        bool MatchRequest(
+			std::vector<std::string>::iterator&,
+			std::vector<std::string>::iterator&
+		) override;
 
 	private:
-    	std::string Path;
-		
-        int PathLength;
-};
-
-class MatchStaticDomain : public MatchClass {
-	public:
-    	MatchStaticDomain(const std::string);
-
-        int MatchRequest(std::string&) override;
-
-	private:
-    	std::string Domain;
-		
-        int DomainLength;
+    	std::string MatchString;
 };
 
 #endif

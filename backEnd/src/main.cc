@@ -20,13 +20,32 @@ std::string HtmlErrorPage(const std::string& message){
 	return "<html>" + message + "</html>";
 };
 
+
+std::vector<std::string> SplitDomain(const std::string& host) {
+    std::vector<std::string> parts;
+    std::stringstream ss(host);
+    std::string item;
+
+    while (std::getline(ss, item, '.')) {
+        if (!item.empty())
+            parts.push_back(item);
+    }
+    return parts;
+}
+
 void RouteRequest(const drogon::HttpRequestPtr& req, drogon::HttpResponsePtr& resp) {
 
 	std::string host = req->getHeader("Host");
 
+    std::vector<std::string> HostVec = SplitDomain(host);
+
+    std::vector<std::string>::iterator nextSection = HostVec.end();
+    std::vector<std::string>::iterator finalSection = HostVec.begin();
+
+
 	for (RouteNode& DomainNode: DomainNodes)
     {
-        int responseCode = DomainNode.RouteRequest(req, resp, DOMAIN, host);
+        int responseCode = DomainNode.RouteRequest(req, resp, DOMAIN, nextSection, finalSection);
 
         if (responseCode != 0) {
             return;
