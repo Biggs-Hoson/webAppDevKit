@@ -3,6 +3,7 @@
 
 #include <drogon/drogon.h>
 #include <string>
+#include <memory>
 
 #include "../MatchClass/MatchClass.h"
 
@@ -14,7 +15,7 @@ enum RouteSection {
 class RouteNode {
 	public: 
 		// Constructor, accepts the JSON reference to construct the node and the rest of the tree below it
-		RouteNode(Json::Value&, RouteSection&, std::string&);
+		RouteNode(Json::Value&, RouteSection, std::string = "");
 
 		int RouteRequest(
 			const drogon::HttpRequestPtr& req,

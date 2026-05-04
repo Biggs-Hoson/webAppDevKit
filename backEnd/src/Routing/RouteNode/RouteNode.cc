@@ -9,7 +9,7 @@ constexpr struct JsonKeyNodeType {
 };
 
 
-RouteNode::RouteNode(Json::Value& _nodeData, RouteSection& parentType, std::string& currentRoute)
+RouteNode::RouteNode(Json::Value& _nodeData, RouteSection parentType, std::string currentRoute)
 {
     bool typeFound;
 
@@ -45,21 +45,25 @@ RouteNode::RouteNode(Json::Value& _nodeData, RouteSection& parentType, std::stri
                 ThrowFormatError(500, "Cannot have domains node below path nodes at node: " + currentRoute);
             }
 
-            // Select Match Object, for now stick to static paths
-            RouteMatchObj = std::make_unique<MatchStaticString>(MatchCriteria);
-
             break;
         case PATH:
 
             MatchCriteria = _nodeData["path"].asString();
             
             NewRoute = currentRoute + "/" + MatchCriteria;
-
-            // Select Match Object, for now stick to static paths
-            RouteMatchObj = std::make_unique<MatchStaticString>(MatchCriteria);
             break;
     }
 
+
+    // Set Match Class
+    if (MatchCriteria == "*")
+    {
+        RouteMatchObj = std::make_unique<MatchAny>();
+    }
+    else
+    {
+        RouteMatchObj = std::make_unique<MatchStaticString>(MatchCriteria);
+    }
 
     if (_nodeData.isMember("subRoutes"))
     {

@@ -19,7 +19,7 @@ endif ()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_executable(${PROJECT_NAME} main.cc)
+add_executable(${PROJECT_NAME} src/main.cc)
 
 # ##############################################################################
 # If you include the drogon source code locally in your project, use this method
@@ -56,23 +56,29 @@ aux_source_directory(models MODEL_SRC)
 # drogon_create_views(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/views
 #                     ${CMAKE_CURRENT_BINARY_DIR} TRUE CHANGE_ME)
 
+# PROBABLY NEEED TO INVESTIGATE THESE FUNCTIONS, SEE WHAT NEEDS TO BE KEPT FROM THE REGULAR DROGON FILES
 target_include_directories(${PROJECT_NAME}
                            PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
                                    ${CMAKE_CURRENT_SOURCE_DIR}/models)
+
+file(GLOB_RECURSE MY_SOURCES 
+    CONFIGURE_DEPENDS 
+    "src/*.cc" 
+    "src/*.h"
+)
 target_sources(${PROJECT_NAME}
                PRIVATE
-                AppManager/AppManager.cc
-                Routing/RouteNode/RouteNode.cc
-                Routing/MatchClass/MatchClass.cc
-               ${SRC_DIR}
-               ${CTL_SRC}
-               ${FILTER_SRC}
-               ${PLUGIN_SRC}
-               ${MODEL_SRC})
+               ${MY_SOURCES})
+               #${SRC_DIR}
+               #${CTL_SRC}
+               #${FILTER_SRC}
+               #${PLUGIN_SRC}
+               #${MODEL_SRC}
+
 # ##############################################################################
 # uncomment the following line for dynamically loading views 
 # set_property(TARGET ${PROJECT_NAME} PROPERTY ENABLE_EXPORTS ON)
 
 # ##############################################################################
 
-add_subdirectory(serverTest)
+#add_subdirectory(serverTest)

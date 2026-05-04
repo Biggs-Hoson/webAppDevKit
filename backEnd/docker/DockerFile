@@ -29,9 +29,11 @@ RUN --mount=type=cache,target=/opt/vcpkg_cache \
 
 ENV CMAKE_CXX_COMPILER_LAUNCHER=ccache
 
+COPY CMakeLists.txt ./
+
 COPY src/ ./src/
 
-RUN cmake -B ./build -S ./src \
+RUN cmake -B ./build -S . \
     -DCMAKE_TOOLCHAIN_FILE=/opt/vcpkg/scripts/buildsystems/vcpkg.cmake \
     -DVCPKG_TARGET_TRIPLET=x64-linux \
     -DVCPKG_INSTALLED_DIR=/app/vcpkg_installed \

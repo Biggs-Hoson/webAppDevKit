@@ -25,4 +25,13 @@ class MatchStaticString : public MatchClass {
     	std::string MatchString;
 };
 
+class MatchAny : public MatchClass {
+	public:
+		MatchAny();
+        bool MatchRequest(
+			std::vector<std::string>::iterator&,
+			std::vector<std::string>::iterator&
+		) override;
+};
+
 #endif

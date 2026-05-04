@@ -1,4 +1,3 @@
-#include <iostream>
 #include <string>
 #include <memory>
 #include <vector>
@@ -10,7 +9,8 @@
 
 
 #include "./Routing/RouteNode/RouteNode.h"
-#include "./AppManager/AppManager.h"
+#include "./Apps/AppManager/AppManager.h"
+#include "./ServerManager/ServerManager.h"
 
 
 std::vector<RouteNode> DomainNodes;
@@ -30,6 +30,9 @@ std::vector<std::string> SplitDomain(const std::string& host) {
         if (!item.empty())
             parts.push_back(item);
     }
+
+    //std::reverse(parts.begin(), parts.end()); // If using this method, flip iterrators in RouteRequest and remove directionality from RouteNode
+
     return parts;
 }
 
@@ -42,6 +45,12 @@ void RouteRequest(const drogon::HttpRequestPtr& req, drogon::HttpResponsePtr& re
     std::vector<std::string>::iterator nextSection = HostVec.end();
     std::vector<std::string>::iterator finalSection = HostVec.begin();
 
+    std::string hostSplit = "";
+
+    for (const std::string str : HostVec)
+    {
+        hostSplit.append(str + ", ");
+    }
 
 	for (RouteNode& DomainNode: DomainNodes)
     {
@@ -142,15 +151,23 @@ void commonHandler(
 
 int main() {
     
-    AppManager serverAppManager(DomainNodes);
+    // Create ServerManager object and pass it the root domains array to manage 
+    ServerManager serverManagerObj(DomainNodes);
 
-    serverAppManager.GetDomainsFromConfig();
-
-    serverAppManager.DeployApp("myNotes");
-
+    // Load Domains from config
     drogon::app().loadConfigFile("./config.json");
-    drogon::app().registerHandlerViaRegex(".*", &commonHandler);
-    drogon::app().run();
+    serverManagerObj.GetDomainsFromConfig();
+
+    AppManager serverAppManager(serverManagerObj);
+
+    //serverManagerObj.UpdateRootNode();
+
+    // FOR NOW:: just register the myNotes app manually
+    serverAppManager.RegisterApp("myNotes");
+
+
+    //drogon::app().registerHandlerViaRegex(".*", &commonHandler);
+    //drogon::app().run();
 
     return 0;
 }
