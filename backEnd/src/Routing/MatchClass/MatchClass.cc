@@ -17,5 +17,8 @@ MatchAny::MatchAny() {};
 bool MatchAny::MatchRequest(
     std::vector<std::string>::iterator& nextSection,
 	std::vector<std::string>::iterator& finalSection) {
+
+    nextSection = finalSection;
+
     return true;
 };

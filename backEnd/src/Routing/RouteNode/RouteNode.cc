@@ -155,6 +155,8 @@ int RouteNode::ResolveRequest(const drogon::HttpRequestPtr& req, drogon::HttpRes
 {
     resp->setContentTypeCode(drogon::CT_TEXT_HTML);
     resp->setBody("<html> Endpoint found at host: " + req->getHeader("Host") + "</html>");
+
+    resp->setBody("<html> Hello Mum! </html>");
     
     return 200;
 };
@@ -180,3 +182,13 @@ void RouteNode::ThrowFormatError(const int errorCode, const std::string ErrorMes
 {
     throw std::make_pair(errorCode, ErrorMessage);
 };
+
+void RouteNode::DeployAppNodeHere(AppNodeTemplate _appNodeTemplate)
+{
+    SubRoutes.push_back(RouteNode(_appNodeTemplate, DOMAIN, ""));
+}
+
+RouteNode::RouteNode(RouteNodeTemplate _RouteTemplate, RouteSection parentType, std::string currentRoute)
+{
+
+}

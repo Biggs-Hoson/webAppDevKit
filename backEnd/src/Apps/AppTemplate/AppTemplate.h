@@ -7,10 +7,11 @@
 
 #include "AppNodeTemplate/AppNodeTemplate.h"
 #include "../../JsonToTemplate/JsonToTemplate.h"
+#include "AppVersion/AppVersion.h"
 
 /* AppTemplate
 
-The AppTemplate class is constructed from an App file. 
+The AppTemplate class is constructed from an App file.
 It performs the nessecary schema and format checking of
 the app Json, along with validation for the rest of the
 content of the App File during this its instanciation. 
@@ -28,22 +29,29 @@ class AppTemplate : public JsonToTemplate
     public:
         AppTemplate(Json::Value&); // For now, construct using AppJson
 
+        AppNodeTemplate GetFirstAppNode();
+
+        std::string GetHash();
+
+        std::string GetName();
+
+        AppVersion& GetVersion();
+
     protected:
         void CollectChildErrors(std::vector<std::string>&, std::string) override;
 
     private:
 
-        // Metadata parsing functions
-        void ParseAppName(const Json::Value&);
-
         // Metadata fields
         std::string AppName;
+        void ParseAppName(const Json::Value&);
 
-        // Front end parsing functions
-        void ParseRouteMap(const Json::Value&);
+        AppVersion Version;
+        void ParseAppVersion(const Json::Value&);
 
         // Front end fields
         std::vector<AppNodeTemplate> AppRouteNodes;
+        void ParseRouteMap(const Json::Value&);
 
 };
 

@@ -3,6 +3,7 @@
 
 
 #include <drogon/drogon.h>
+#include <optional>
 
 
 struct KeyCheck {
@@ -11,7 +12,7 @@ struct KeyCheck {
 
     bool KeyRequired;
     
-    std::optional<std::function<void(const Json::Value&)>> ParserFunction;
+    std::optional<std::function<void(const Json::Value&)>> ParserFunction = std::nullopt;
 };
 
 class JsonToTemplate 

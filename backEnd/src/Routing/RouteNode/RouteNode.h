@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "../MatchClass/MatchClass.h"
+#include "../../Apps/AppTemplate/AppNodeTemplate/AppNodeTemplate.h"
 
 enum RouteSection {
   DOMAIN,
@@ -17,6 +18,8 @@ class RouteNode {
 		// Constructor, accepts the JSON reference to construct the node and the rest of the tree below it
 		RouteNode(Json::Value&, RouteSection, std::string = "");
 
+		RouteNode(RouteNodeTemplate, RouteSection, std::string = "");
+
 		int RouteRequest(
 			const drogon::HttpRequestPtr& req,
 			drogon::HttpResponsePtr& resp,
@@ -26,6 +29,8 @@ class RouteNode {
 		);
         
 		int ResolveRequest(const drogon::HttpRequestPtr&, drogon::HttpResponsePtr&);
+
+		void DeployAppNodeHere(AppNodeTemplate);
 
 	private:
     	// Affects the matching function and

@@ -16,6 +16,8 @@ class ServerManager
 
 		void DeployAppRouteNode(RouteNodeTemplate&, std::string);
 
+		void StartServer();
+
 	private:
         // Top level route nodes of the server
     	std::vector<RouteNode>& DomainNodes;
@@ -26,7 +28,7 @@ class ServerManager
         // A vector of the domains that have been registered to the server.
 		std::vector<std::string> ServerDomains;
 
+		void DeployConfiguredApps();
 };
-
 
 #endif

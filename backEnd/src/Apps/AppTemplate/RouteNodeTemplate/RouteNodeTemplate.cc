@@ -10,8 +10,7 @@ RouteNodeTemplate::RouteNodeTemplate(const std::optional<const Json::Value>& Rou
     //Register ExpectedKeys
     ExpectedKeys.push_back({"path", 
             Json::stringValue, 
-            true, 
-            std::nullopt});
+            true});
 
     ExpectedKeys.push_back({"subPaths", 
             Json::arrayValue, 

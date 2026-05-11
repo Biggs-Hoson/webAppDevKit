@@ -9,7 +9,6 @@
 
 
 #include "./Routing/RouteNode/RouteNode.h"
-#include "./Apps/AppManager/AppManager.h"
 #include "./ServerManager/ServerManager.h"
 
 
@@ -152,22 +151,16 @@ void commonHandler(
 int main() {
     
     // Create ServerManager object and pass it the root domains array to manage 
-    ServerManager serverManagerObj(DomainNodes);
+    ServerManager ServerManagerObj(DomainNodes);
 
     // Load Domains from config
     drogon::app().loadConfigFile("./config.json");
-    serverManagerObj.GetDomainsFromConfig();
+    //ServerManagerObj.GetDomainsFromConfig();
 
-    AppManager serverAppManager(serverManagerObj);
+    ServerManagerObj.StartServer();
 
-    //serverManagerObj.UpdateRootNode();
-
-    // FOR NOW:: just register the myNotes app manually
-    serverAppManager.RegisterApp("myNotes");
-
-
-    //drogon::app().registerHandlerViaRegex(".*", &commonHandler);
-    //drogon::app().run();
+    drogon::app().registerHandlerViaRegex(".*", &commonHandler);
+    drogon::app().run();
 
     return 0;
 }

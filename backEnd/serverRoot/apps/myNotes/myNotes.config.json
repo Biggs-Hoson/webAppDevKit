@@ -1,0 +1,16 @@
+{
+	"appId": 0,
+	"appName": "myNotes",
+	"appVersion": "1.2.3",
+    "appHash": "abxyz",
+    "appRouteDeployments": [
+    	{
+        	"routeId": 0,
+            "domainId": 0,
+            "subdomainRoute": [],
+            "subpathRoute": [
+                "notes"
+            ]
+        }
+    ]
+}

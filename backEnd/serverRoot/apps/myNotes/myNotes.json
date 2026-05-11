@@ -1,5 +1,6 @@
 {
   "appName": "myNotes",
+  "appVersion": "1.2.3",
   "databaseObjects": {
     "relationalData": [
       {

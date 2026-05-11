@@ -1,10 +1,10 @@
+#include <optional>
 #include <vector>
 #include <fstream>
 
 #include "AppManager.h"
 
-AppManager::AppManager(ServerManager& _serverManager)
-    : ServerManagerObj(_serverManager){};
+AppManager::AppManager(){};
 
 void AppManager::RegisterApp(std::string appName)
 {
@@ -17,19 +17,53 @@ void AppManager::RegisterApp(std::string appName)
     RegisteredApps.push_back(AppTemplate(AppJson));
 }
 
-void AppManager::DeployApp(std::string appName) {
+// For now just get the first  app
+AppTemplate& AppManager::FindApp(std::string _appName, std::optional<AppVersion*> _appVersion)
+{
+    if (!_appVersion.has_value())
+    {
+        return FindAppTemplateLatest(_appName);
+    }
 
+    FindAppTemplateByVersion(_appName, _appVersion.value());
+};
 
-    //Deploy frontend
+AppTemplate& AppManager::FindAppTemplateByVersion(std::string _appName, AppVersion* VersionPtr)
+{
+    AppVersion& TargetVerson = *VersionPtr;
 
-    // FOR NOW: don't bother about selecting registered apps:
-    AppTemplate* appToDeploy = &RegisteredApps[0];
+    for(AppTemplate& _appTemplate : RegisteredApps)
+    {
+        if (_appTemplate.GetName() == _appName && TargetVerson == _appTemplate.GetVersion())
+        {
+            return _appTemplate;
+        }
+    }
 
-    // Deploy RouteMap
+    throw "App not found";
+};
 
-    // FOR NOW: deploy to the default domain:
+AppTemplate& AppManager::FindAppTemplateLatest(std::string _appName)
+{
+    AppTemplate* LatestAppTemplate;
+
+    for(AppTemplate& _appTemplate : RegisteredApps)
+    {
+        if (_appTemplate.GetName() == _appName && _appTemplate.GetVersion() > LatestAppTemplate->GetVersion())
+        {
+            LatestAppTemplate = &_appTemplate;
+        }
+    }
     
-    //ServerManagerObj.DeployAppRouteNode();
+    if (LatestAppTemplate == nullptr)
+    {
+        throw "App not found";
+    }
+
+    return *LatestAppTemplate;
+};
+
+void AppManager::DeployApp(std::string appName) {
     
 };
 
