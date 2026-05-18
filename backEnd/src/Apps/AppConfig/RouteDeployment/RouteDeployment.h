@@ -1,16 +1,23 @@
 #ifndef routeDeployment
 #define routeDeployment
 
-#include "../../../JsonToTemplate/JsonToTemplate.h"
+#include "../../../ComponentClasses/JsonToClass/JsonToClass.h"
 
-class RouteDeployment : public JsonToTemplate
+class RouteDeployment : public JsonToClass
 {
-	public: 
-    	RouteDeployment(const Json::Value& routeDeploymentJson);
+    public: 
+        RouteDeployment(const Json::Value& routeDeploymentJson);
 
+        int GetAppNodeId();
+
+        int GetRouteStartId();
+
+        std::vector<std::string>& GetSubdomainRoute();
+
+        std::vector<std::string>& GetPathRoute();
         
 
-	private:
+    private:
 
         // Id of the particular AppNode in the AppTemplate
         int AppNodeId;

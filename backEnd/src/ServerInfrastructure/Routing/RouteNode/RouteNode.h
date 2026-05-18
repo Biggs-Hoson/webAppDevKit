@@ -6,7 +6,7 @@
 #include <memory>
 
 #include "../MatchClass/MatchClass.h"
-#include "../../Apps/AppTemplate/AppNodeTemplate/AppNodeTemplate.h"
+#include "../../../Apps/AppTemplate/AppNodeTemplate/AppNodeTemplate.h"
 
 enum RouteSection {
   DOMAIN,
@@ -32,6 +32,10 @@ class RouteNode {
 
 		void DeployAppNodeHere(AppNodeTemplate);
 
+		RouteNode& ConstructSubdomains(std::vector<std::string>);
+
+		RouteNode& ConstructSubPath(std::vector<std::string>);
+
 	private:
     	// Affects the matching function and
     	RouteSection NodeRouteSection;
@@ -55,6 +59,10 @@ class RouteNode {
 		void ThrowFormatError(int = 500, std::string = "Server RouteMap is badly formatted.");
 
 		std::vector<std::string> SplitOnChar(const std::string& s, const char c);
+
+		bool HasSubdomain(std::string);
+
+		bool HasSubPath(std::string);
 };
 
 #endif

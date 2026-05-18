@@ -1,100 +1,18 @@
-#include <string>
-#include <memory>
-#include <vector>
-
-#include <drogon/drogon.h>
-#include <drogon/HttpRequest.h>
-#include <drogon/HttpResponse.h>
-#include <drogon/HttpTypes.h>
-
-
-#include "./Routing/RouteNode/RouteNode.h"
-#include "./ServerManager/ServerManager.h"
-
+#include "./Managers/ServerManager/ServerManager.h"
+#include "./ComponentFunctions/MainFunctions/MainFunctions.h"
 
 std::vector<RouteNode> DomainNodes;
-Json::Value RouteMapJson;   
 
-std::string HtmlErrorPage(const std::string& message){
-	return "<html>" + message + "</html>";
+int main() {
+    ServerManager ServerManagerObj(DomainNodes);
+
+    ServerManagerObj.StartServer();
+
+    drogon::app().registerHandlerViaRegex(".*", &commonHandler);
+    drogon::app().run();
+
+    return 0;
 };
-
-
-std::vector<std::string> SplitDomain(const std::string& host) {
-    std::vector<std::string> parts;
-    std::stringstream ss(host);
-    std::string item;
-
-    while (std::getline(ss, item, '.')) {
-        if (!item.empty())
-            parts.push_back(item);
-    }
-
-    //std::reverse(parts.begin(), parts.end()); // If using this method, flip iterrators in RouteRequest and remove directionality from RouteNode
-
-    return parts;
-}
-
-void RouteRequest(const drogon::HttpRequestPtr& req, drogon::HttpResponsePtr& resp) {
-
-	std::string host = req->getHeader("Host");
-
-    std::vector<std::string> HostVec = SplitDomain(host);
-
-    std::vector<std::string>::iterator nextSection = HostVec.end();
-    std::vector<std::string>::iterator finalSection = HostVec.begin();
-
-    std::string hostSplit = "";
-
-    for (const std::string str : HostVec)
-    {
-        hostSplit.append(str + ", ");
-    }
-
-	for (RouteNode& DomainNode: DomainNodes)
-    {
-        int responseCode = DomainNode.RouteRequest(req, resp, DOMAIN, nextSection, finalSection);
-
-        if (responseCode != 0) {
-            return;
-        }
-    }
-
-    // Top Level 404 error, other 404 errors should be handled in the DomainNode with either a raise or return based on the app's route design.
-    throw std::make_pair(404, "Domain could not be found");
-};
-
-void HandleErrorResponse(std::shared_ptr<drogon::HttpResponse> resp, drogon::ContentType& desiredResponseType, int errorCode, const std::string& errorMessage)
-{
-    resp->setStatusCode(static_cast<drogon::HttpStatusCode>(errorCode));
-
-    switch(desiredResponseType)
-    {
-        case drogon::CT_TEXT_HTML:
-            resp->setContentTypeCode(drogon::CT_TEXT_HTML);
-            resp->setBody(HtmlErrorPage(errorMessage));
-            break;
-
-        case drogon::CT_APPLICATION_JSON:
-        default:
-            resp->setContentTypeCode(drogon::CT_APPLICATION_JSON);
-            resp->setBody("\"Error Message\":\"" + errorMessage + "\"}");
-            break;
-    }
-};
-
-std::string GetDefaultErrorMessage(int errorCode) {
-	switch(errorCode)
-    {
-		case 404:
-			return "Resource not found.";
-		case 500:
-            return "Something went wrong with the server. The specific problem could not be identified.";
-		default:
-			return "Something went wrong with your request. The problem could not be identified.";
-	}
-};
-
 
 void commonHandler(
     const drogon::HttpRequestPtr& req,
@@ -148,23 +66,36 @@ void commonHandler(
     callback(resp);
 };
 
-int main() {
-    
-    // Create ServerManager object and pass it the root domains array to manage 
-    ServerManager ServerManagerObj(DomainNodes);
+void RouteRequest(
+    const drogon::HttpRequestPtr& req,
+    drogon::HttpResponsePtr& resp) {
 
-    // Load Domains from config
-    drogon::app().loadConfigFile("./config.json");
-    //ServerManagerObj.GetDomainsFromConfig();
+	std::string host = req->getHeader("Host");
 
-    ServerManagerObj.StartServer();
+    std::vector<std::string> HostVec = SplitDomain(host);
 
-    drogon::app().registerHandlerViaRegex(".*", &commonHandler);
-    drogon::app().run();
+    std::vector<std::string>::iterator nextSection = HostVec.end();
+    std::vector<std::string>::iterator finalSection = HostVec.begin();
 
-    return 0;
-}
+    std::string hostSplit = "";
 
+    for (const std::string str : HostVec)
+    {
+        hostSplit.append(str + ", ");
+    }
+
+	for (RouteNode& DomainNode: DomainNodes)
+    {
+        int responseCode = DomainNode.RouteRequest(req, resp, DOMAIN, nextSection, finalSection);
+
+        if (responseCode != 0) {
+            return;
+        }
+    }
+
+    // Top Level 404 error, other 404 errors should be handled in the DomainNode with either a raise or return based on the app's route design.
+    throw std::make_pair(404, "Domain could not be found");
+};
 
 
 /*

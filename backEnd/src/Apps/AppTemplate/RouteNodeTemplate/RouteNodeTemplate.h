@@ -6,10 +6,10 @@
 #include <vector>
 
 #include <drogon/drogon.h>
-#include "../../../JsonToTemplate/JsonToTemplate.h"
+#include "../../../ComponentClasses/JsonToClass/JsonToClass.h"
 
 
-class RouteNodeTemplate : public JsonToTemplate
+class RouteNodeTemplate : public JsonToClass
 {
     public:
         RouteNodeTemplate(const std::optional<const Json::Value>&);

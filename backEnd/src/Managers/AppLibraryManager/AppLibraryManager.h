@@ -5,14 +5,13 @@
 #include <string>
 #include <vector>
 #include <drogon/drogon.h>
-#include "../../Routing/RouteNode/RouteNode.h"
-#include "../AppTemplate/AppTemplate.h"
-#include "../../ServerManager/ServerManager.h"
+#include "../../ServerInfrastructure/Routing/RouteNode/RouteNode.h"
+#include "../../Apps/AppTemplate/AppTemplate.h"
 
-class AppManager
+class AppLibraryManager
 {
 	public: 
-    	AppManager();
+    	AppLibraryManager();
         
 		/* RegisterApp
 
@@ -33,11 +32,7 @@ class AppManager
 		AppTemplate& FindApp(std::string, std::optional<AppVersion*> = std::nullopt);
 
 	private:
-    	Json::Value RouteMap;
-
-		Json::Value ReadAppJson(std::string&);
-
-		std::vector<AppTemplate> RegisteredApps;
+		std::vector<AppTemplate> AppLibrary;
 
 		// Finding AppTemplate
 		AppTemplate& FindAppTemplateLatest(std::string);

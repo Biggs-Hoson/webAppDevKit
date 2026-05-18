@@ -67,3 +67,23 @@ void RouteDeployment::CollectChildErrors(std::vector<std::string>& jsonErrors, s
 {
 
 };
+
+int RouteDeployment::GetAppNodeId()
+{
+    return AppNodeId;
+};
+
+int RouteDeployment::GetRouteStartId()
+{
+    return RouteStartId;
+};
+
+std::vector<std::string>& RouteDeployment::GetSubdomainRoute()
+{
+    return SubdomainRoute;
+};
+
+std::vector<std::string>& RouteDeployment::GetPathRoute()
+{
+    return PathRoute;
+};

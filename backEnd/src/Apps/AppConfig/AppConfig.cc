@@ -50,9 +50,9 @@ AppConfig::AppConfig(const Json::Value& configData) {
 };
         
             
-void AppConfig::ParseAppId(const Json::Value& appId)
+void AppConfig::ParseAppId(const Json::Value& _appId)
 {
-    AppId = appId.asInt();
+    AppConfigId.SetId(_appId.asString());
 };
 
 void AppConfig::ParseAppName(const Json::Value& appName)
@@ -93,18 +93,23 @@ void AppConfig::CollectChildErrors(std::vector<std::string>& jsonErrors, std::st
     }
 };
 
-void AppConfig::GetAppTemplate(AppManager& _appManger)
+//Getters:
+AppId AppConfig::GetConfigId()
 {
-    AppTemplate& AppTemplate = _appManger.FindApp(AppName, &CorrespondingAppVersion);
+    return AppConfigId;
+};
 
-    if (AppHash != AppTemplate.GetHash())
-    {
-        throw("App Hash doesn't hash.");
-    }
+std::string AppConfig::GetAppName()
+{
+    return AppName;
 }
 
-
-void AppConfig::DeployApp(std::vector<RouteNode>& domainRoot)
+std::string AppConfig::GetAppHash()
 {
-    //FindAppTemplate
+    return AppHash;
+}
+
+std::vector<RouteDeployment>& AppConfig::GetRouteDeployments()
+{
+    return RouteDeployments;
 };

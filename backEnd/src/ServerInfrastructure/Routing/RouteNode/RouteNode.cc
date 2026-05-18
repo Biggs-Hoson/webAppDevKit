@@ -192,3 +192,15 @@ RouteNode::RouteNode(RouteNodeTemplate _RouteTemplate, RouteSection parentType, 
 {
 
 }
+
+
+bool HasSubdomain(std::string subdomain)
+{
+    
+};
+
+
+bool HasSubPath(std::string path)
+{
+
+};

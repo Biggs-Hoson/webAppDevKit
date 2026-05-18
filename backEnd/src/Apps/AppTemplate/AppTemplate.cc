@@ -1,6 +1,6 @@
 #include "AppTemplate.h"
 #include "AppNodeTemplate/AppNodeTemplate.h"
-#include "AppVersion/AppVersion.h"
+#include "../AppComponents/AppVersion/AppVersion.h"
 #include "json/value.h"
 
 #include <exception>
@@ -88,9 +88,9 @@ void AppTemplate::CollectChildErrors(std::vector<std::string>& jsonErrors, std::
     }
 }
 
-AppNodeTemplate AppTemplate::GetFirstAppNode()
+AppNodeTemplate& AppTemplate::GetAppNodeById(int appId)
 {
-    return AppRouteNodes[0];
+    return AppRouteNodes[appId];
 }
 
 std::string AppTemplate::GetHash()

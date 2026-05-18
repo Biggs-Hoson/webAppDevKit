@@ -1,4 +1,4 @@
-#include "JsonToTemplate.h"
+#include "JsonToClass.h"
 #include "json/value.h"
 #include <string>
 
@@ -15,7 +15,7 @@ const std::map<Json::ValueType, std::string> TypeNames =
 };
 
 
-void JsonToTemplate::ParseJson(const Json::Value& _jsonObject)
+void JsonToClass::ParseJson(const Json::Value& _jsonObject)
 {
     // Create Mappings in constructor then run this to trigger all functions
 
@@ -75,7 +75,7 @@ void JsonToTemplate::ParseJson(const Json::Value& _jsonObject)
     }
 };
 
-void JsonToTemplate::CollectErrors(std::vector<std::string>& _jsonErrors, std::string currentPath)
+void JsonToClass::CollectErrors(std::vector<std::string>& _jsonErrors, std::string currentPath)
 {
     for (std::string error : JsonErrors)
     {
@@ -85,7 +85,7 @@ void JsonToTemplate::CollectErrors(std::vector<std::string>& _jsonErrors, std::s
     CollectChildErrors(_jsonErrors, currentPath);
 };
 
-void JsonToTemplate::PrintErrors()
+void JsonToClass::PrintErrors()
 {
     for (std::string error : JsonErrors)
     {

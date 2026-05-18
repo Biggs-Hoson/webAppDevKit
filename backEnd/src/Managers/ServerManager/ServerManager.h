@@ -1,0 +1,35 @@
+#ifndef serverManager
+#define serverManager
+
+#include <string>
+#include <vector>
+
+#include <drogon/drogon.h>
+
+#include "../AppLibraryManager/AppLibraryManager.h"
+#include "../RouteTreeManager/RouteTreeManager.h"
+#include "../../ServerInfrastructure/Routing/RouteNode/RouteNode.h"
+#include "../../Apps/AppTemplate/RouteNodeTemplate/RouteNodeTemplate.h"
+#include "../../ServerInfrastructure/ServerConfig/ServerConfig.h"
+
+
+// Purpose: a higher level class for managing the server functions the user might interact with, especially for general server functions (Start Server) 
+class ServerManager
+{
+	public: 
+    	ServerManager(std::vector<RouteNode>&);
+
+		void DeployAppRouteNode(RouteNodeTemplate&, std::string);
+
+		void StartServer();
+
+	private:
+
+		// Manager Classes
+		RouteTreeManager ServerRouteTreeManager;
+
+		// server Config
+		ServerConfig ServerCfg;
+};
+
+#endif

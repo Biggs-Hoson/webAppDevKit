@@ -6,8 +6,8 @@
 #include <string>
 
 #include "AppNodeTemplate/AppNodeTemplate.h"
-#include "../../JsonToTemplate/JsonToTemplate.h"
-#include "AppVersion/AppVersion.h"
+#include "../../ComponentClasses/JsonToClass/JsonToClass.h"
+#include "../AppComponents/AppVersion/AppVersion.h"
 
 /* AppTemplate
 
@@ -24,12 +24,12 @@ of app.
 
 */
 
-class AppTemplate : public JsonToTemplate
+class AppTemplate : public JsonToClass
 {
     public:
         AppTemplate(Json::Value&); // For now, construct using AppJson
 
-        AppNodeTemplate GetFirstAppNode();
+        AppNodeTemplate& GetAppNodeById(int);
 
         std::string GetHash();
 

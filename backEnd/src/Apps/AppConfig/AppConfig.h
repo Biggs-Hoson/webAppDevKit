@@ -1,26 +1,33 @@
 #ifndef appConfig
 #define appConfig
 
-#include "../../JsonToTemplate/JsonToTemplate.h"
-#include "RouteDeployment/RouteDeployment.h"
-#include "../../Routing/RouteNode/RouteNode.h"
-#include "../AppManager/AppManager.h"
-#include "../AppTemplate/AppVersion/AppVersion.h"
+#include <string>
 #include <vector>
 
-class AppConfig : public JsonToTemplate
+
+#include "../../ComponentClasses/JsonToClass/JsonToClass.h"
+#include "RouteDeployment/RouteDeployment.h"
+#include "../../ServerInfrastructure/Routing/RouteNode/RouteNode.h"
+#include "../AppComponents/AppVersion/AppVersion.h"
+#include "../AppComponents/AppId/AppId.h"
+
+class AppConfig : public JsonToClass
 {
-        public: 
+    public: 
         AppConfig(const Json::Value&);
 
-        void GetAppTemplate(AppManager&);
+        AppId GetConfigId();
 
-        void DeployApp(std::vector<RouteNode>&);
+        std::string GetAppName();
 
-	private:
+        std::string GetAppHash();
+
+        std::vector<RouteDeployment>& GetRouteDeployments();
+
+    private:
 
         void ParseAppId(const Json::Value&);
-        int AppId;
+        AppId AppConfigId;
 
         void ParseAppName(const Json::Value&);
         std::string AppName;
@@ -35,7 +42,7 @@ class AppConfig : public JsonToTemplate
         std::vector<RouteDeployment> RouteDeployments;
 
         void CollectChildErrors(std::vector<std::string>& jsonErrors, std::string currentPath);
-};
+    };
 
 
 

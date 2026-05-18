@@ -1,5 +1,5 @@
-#ifndef jsonToTemplate
-#define jsonToTemplate
+#ifndef jsonToClass
+#define jsonToClass
 
 
 #include <drogon/drogon.h>
@@ -15,12 +15,17 @@ struct KeyCheck {
     std::optional<std::function<void(const Json::Value&)>> ParserFunction = std::nullopt;
 };
 
-class JsonToTemplate 
+class JsonToClass
 {
     public:
         void ParseJson(const Json::Value&);
 
-        void CollectErrors(std::vector<std::string>&, std::string = "/");
+        // Colects errors vectors from the local JsonErrors vector 
+        // into the first parameter along with calling
+        // CollectChildErrors
+        void CollectErrors(
+            std::vector<std::string>&,
+            std::string = "/");
         
         void PrintErrors();
 
