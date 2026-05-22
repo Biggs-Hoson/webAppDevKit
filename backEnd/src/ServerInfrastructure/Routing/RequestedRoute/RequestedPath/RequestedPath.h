@@ -1,5 +1,5 @@
-#ifndef requestedDomain
-#define requestedDomain
+#ifndef requestedPath
+#define requestedPath
 
 #include "../RequestedRoute.h"
 

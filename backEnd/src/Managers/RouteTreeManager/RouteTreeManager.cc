@@ -1,14 +1,14 @@
 #include "RouteTreeManager.h";
 
 RouteTreeManager::RouteTreeManager(
-    std::vector<RouteNode>& _domains)
-	: DomainNodes(_domains) {};
+    RouteTree& _routeTree)
+	: ServerRoutingTree(_routeTree) {};
 
 void RouteTreeManager::DeployAppRoute(RouteDeployment& appRouteConfig, AppNodeTemplate& appRouteTemplate)
 {
-    RouteNode& AppRouteDomain = DomainNodes[appRouteConfig.GetRouteStartId()];
+    //RouteNode& AppRouteDomain = DomainNodes[appRouteConfig.GetRouteStartId()];
 
-    RouteNode& AppRoute
+    //RouteNode& AppRoute
 
-    AppRouteDomain.DeployAppNodeHere(AppNodeTemplate);
+    //AppRouteDomain.DeployAppNodeHere(AppNodeTemplate);
 };

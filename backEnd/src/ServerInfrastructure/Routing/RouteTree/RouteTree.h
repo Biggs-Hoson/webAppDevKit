@@ -1,7 +1,8 @@
 #ifndef routeTree
 #define routeTree
 
-#include "../DomainNode/DomainNode.h"
+#include "../RouteNode/DomainNode/DomainNode.h"
+#include "../RequestedRoute/RequestedDomain/RequestedDomain.h"
 
 class RouteTree
 {

@@ -1,6 +1,6 @@
-#include "./Managers/ServerManager/ServerManager.h"
+#include "./Managers/rverManager/ServerManager.h"
 #include "./ComponentFunctions/MainFunctions/MainFunctions.h"
-#include "./ServerInfrastructure/Routing/RouteNode/RouteTree/RouteTree.h"
+#include "./ServerInfrastructure/Routing/RouteTree/RouteTree.h"
 
 RouteTree ServerRouteTree;
 

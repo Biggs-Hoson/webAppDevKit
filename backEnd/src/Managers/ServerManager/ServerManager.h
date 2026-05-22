@@ -8,6 +8,8 @@
 
 #include "../AppLibraryManager/AppLibraryManager.h"
 #include "../RouteTreeManager/RouteTreeManager.h"
+#include "../../ServerInfrastructure/Routing/RouteTree/RouteTree.h"
+
 #include "../../ServerInfrastructure/Routing/RouteNode/RouteNode.h"
 #include "../../Apps/AppTemplate/RouteNodeTemplate/RouteNodeTemplate.h"
 #include "../../ServerInfrastructure/ServerConfig/ServerConfig.h"
@@ -17,7 +19,7 @@
 class ServerManager
 {
 	public: 
-    	ServerManager(std::vector<RouteNode>&);
+    	ServerManager(RouteTree&);
 
 		void DeployAppRouteNode(RouteNodeTemplate&, std::string);
 
