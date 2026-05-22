@@ -1,24 +1,49 @@
-#ifndef routing
-#define routing
+#ifndef routeNode
+#define routeNode
 
 #include <drogon/drogon.h>
 #include <string>
-#include <memory>
 
-#include "../MatchClass/MatchClass.h"
 #include "../../../Apps/AppTemplate/AppNodeTemplate/AppNodeTemplate.h"
+#include "../RequestedRoute/RequestedRoute.h"
 
-enum RouteSection {
-  DOMAIN,
-  PATH
+
+class RouteNode {
+	public: 
+		int RouteRequest(
+			const drogon::HttpRequestPtr&,
+			drogon::HttpResponsePtr&, 
+			RequestedRoute*
+		);
+        
+		virtual int ResolveRequest(
+			const drogon::HttpRequestPtr&,
+			drogon::HttpResponsePtr&
+		) = 0;
+
+	protected:
+		virtual bool MatchRequest(
+			RequestedRoute*
+		) = 0;
+
+		virtual bool RouteRequestInSubroutes(
+			const drogon::HttpRequestPtr&,
+			drogon::HttpResponsePtr&, 
+			RequestedRoute*
+		) = 0;
 };
+
+#endif
+
+
+/*
 
 class RouteNode {
 	public: 
 		// Constructor, accepts the JSON reference to construct the node and the rest of the tree below it
-		RouteNode(Json::Value&, RouteSection, std::string = "");
+		//RouteNode(Json::Value&, RouteSection, std::string = "");
 
-		RouteNode(RouteNodeTemplate, RouteSection, std::string = "");
+		//RouteNode(RouteNodeTemplate, RouteSection, std::string = "");
 
 		int RouteRequest(
 			const drogon::HttpRequestPtr& req,
@@ -30,17 +55,17 @@ class RouteNode {
         
 		int ResolveRequest(const drogon::HttpRequestPtr&, drogon::HttpResponsePtr&);
 
-		void DeployAppNodeHere(AppNodeTemplate);
+		//void DeployAppNodeHere(AppNodeTemplate);
 
-		RouteNode& ConstructSubdomains(std::vector<std::string>);
+		//RouteNode& ConstructSubdomains(std::vector<std::string>);
 
-		RouteNode& ConstructSubPath(std::vector<std::string>);
+		//RouteNode& ConstructSubPath(std::vector<std::string>);
 
 	private:
-    	// Affects the matching function and
-    	RouteSection NodeRouteSection;
     	
     	std::unique_ptr<MatchClass> RouteMatchObj;
+
+        std::vector<RouteNode> SubRoutes;
         
         int RouteRequestInSubroutes(
 			const drogon::HttpRequestPtr&,
@@ -54,8 +79,6 @@ class RouteNode {
 
 		void SetSubRoutes(Json::Value&, std::string&);
 
-        std::vector<RouteNode> SubRoutes;
-
 		void ThrowFormatError(int = 500, std::string = "Server RouteMap is badly formatted.");
 
 		std::vector<std::string> SplitOnChar(const std::string& s, const char c);
@@ -65,4 +88,4 @@ class RouteNode {
 		bool HasSubPath(std::string);
 };
 
-#endif
+*/

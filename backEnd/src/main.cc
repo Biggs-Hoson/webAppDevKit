@@ -1,10 +1,11 @@
 #include "./Managers/ServerManager/ServerManager.h"
 #include "./ComponentFunctions/MainFunctions/MainFunctions.h"
+#include "./ServerInfrastructure/Routing/RouteNode/RouteTree/RouteTree.h"
 
-std::vector<RouteNode> DomainNodes;
+RouteTree ServerRouteTree;
 
 int main() {
-    ServerManager ServerManagerObj(DomainNodes);
+    ServerManager ServerManagerObj(ServerRouteTree);
 
     ServerManagerObj.StartServer();
 
@@ -26,16 +27,7 @@ void commonHandler(
 
     try
     {
-        if (false)
-        {
-            throw std::pair(503, "Server routing is not functioning currently.");
-        }
-        if (DomainNodes.size() == 0)
-        {
-            throw std::pair(503, "Server has no domains set up for routing.");
-        }
-        
-        RouteRequest(req, resp);
+        ServerRouteTree.RouteRequest(req, resp);
     }
     catch (int& errorCode)
     {
@@ -65,38 +57,6 @@ void commonHandler(
 
     callback(resp);
 };
-
-void RouteRequest(
-    const drogon::HttpRequestPtr& req,
-    drogon::HttpResponsePtr& resp) {
-
-	std::string host = req->getHeader("Host");
-
-    std::vector<std::string> HostVec = SplitDomain(host);
-
-    std::vector<std::string>::iterator nextSection = HostVec.end();
-    std::vector<std::string>::iterator finalSection = HostVec.begin();
-
-    std::string hostSplit = "";
-
-    for (const std::string str : HostVec)
-    {
-        hostSplit.append(str + ", ");
-    }
-
-	for (RouteNode& DomainNode: DomainNodes)
-    {
-        int responseCode = DomainNode.RouteRequest(req, resp, DOMAIN, nextSection, finalSection);
-
-        if (responseCode != 0) {
-            return;
-        }
-    }
-
-    // Top Level 404 error, other 404 errors should be handled in the DomainNode with either a raise or return based on the app's route design.
-    throw std::make_pair(404, "Domain could not be found");
-};
-
 
 /*
     Response types:

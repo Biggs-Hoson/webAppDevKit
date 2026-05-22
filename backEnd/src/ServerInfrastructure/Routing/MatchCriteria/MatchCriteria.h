@@ -1,23 +1,21 @@
-#ifndef MATCH_CLASS_H
-#define MATCH_CLASS_H
+#ifndef matchCriteria
+#define matchCriteria
 
 #include <string>
 #include <vector>
 
-class MatchClass {
+class MatchCriteria {
 	public: 
         virtual bool MatchRequest(
-			std::vector<std::string>::iterator&,
 			std::vector<std::string>::iterator&
 		) = 0;
 };
 
-class MatchStaticString : public MatchClass {
+class MatchStaticString : public MatchCriteria {
 	public:
     	MatchStaticString(const std::string);
 
         bool MatchRequest(
-			std::vector<std::string>::iterator&,
 			std::vector<std::string>::iterator&
 		) override;
 
@@ -25,11 +23,10 @@ class MatchStaticString : public MatchClass {
     	std::string MatchString;
 };
 
-class MatchAny : public MatchClass {
+class MatchAny : public MatchCriteria {
 	public:
 		MatchAny();
         bool MatchRequest(
-			std::vector<std::string>::iterator&,
 			std::vector<std::string>::iterator&
 		) override;
 };

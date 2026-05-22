@@ -16,12 +16,6 @@
 
 std::string HtmlErrorPage(const std::string&);
 
-std::vector<std::string> SplitDomain(const std::string&);
-
-void RouteRequest(
-    const drogon::HttpRequestPtr& req,
-    drogon::HttpResponsePtr& resp);
-
 void HandleErrorResponse(
     std::shared_ptr<drogon::HttpResponse>,
     drogon::ContentType&,

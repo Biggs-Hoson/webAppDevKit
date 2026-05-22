@@ -1,20 +1,5 @@
 #include "MainFunctions.h"
 
-std::vector<std::string> SplitDomain(const std::string& host) {
-    std::vector<std::string> parts;
-    std::stringstream ss(host);
-    std::string item;
-
-    while (std::getline(ss, item, '.')) {
-        if (!item.empty())
-            parts.push_back(item);
-    }
-
-    //std::reverse(parts.begin(), parts.end()); // If using this method, flip iterrators in RouteRequest and remove directionality from RouteNode
-
-    return parts;
-}
-
 std::string GetDefaultErrorMessage(int errorCode) {
 	switch(errorCode)
     {
