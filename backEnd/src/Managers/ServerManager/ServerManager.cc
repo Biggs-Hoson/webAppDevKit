@@ -1,8 +1,4 @@
-#include <fstream>
-
-#include "json/value.h"
 #include "ServerManager.h"
-#include "../../ServerInfrastructure/ServerConfig/ServerConfig.h"
 
 ServerManager::ServerManager(RouteTree& _routeTree)
     : ServerRouteTreeManager(_routeTree)
@@ -14,5 +10,10 @@ void ServerManager::StartServer()
 {
     // Deploy all configured apps
 
-    
+    std::vector<AppId> DeployedAppsList = ServerAppDeploymentManager.GetIdsList();
+
+    for (AppId& Id : DeployedAppsList )
+    {
+        ServerAppDeploymentManager.DeployApp(Id, ServerAppLibraryManager, ServerRouteTreeManager);
+    }
 };

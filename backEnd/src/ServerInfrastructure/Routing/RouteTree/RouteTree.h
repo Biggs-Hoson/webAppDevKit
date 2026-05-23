@@ -12,6 +12,8 @@ class RouteTree
             drogon::HttpResponsePtr&
         );
 
+        RouteNode& GetFinalRouteNode(std::string);
+
 
     private:
         std::vector<DomainNode> ServerDomainNodes;

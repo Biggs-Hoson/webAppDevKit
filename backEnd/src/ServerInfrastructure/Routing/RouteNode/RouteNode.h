@@ -21,6 +21,8 @@ class RouteNode {
 			drogon::HttpResponsePtr&
 		) = 0;
 
+		void DeployAppNodeHere(AppNodeTemplate&);
+
 	protected:
 		virtual bool MatchRequest(
 			RequestedRoute*

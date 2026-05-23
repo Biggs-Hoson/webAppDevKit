@@ -1,5 +1,7 @@
 #include "RouteTree.h"
 
+#include <sstream>
+
 void RouteTree::RouteRequest(
     const drogon::HttpRequestPtr& req,
     drogon::HttpResponsePtr& resp
@@ -27,4 +29,24 @@ void RouteTree::RouteRequest(
     throw std::make_pair(404, "Domain could not be found");
 };
 
+RouteNode& RouteTree::GetFinalRouteNode(std::string routeString)
+{
+    std::size_t hostEnd = routeString.find('/');
+    int hostEndIndex = routeString.size();
+
+
+    if (hostEnd!=std::string::npos)
+    {
+        hostEndIndex = hostEnd;
+    }
+
+
+    while (std::getline(ss, item, '/')) {
+        if (!item.empty())
+            HostVec.push_back(item);
+    }
+
+};
+
 //throw std::pair(503, "Server routing is not functioning currently.");
+

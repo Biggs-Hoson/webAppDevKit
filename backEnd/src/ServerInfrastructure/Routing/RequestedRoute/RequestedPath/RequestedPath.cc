@@ -1,5 +1,4 @@
 #include "RequestedPath.h"
-#include "../RequestedDomain/RequestedDomain.h"
 
 
 RequestedPath::RequestedPath(std::string _domainString)

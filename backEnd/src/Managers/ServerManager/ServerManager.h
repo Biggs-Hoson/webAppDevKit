@@ -8,6 +8,7 @@
 
 #include "../AppLibraryManager/AppLibraryManager.h"
 #include "../RouteTreeManager/RouteTreeManager.h"
+#include "../AppDeploymentManager/AppDeploymentManager.h"
 #include "../../ServerInfrastructure/Routing/RouteTree/RouteTree.h"
 
 #include "../../ServerInfrastructure/Routing/RouteNode/RouteNode.h"
@@ -29,6 +30,8 @@ class ServerManager
 
 		// Manager Classes
 		RouteTreeManager ServerRouteTreeManager;
+		AppDeploymentManager ServerAppDeploymentManager;
+		AppLibraryManager ServerAppLibraryManager;
 
 		// server Config
 		ServerConfig ServerCfg;

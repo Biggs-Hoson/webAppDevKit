@@ -1,12 +1,11 @@
-#include "./Managers/rverManager/ServerManager.h"
+#include "./Managers/ServerManager/ServerManager.h"
 #include "./ComponentFunctions/MainFunctions/MainFunctions.h"
 #include "./ServerInfrastructure/Routing/RouteTree/RouteTree.h"
 
 RouteTree ServerRouteTree;
+ServerManager ServerManagerObj(ServerRouteTree);
 
 int main() {
-    ServerManager ServerManagerObj(ServerRouteTree);
-
     ServerManagerObj.StartServer();
 
     drogon::app().registerHandlerViaRegex(".*", &commonHandler);

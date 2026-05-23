@@ -3,8 +3,8 @@
 AppDeploymentManager::AppDeploymentManager()
 {
     //Temp:
-    std::string s = "{\n\"appId\": 0,\n\"appName\": \"myNotes\",\n\"appVersion\": \"1.2.3\",\n\"appHash\": \"abxyz\",\n\"appRouteDeployments\": [\n{\n\"routeId\": 0,\n\"domainId\": 0,\n\"subdomainRoute\": [],\n\"subpathRoute\": [\n    \"notes\"\n]\n}\n]\n}";
-    
+    std::string s = "{\n\"appId\": 0,\n\"appName\": \"myNotes\",\n\"appVersion\": \"1.2.3\",\n\"appHash\": \"abxyz\",\n\"appRouteDeployments\": [\n{\n\"appNodeId\": 0,\n\"appRoute\": \"*/notes\"\n}\n]\n}";
+
     Json::Value notesConfig(s);
 
     ConfiguredApps.push_back(AppConfig(notesConfig));
@@ -14,10 +14,10 @@ void AppDeploymentManager::DeployApp(AppId& _appId, AppLibraryManager& _appLibra
 {
     AppConfig& appCfg = FindAppConfigById(_appId);
 
-
     // Get AppTemplate
     AppTemplate& appTempate = _appLibraryManager.FindApp(appCfg.GetAppName());
 
+    // Deploy App RouteTree
     DeployAppRouteTree(appCfg, appTempate, _routeTreeManager);
 
 };
@@ -45,21 +45,14 @@ void AppDeploymentManager::DeployAppRouteTree(AppConfig& _appConfig, AppTemplate
     }
 };
 
-/*
+std::vector<AppId> AppDeploymentManager::GetIdsList()
 {
-    "appId": 0,
-    "appName": "myNotes",
-    "appVersion": "1.2.3",
-    "appHash": "abxyz",
-    "appRouteDeployments": [
-        {
-            "routeId": 0,
-            "domainId": 0,
-            "subdomainRoute": [],
-            "subpathRoute": [
-                "notes"
-            ]
-        }
-    ]
-}
-*/
+    std::vector<AppId> AppIds;
+
+    for (AppConfig& config : ConfiguredApps )
+    {
+        AppIds.push_back(config.GetConfigId());
+    }
+
+    return AppIds;
+};

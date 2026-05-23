@@ -12,7 +12,6 @@ int DomainNode::ResolveRequest(
     {
         RequestedPath pathRequest(path);
 
-        // Route Path
         return RoutePath(req, resp, &pathRequest);
     }
     
@@ -26,6 +25,7 @@ bool DomainNode::MatchRequest(
 {
     return _route->MatchRequest(MatchCritera.get());
 };
+
 
 bool DomainNode::RouteRequestInSubroutes(
     const drogon::HttpRequestPtr& req,

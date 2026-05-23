@@ -1,4 +1,5 @@
 #include "RouteDeployment.h"
+#include "json/value.h"
 
 RouteDeployment::RouteDeployment(const Json::Value& routeDeploymentJson)
 {
@@ -11,27 +12,11 @@ RouteDeployment::RouteDeployment(const Json::Value& routeDeploymentJson)
     });
     
     ExpectedKeys.push_back({
-        "routeStartId", 
-        Json::intValue,
+        "appRoute", 
+        Json::stringValue,
         true, 
         [this](const Json::Value& value) 
-            { ParseRouteStartId(value); }
-    });
-    
-    ExpectedKeys.push_back({
-        "subdomainRoute", 
-        Json::arrayValue,
-        true, 
-        [this](const Json::Value& value) 
-            { ParseSubdomainRoute(value); }
-    });
-    
-    ExpectedKeys.push_back({
-        "pathRoute", 
-        Json::arrayValue,
-        true, 
-        [this](const Json::Value& value) 
-            { ParsePathRoute(value); }
+            { ParseAppRoute(value); }
     });
 
     ParseJson(routeDeploymentJson);
@@ -42,25 +27,9 @@ void RouteDeployment::ParseAppNodeId(const Json::Value& appNodeId)
     AppNodeId = appNodeId.asInt();
 };
 
-void RouteDeployment::ParseRouteStartId(const Json::Value& routeStartId)
+void RouteDeployment::ParseAppRoute(const Json::Value& appRoute)
 {
-    RouteStartId = routeStartId.asInt();
-};
-
-void RouteDeployment::ParseSubdomainRoute(const Json::Value& subdomainRoute)
-{
-    for (const Json::Value& subdomainJson : subdomainRoute)
-    {
-        SubdomainRoute.push_back(subdomainJson.asString()); 
-    }
-};
-
-void RouteDeployment::ParsePathRoute(const Json::Value& pathRoute)
-{
-    for (const Json::Value& pathJson : pathRoute)
-    {
-        PathRoute.push_back(pathJson.asString()); 
-    }
+    AppRoute = appRoute.asString();
 };
 
 void RouteDeployment::CollectChildErrors(std::vector<std::string>& jsonErrors, std::string currentPath)
@@ -73,17 +42,7 @@ int RouteDeployment::GetAppNodeId()
     return AppNodeId;
 };
 
-int RouteDeployment::GetRouteStartId()
+std::string RouteDeployment::GetRoute()
 {
-    return RouteStartId;
-};
-
-std::vector<std::string>& RouteDeployment::GetSubdomainRoute()
-{
-    return SubdomainRoute;
-};
-
-std::vector<std::string>& RouteDeployment::GetPathRoute()
-{
-    return PathRoute;
-};
+    return AppRoute;
+}
