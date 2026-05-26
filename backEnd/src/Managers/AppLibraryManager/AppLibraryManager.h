@@ -29,14 +29,14 @@ class AppLibraryManager
         // Activates the endpoints for a deployed application
         void ActivateApp();
 		
-		AppTemplate& FindApp(std::string, std::optional<AppVersion*> = std::nullopt);
+		AppTemplate FindApp(std::string, std::optional<AppVersion*> = std::nullopt) ;
 
 	private:
 		std::vector<AppTemplate> AppLibrary;
 
 		// Finding AppTemplate
-		AppTemplate& FindAppTemplateLatest(std::string);
-		AppTemplate& FindAppTemplateByVersion(std::string, AppVersion*);
+		AppTemplate FindAppTemplateLatest(std::string);
+		AppTemplate FindAppTemplateByVersion(std::string, AppVersion*);
 };
 
 

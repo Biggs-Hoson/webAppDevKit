@@ -5,7 +5,10 @@
 
 #include "AppLibraryManager.h"
 
-AppLibraryManager::AppLibraryManager(){};
+AppLibraryManager::AppLibraryManager(){
+    RegisterApp("myNotes");
+
+};
 
 void AppLibraryManager::RegisterApp(std::string appName)
 {
@@ -27,31 +30,33 @@ void AppLibraryManager::RegisterApp(std::string appName)
 }
 
 
-AppTemplate& AppLibraryManager::FindApp(std::string _appName, std::optional<AppVersion*> _appVersion)
+AppTemplate AppLibraryManager::FindApp(std::string _appName, std::optional<AppVersion*> _appVersion)
 {
     try 
     {
         if (!_appVersion.has_value())
-        {
-            return FindAppTemplateLatest(_appName);
-        }
-
-        FindAppTemplateByVersion(_appName, _appVersion.value());
+    {
+        return FindAppTemplateLatest(_appName);
+    }
+    
+    return FindAppTemplateByVersion(_appName, _appVersion.value());
     }
     catch (std::exception e)
     {
         // Check for correct app in appfolder,
 
         // FOR NOW:
-        RegisterApp("myNotes")
+        //RegisterApp("myNotes");
     }
+
+    return FindAppTemplateLatest(_appName);
 };
 
-AppTemplate& AppLibraryManager::FindAppTemplateByVersion(std::string _appName, AppVersion* VersionPtr)
+AppTemplate AppLibraryManager::FindAppTemplateByVersion(std::string _appName, AppVersion* VersionPtr)
 {
-    AppVersion& TargetVerson = *VersionPtr;
+    AppVersion TargetVerson = *VersionPtr;
 
-    for(AppTemplate& _appTemplate : AppLibrary)
+    for(AppTemplate _appTemplate : AppLibrary)
     {
         if (_appTemplate.GetName() == _appName && TargetVerson == _appTemplate.GetVersion())
         {
@@ -62,15 +67,28 @@ AppTemplate& AppLibraryManager::FindAppTemplateByVersion(std::string _appName, A
     throw "App not found";
 };
 
-AppTemplate& AppLibraryManager::FindAppTemplateLatest(std::string _appName)
+AppTemplate AppLibraryManager::FindAppTemplateLatest(std::string _appName)
 {
-    AppTemplate* LatestAppTemplate;
+    AppTemplate* LatestAppTemplate = nullptr;
 
     for(AppTemplate& _appTemplate : AppLibrary)
     {
-        if (_appTemplate.GetName() == _appName && _appTemplate.GetVersion() > LatestAppTemplate->GetVersion())
+        if (_appTemplate.GetName() == _appName)
         {
-            LatestAppTemplate = &_appTemplate;
+            if (LatestAppTemplate == nullptr)
+            {
+                LatestAppTemplate = &_appTemplate;
+            }
+            else 
+            {
+                AppVersion currentVersion = LatestAppTemplate->GetVersion();
+
+                if(_appTemplate.GetVersion() > currentVersion)
+                {
+                    LatestAppTemplate = &_appTemplate;
+                }
+            }
+            
         }
     }
     

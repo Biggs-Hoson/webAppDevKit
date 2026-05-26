@@ -10,13 +10,15 @@
 class RouteTreeManager 
 {
     public:
-        RouteTreeManager(RouteTree&);
+        RouteTreeManager();
 
         void DeployAppRoute(RouteDeployment&, AppNodeTemplate&);
 
+        RouteTree* GetRouteTreePtr();
+
     private:
         // Top level route nodes of the server
-    	RouteTree& ServerRoutingTree;
+    	RouteTree ServerRoutingTree;
 };
 
 

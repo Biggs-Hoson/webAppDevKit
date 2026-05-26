@@ -2,7 +2,7 @@
 
 
 RequestedPath::RequestedPath(std::string _domainString)
-    : RequestedRoute(_domainString)
+    : RequestedRoute(_domainString, '.')
 {
     CurrentSegment = RequestSplit.begin();
     FinalSegment = RequestSplit.end();

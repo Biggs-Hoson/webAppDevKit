@@ -11,6 +11,7 @@
 class DomainNode : public RouteNode
 {
 	public: 
+
 		int ResolveRequest(
 			const drogon::HttpRequestPtr&,
 			drogon::HttpResponsePtr&

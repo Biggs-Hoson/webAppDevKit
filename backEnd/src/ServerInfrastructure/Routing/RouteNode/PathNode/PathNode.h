@@ -6,6 +6,7 @@
 class PathNode : public RouteNode
 {
 	public: 
+		PathNode();
 
 		int ResolveRequest(
 			const drogon::HttpRequestPtr&,

@@ -9,7 +9,7 @@
 class RequestedRoute
 {
     public:
-        RequestedRoute(std::string);
+        RequestedRoute(std::string, char);
 
         bool RoutingComplete();
 

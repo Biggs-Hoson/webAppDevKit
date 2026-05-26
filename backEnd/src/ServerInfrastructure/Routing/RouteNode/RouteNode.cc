@@ -20,3 +20,8 @@ int RouteNode::RouteRequest(
 
     return RouteRequestInSubroutes(req, resp, route);
 }
+
+void RouteNode::DeployAppNodeHere(AppNodeTemplate nodeTemplate)
+{
+
+};

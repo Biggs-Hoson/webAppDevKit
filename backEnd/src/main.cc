@@ -1,14 +1,18 @@
 #include "./Managers/ServerManager/ServerManager.h"
 #include "./ComponentFunctions/MainFunctions/MainFunctions.h"
 #include "./ServerInfrastructure/Routing/RouteTree/RouteTree.h"
+#include "drogon/HttpResponse.h"
 
-RouteTree ServerRouteTree;
-ServerManager ServerManagerObj(ServerRouteTree);
+RouteTree* ServerRouteTreePtr = nullptr;
+ServerManager ServerManagerObj;
 
 int main() {
     ServerManagerObj.StartServer();
 
+    ServerRouteTreePtr = ServerManagerObj.GetRouteTreeManagerPtr()->GetRouteTreePtr();
+
     drogon::app().registerHandlerViaRegex(".*", &commonHandler);
+
     drogon::app().run();
 
     return 0;
@@ -26,7 +30,7 @@ void commonHandler(
 
     try
     {
-        ServerRouteTree.RouteRequest(req, resp);
+        ServerRouteTreePtr->RouteRequest(req, resp);
     }
     catch (int& errorCode)
     {
@@ -107,9 +111,36 @@ void requestJsonMirrorHandler(
     callback(resp);
 };
 
+curl -X GET http://192.168.10.3 -H "Origin: http://williamlewin.dev"
 
 
-curl -X GET http://192.168.1.252 -H "Origin: http://williamlewin.dev"
+*/
 
+/* Note on valid domains:
 
+Case insensitive letters
+Digits
+Hyphens (not at the start or end)
+Dots as delimiters
+
+café.com becomes xn--caf-dma.com
+ASCII: xn-- version
+*/
+
+/* Note on valid paths:
+
+Case sensitive letters
+Digits
+-._~
+
+Reserved:
+/
+% for percent encoding
+? query string delimiter
+# fragment (may not be sent)
+; Matrix parameters
+
+Sanitization:
+remove .. for paths (including %2e)
+remove %00 (null bytes)
 */

@@ -2,24 +2,36 @@
 
 AppDeploymentManager::AppDeploymentManager()
 {
-    //Temp:
-    std::string s = "{\n\"appId\": 0,\n\"appName\": \"myNotes\",\n\"appVersion\": \"1.2.3\",\n\"appHash\": \"abxyz\",\n\"appRouteDeployments\": [\n{\n\"appNodeId\": 0,\n\"appRoute\": \"*/notes\"\n}\n]\n}";
+    Json::Value appDeployment1;
 
-    Json::Value notesConfig(s);
+    appDeployment1["appNodeId"] = 0;
+    appDeployment1["appRoute"] = "*/notes";
+
+    Json::Value appDeployments;
+    appDeployments[0] = appDeployment1;
+
+    Json::Value notesConfig;
+    notesConfig["appId"] = 0;
+    notesConfig["appName"] = "myNotes";
+    notesConfig["appVersion"] = "1.2.3";
+    notesConfig["appHash"] = "abxyz";
+    notesConfig["appRouteDeployments"] = appDeployments;
 
     ConfiguredApps.push_back(AppConfig(notesConfig));
+    
 };
 
 void AppDeploymentManager::DeployApp(AppId& _appId, AppLibraryManager& _appLibraryManager, RouteTreeManager& _routeTreeManager)
 {
     AppConfig& appCfg = FindAppConfigById(_appId);
 
+    std::string AppName = appCfg.GetAppName();
+
     // Get AppTemplate
-    AppTemplate& appTempate = _appLibraryManager.FindApp(appCfg.GetAppName());
+    AppTemplate appTempate = _appLibraryManager.FindApp(AppName);
 
     // Deploy App RouteTree
     DeployAppRouteTree(appCfg, appTempate, _routeTreeManager);
-
 };
 
 AppConfig& AppDeploymentManager::FindAppConfigById(AppId& _appId)

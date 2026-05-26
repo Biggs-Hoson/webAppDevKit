@@ -3,6 +3,7 @@
 
 #include "../RouteNode/DomainNode/DomainNode.h"
 #include "../RequestedRoute/RequestedDomain/RequestedDomain.h"
+#include <optional>
 
 class RouteTree
 {
@@ -12,13 +13,11 @@ class RouteTree
             drogon::HttpResponsePtr&
         );
 
-        RouteNode& GetFinalRouteNode(std::string);
+        RouteNode* GetFinalRouteNode(std::string);
 
 
     private:
         std::vector<DomainNode> ServerDomainNodes;
-
-        static std::vector<std::string> SplitDomain(const std::string&);
 
 };
 

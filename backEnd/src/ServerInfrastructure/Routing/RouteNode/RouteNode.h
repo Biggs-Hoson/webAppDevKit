@@ -10,6 +10,7 @@
 
 class RouteNode {
 	public: 
+
 		int RouteRequest(
 			const drogon::HttpRequestPtr&,
 			drogon::HttpResponsePtr&, 
@@ -21,7 +22,7 @@ class RouteNode {
 			drogon::HttpResponsePtr&
 		) = 0;
 
-		void DeployAppNodeHere(AppNodeTemplate&);
+		void DeployAppNodeHere(AppNodeTemplate);
 
 	protected:
 		virtual bool MatchRequest(

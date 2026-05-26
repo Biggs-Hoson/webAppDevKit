@@ -1,17 +1,10 @@
 #include "RequestedRoute.h"
 
-#include <sstream>
+#include "../../../ComponentFunctions/UtilityFunctions/UtilityFunctions.h"
 
-RequestedRoute::RequestedRoute(std::string requestString)
+RequestedRoute::RequestedRoute(std::string requestString, char splitChar)
 {
-    std::vector<std::string> HostVec;
-    std::stringstream ss(requestString);
-    std::string item;
-
-    while (std::getline(ss, item, '.')) {
-        if (!item.empty())
-            HostVec.push_back(item);
-    }
+    RequestSplit = SplitStringOnChar(requestString, splitChar);
 };
 
 bool RequestedRoute::RoutingComplete()

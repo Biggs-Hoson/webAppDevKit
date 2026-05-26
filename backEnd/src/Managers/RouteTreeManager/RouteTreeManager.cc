@@ -1,8 +1,6 @@
-#include "RouteTreeManager.h";
+#include "RouteTreeManager.h"
 
-RouteTreeManager::RouteTreeManager(
-    RouteTree& _routeTree)
-	: ServerRoutingTree(_routeTree) {};
+RouteTreeManager::RouteTreeManager() {};
 
 void RouteTreeManager::DeployAppRoute(
     RouteDeployment& appRouteConfig,
@@ -10,9 +8,14 @@ void RouteTreeManager::DeployAppRoute(
 )
 {
     //Get AppRoute
-    RouteNode& AppRouteNodePtr = ServerRoutingTree.GetFinalRouteNode(appRouteConfig.GetRoute());
+    RouteNode* AppRouteNodePtr = ServerRoutingTree.GetFinalRouteNode(appRouteConfig.GetRoute());
 
-    AppRouteNodePtr.DeployAppNodeHere(appRouteTemplate);
+    AppRouteNodePtr->DeployAppNodeHere(appRouteTemplate);
+};
+
+RouteTree* RouteTreeManager::GetRouteTreePtr()
+{
+    return &ServerRoutingTree;
 };
 
 

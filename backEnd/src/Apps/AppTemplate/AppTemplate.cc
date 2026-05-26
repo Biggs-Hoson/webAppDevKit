@@ -39,8 +39,6 @@ AppTemplate::AppTemplate(Json::Value& _appJson)
     ParseJson(_appJson);
 
     CollectChildErrors(JsonErrors, "");
-
-    PrintErrors();
 };
 
 void AppTemplate::ParseAppName(const Json::Value& _appName)
@@ -96,6 +94,11 @@ AppNodeTemplate& AppTemplate::GetAppNodeById(int appId)
 std::string AppTemplate::GetHash()
 {
     return "abxyz";
+}
+
+std::string AppTemplate::GetName()
+{
+    return AppName;
 }
 
 AppVersion& AppTemplate::GetVersion()

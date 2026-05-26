@@ -2,11 +2,6 @@
 
 ServerConfig::ServerConfig(std::string _configPath)
 {
-    GetServerConfig(_configPath);
-};
-
-void ServerConfig::GetServerConfig(std::string _configPath)
-{
     ExpectedKeys.push_back({
         "rootDomain", 
         Json::arrayValue,
@@ -15,11 +10,17 @@ void ServerConfig::GetServerConfig(std::string _configPath)
             { ParseRootDomains(value); }
     });
     
+    GetServerConfig(_configPath);
+};
 
+void ServerConfig::GetServerConfig(std::string _configPath)
+{
     // Load Domains from config
     drogon::app().loadConfigFile(_configPath);
 
-    ParseJson(drogon::app().getCustomConfig());
+    Json::Value configJson = drogon::app().getCustomConfig();
+
+    ParseJson(configJson);
 };
 
 

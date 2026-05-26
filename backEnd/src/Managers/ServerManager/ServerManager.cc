@@ -1,9 +1,6 @@
 #include "ServerManager.h"
 
-ServerManager::ServerManager(RouteTree& _routeTree)
-    : ServerRouteTreeManager(_routeTree)
-{ 
-};
+ServerManager::ServerManager() { };
 
 // Sets up server and deploys any saved app configs if possible
 void ServerManager::StartServer()
@@ -17,3 +14,8 @@ void ServerManager::StartServer()
         ServerAppDeploymentManager.DeployApp(Id, ServerAppLibraryManager, ServerRouteTreeManager);
     }
 };
+
+RouteTreeManager* ServerManager::GetRouteTreeManagerPtr()
+{
+    return &ServerRouteTreeManager;
+}

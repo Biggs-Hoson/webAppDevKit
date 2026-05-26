@@ -20,11 +20,11 @@
 class ServerManager
 {
 	public: 
-    	ServerManager(RouteTree&);
-
-		void DeployAppRouteNode(RouteNodeTemplate&, std::string);
+    	ServerManager();
 
 		void StartServer();
+
+		RouteTreeManager* GetRouteTreeManagerPtr();
 
 	private:
 
