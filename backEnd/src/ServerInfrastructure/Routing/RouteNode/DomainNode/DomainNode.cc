@@ -16,33 +16,7 @@ int DomainNode::ResolveRequest(
     }
     
     return HitEndpoint(req, resp);
-}
-
-
-bool DomainNode::MatchRequest(
-    RequestedRoute* _route
-)
-{
-    return _route->MatchRequest(MatchCritera.get());
 };
-
-
-bool DomainNode::RouteRequestInSubroutes(
-    const drogon::HttpRequestPtr& req,
-    drogon::HttpResponsePtr& resp,
-    RequestedRoute* _route
-)
-{
-    for (DomainNode& subdomain : SubDomainNodes){
-		int responseCode = subdomain.RouteRequest(req, resp, _route);
-		if (responseCode != 0) {
-			return responseCode;
-		}
-	}
-
-    return 404;
-};
-
 
 int DomainNode::RoutePath(
     const drogon::HttpRequestPtr& req,

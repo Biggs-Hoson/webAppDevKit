@@ -13,20 +13,7 @@ class PathNode : public RouteNode
 			drogon::HttpResponsePtr&
 		) = 0;
 
-	protected:
-		bool MatchRequest(
-			RequestedRoute*
-		);
-
-		bool RouteRequestInSubroutes(
-			const drogon::HttpRequestPtr&,
-			drogon::HttpResponsePtr&, 
-			RequestedRoute*
-		);
-
 	private:
-		std::unique_ptr<MatchCriteria> MatchCritera;
-
 		std::vector<PathNode> SubPaths;
 };
 

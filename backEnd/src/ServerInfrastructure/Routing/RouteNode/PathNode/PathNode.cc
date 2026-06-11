@@ -12,27 +12,3 @@ int PathNode::ResolveRequest(
     
     return 200;
 };
-
-
-bool PathNode::MatchRequest(
-	RequestedRoute* _route
-)
-{
-	return _route->MatchRequest(MatchCritera.get());
-};
-
-bool PathNode::RouteRequestInSubroutes(
-	const drogon::HttpRequestPtr& req,
-	drogon::HttpResponsePtr& resp, 
-	RequestedRoute* _route
-)
-{
-	for (PathNode& subPath : SubPaths){
-		int responseCode = subPath.RouteRequest(req, resp, _route);
-		if (responseCode != 0) {
-			return responseCode;
-		}
-	}
-
-    return 404;
-};
