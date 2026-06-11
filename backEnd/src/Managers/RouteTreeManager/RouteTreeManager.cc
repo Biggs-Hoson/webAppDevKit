@@ -1,6 +1,10 @@
 #include "RouteTreeManager.h"
 
-RouteTreeManager::RouteTreeManager() {};
+RouteTreeManager::RouteTreeManager() 
+{
+    // Inform RouteTree Manager of hosts
+
+};
 
 void RouteTreeManager::DeployAppRoute(
     RouteDeployment& appRouteConfig,
@@ -8,9 +12,9 @@ void RouteTreeManager::DeployAppRoute(
 )
 {
     //Get AppRoute
-    RouteNode* AppRouteNodePtr = ServerRoutingTree.GetFinalRouteNode(appRouteConfig.GetRoute());
+    RouteNode* AppRouteNodePtr = ServerRoutingTree.GetFinalRouteNode(appRouteConfig);
 
-    AppRouteNodePtr->DeployAppNodeHere(appRouteTemplate);
+    AppRouteNodePtr->StructureFromTemplate(appRouteTemplate);
 };
 
 RouteTree* RouteTreeManager::GetRouteTreePtr()

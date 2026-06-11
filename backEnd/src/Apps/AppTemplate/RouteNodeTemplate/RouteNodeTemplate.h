@@ -14,6 +14,10 @@ class RouteNodeTemplate : public JsonToClass
     public:
         RouteNodeTemplate(const std::optional<const Json::Value>&);
 
+        std::string GetMatchCritera();
+
+        std::vector<RouteNodeTemplate>& GetSubRoutes();
+
     protected:
         void CollectChildErrors(std::vector<std::string>&, std::string) override;
 

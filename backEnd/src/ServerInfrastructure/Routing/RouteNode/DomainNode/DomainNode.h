@@ -4,21 +4,24 @@
 #include <memory>
 
 #include "../RouteNode.h"
-#include "../PathNode/PathNode.h"
 
 #include "../../RequestedRoute/RequestedPath/RequestedPath.h"
 
 class DomainNode : public RouteNode
 {
 	public: 
-
 		int ResolveRequest(
 			const drogon::HttpRequestPtr&,
 			drogon::HttpResponsePtr&
 		) override;
 
+		void CreateSubRoute(
+			RouteNodeTemplate _subNodeTemplate
+		) override;
+
+
     private:
-        std::vector<PathNode> PathNodes;
+        std::vector<RouteNode> PathNodes;
 
         int RoutePath(
             const drogon::HttpRequestPtr&,
@@ -30,6 +33,8 @@ class DomainNode : public RouteNode
 			const drogon::HttpRequestPtr&,
 			drogon::HttpResponsePtr&
 		);
+
+		RouteNode* AddressFound(RouteNodeAddress&, bool) override;
 };
 
 

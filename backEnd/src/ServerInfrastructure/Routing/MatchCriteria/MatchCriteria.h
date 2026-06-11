@@ -3,12 +3,22 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 class MatchCriteria {
 	public: 
+		MatchCriteria(std::string);
+
+		static std::unique_ptr<MatchCriteria> GetMatchCriteraPtr(std::string);
+
         virtual bool MatchRequest(
 			std::vector<std::string>::iterator&
 		) = 0;
+	
+		std::string GetMatchString();
+		
+	protected:
+		std::string MatchString;
 };
 
 class MatchStaticString : public MatchCriteria {
@@ -18,9 +28,6 @@ class MatchStaticString : public MatchCriteria {
         bool MatchRequest(
 			std::vector<std::string>::iterator&
 		) override;
-
-	private:
-    	std::string MatchString;
 };
 
 class MatchAny : public MatchCriteria {

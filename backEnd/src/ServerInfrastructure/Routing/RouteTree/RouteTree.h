@@ -3,6 +3,7 @@
 
 #include "../RouteNode/DomainNode/DomainNode.h"
 #include "../RequestedRoute/RequestedDomain/RequestedDomain.h"
+#include "../../../Apps/AppConfig/RouteDeployment/RouteDeployment.h"
 #include <optional>
 
 class RouteTree
@@ -13,7 +14,7 @@ class RouteTree
             drogon::HttpResponsePtr&
         );
 
-        RouteNode* GetFinalRouteNode(std::string);
+        RouteNode* GetFinalRouteNode(RouteDeployment&);
 
 
     private:

@@ -24,7 +24,7 @@ int DomainNode::RoutePath(
     RequestedRoute* _route
 )
 {
-    for (PathNode& subPath : PathNodes){
+    for (RouteNode& subPath : PathNodes){
 		int responseCode = subPath.RouteRequest(req, resp, _route);
 		if (responseCode != 0) {
 			return responseCode;
@@ -47,3 +47,36 @@ int DomainNode::HitEndpoint(
     
     return 200;
 };
+
+
+void DomainNode::CreateSubRoute(RouteNodeTemplate _subNodeTemplate)
+{
+    PathNodes.push_back(RouteNode(_subNodeTemplate));
+};
+
+RouteNode* DomainNode::AddressFound(RouteNodeAddress& _address, bool createMode)
+{
+    _address.SetDomainMatch(false);
+
+    if(_address.RoutingComplete())
+    {
+        return this;
+    }
+
+    for(RouteNode& pathNodePtr : PathNodes)
+    {
+        RouteNode* addressNodePtr = pathNodePtr.GetRouteNode(_address, createMode);
+
+        if (addressNodePtr != std::nullptr_t())
+        {
+            return addressNodePtr;
+        }
+    }
+
+    if (createMode)
+    {
+        //CreateRemainingAddress(_address);
+    }
+    
+    return std::nullptr_t();
+}

@@ -39,3 +39,13 @@ void RouteNodeTemplate::CollectChildErrors(std::vector<std::string>& jsonErrors,
         SubRoutes[i].CollectErrors(jsonErrors, currentPath + "/subPaths/" + std::to_string(i));
     }
 };
+
+std::string RouteNodeTemplate::GetMatchCritera()
+{
+    return MatchCriteria;
+}
+
+std::vector<RouteNodeTemplate>& RouteNodeTemplate::GetSubRoutes()
+{
+    return SubRoutes;
+}

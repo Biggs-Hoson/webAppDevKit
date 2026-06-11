@@ -7,10 +7,13 @@
 
 #include "../../../Apps/AppTemplate/AppNodeTemplate/AppNodeTemplate.h"
 #include "../RequestedRoute/RequestedRoute.h"
+#include "../RouteNodeAddress/RouteNodeAddress.h"
+
 
 
 class RouteNode {
-	public: 
+	public:
+		RouteNode(RouteNodeTemplate&);
 
 		int RouteRequest(
 			const drogon::HttpRequestPtr&,
@@ -21,12 +24,16 @@ class RouteNode {
 		virtual int ResolveRequest(
 			const drogon::HttpRequestPtr&,
 			drogon::HttpResponsePtr&
-		) = 0;
+		);
+		
+		void StructureFromTemplate(RouteNodeTemplate&);
 
-		void DeployAppNodeHere(AppNodeTemplate);
+		virtual RouteNode* GetRouteNode(RouteNodeAddress&, bool = false);
+
+		RouteNode* GetRouteNodeInSubRoutes(RouteNodeAddress&, bool = false);
 
 	protected:
-        std::unique_ptr<MatchCriteria> MatchCritera;
+        std::unique_ptr<MatchCriteria> MatchCriteraPtr;
 
 		bool MatchRequest(
 			RequestedRoute*
@@ -39,7 +46,10 @@ class RouteNode {
 			drogon::HttpResponsePtr&, 
 			RequestedRoute*
 		);
+
+		virtual void CreateSubRoute(RouteNodeTemplate);
 		
+		virtual RouteNode* AddressFound(RouteNodeAddress&, bool);
 };
 
 #endif

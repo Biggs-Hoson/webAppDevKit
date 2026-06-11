@@ -23,4 +23,45 @@ RouteNodeAddress::RouteNodeAddress(std::string addressString)
     std::string domainString = addressString.substr(0, hostEnd);
 
     DomainAddress = SplitStringOnChar(domainString, '.');
+
+    // Confirm all values are valid strings
+
+    SetDomainMatch(true);
 };
+
+bool RouteNodeAddress::MatchRequest(MatchCriteria* criteria)
+{
+    if(*CurrentSegment == criteria->GetMatchString())
+    {
+        if (DomainMatch)
+        {
+            CurrentSegment--;
+        }
+        else {
+            CurrentSegment++;
+        }
+
+        return true;
+    }
+
+    return false;
+};
+
+bool RouteNodeAddress::RoutingComplete()
+{
+    return CurrentSegment == FinalSegment;
+};
+
+void RouteNodeAddress::SetDomainMatch(bool domain)
+{
+    if (domain)
+    {
+        CurrentSegment = DomainAddress.end();
+        FinalSegment = DomainAddress.begin();
+    }
+    else
+    {
+        CurrentSegment = PathAddress.begin();
+        FinalSegment = PathAddress.end();
+    }
+}

@@ -29,11 +29,12 @@ void RouteTree::RouteRequest(
     throw std::make_pair(404, "Domain could not be found");
 };
 
-RouteNode* RouteTree::GetFinalRouteNode(std::string routeString)
+//Create or add the routeNodes to fulfill the routeString
+RouteNode* RouteTree::GetFinalRouteNode(RouteDeployment& _routeDeployment)
 {
-    RouteNodeAddress routeAddress(routeString);
+    RouteNodeAddress routeAddress(_routeDeployment.GetRoute());
 
-    return nullptr;
+    return ServerDomainNodes[_routeDeployment.GetAppNodeId()].GetRouteNode(routeAddress);
 };
 
 //throw std::pair(503, "Server routing is not functioning currently.");
