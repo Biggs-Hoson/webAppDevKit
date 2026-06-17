@@ -1,5 +1,8 @@
 #include "AddressNode.h"
 
+
+// ---------- Constructor Functions ---------- //
+
 AddressNode::AddressNode(AddressNodeTemplate& _nodeTemplate)
 {
     // Set Match Critera
@@ -20,6 +23,10 @@ void AddressNode::StructureFromTemplate(AddressNodeTemplate& _nodeTemplate)
         CreateSubRoute(subRoute);
     }
 }
+
+
+
+// ---------- Routing Functions ---------- //
 
 int AddressNode::RouteRequest(
     const drogon::HttpRequestPtr& req,
@@ -64,6 +71,8 @@ bool AddressNode::RouteRequestInSubroutes(
 
     return 404;
 };
+
+// ---------- Routing Functions ---------- //
 
 void AddressNode::CreateSubRoute(AddressNodeTemplate _subNodeTemplate)
 {

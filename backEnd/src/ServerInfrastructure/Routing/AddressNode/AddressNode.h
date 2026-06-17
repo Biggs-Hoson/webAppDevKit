@@ -10,7 +10,6 @@
 #include "../AddressNodeAddress/AddressNodeAddress.h"
 
 
-
 class AddressNode {
 	public:
 		AddressNode(AddressNodeTemplate&);
