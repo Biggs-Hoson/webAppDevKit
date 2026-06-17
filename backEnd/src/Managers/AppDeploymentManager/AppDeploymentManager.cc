@@ -21,7 +21,7 @@ AppDeploymentManager::AppDeploymentManager()
     
 };
 
-void AppDeploymentManager::DeployApp(AppId& _appId, AppLibraryManager& _appLibraryManager, RouteTreeManager& _routeTreeManager)
+void AppDeploymentManager::DeployApp(AppId& _appId, AppLibraryManager& _appLibraryManager, AddressTreeManager& _AddressTreeManager)
 {
     AppConfig& appCfg = FindAppConfigById(_appId);
 
@@ -30,8 +30,8 @@ void AppDeploymentManager::DeployApp(AppId& _appId, AppLibraryManager& _appLibra
     // Get AppTemplate
     AppTemplate appTempate = _appLibraryManager.FindApp(AppName);
 
-    // Deploy App RouteTree
-    DeployAppRouteTree(appCfg, appTempate, _routeTreeManager);
+    // Deploy App AddressTree
+    DeployAppAddressTree(appCfg, appTempate, _AddressTreeManager);
 };
 
 AppConfig& AppDeploymentManager::FindAppConfigById(AppId& _appId)
@@ -47,13 +47,13 @@ AppConfig& AppDeploymentManager::FindAppConfigById(AppId& _appId)
     throw "App config not found by configId: " + _appId.GetIdString();
 };
 
-void AppDeploymentManager::DeployAppRouteTree(AppConfig& _appConfig, AppTemplate& _appTemplate, RouteTreeManager& _routeTreeManager)
+void AppDeploymentManager::DeployAppAddressTree(AppConfig& _appConfig, AppTemplate& _appTemplate, AddressTreeManager& _AddressTreeManager)
 {
     for (RouteDeployment& appRouteConfig : _appConfig.GetRouteDeployments())
     {
         AppNodeTemplate& appRoute = _appTemplate.GetAppNodeById(appRouteConfig.GetAppNodeId());
 
-        _routeTreeManager.DeployAppRoute(appRouteConfig, appRoute);
+        _AddressTreeManager.DeployAppRoute(appRouteConfig, appRoute);
     }
 };
 

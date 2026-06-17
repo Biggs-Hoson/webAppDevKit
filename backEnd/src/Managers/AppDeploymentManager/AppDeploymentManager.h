@@ -2,7 +2,7 @@
 #define appDeploymentManager
 
 #include "../AppLibraryManager/AppLibraryManager.h"
-#include "../RouteTreeManager/RouteTreeManager.h"
+#include "../AddressTreeManager/AddressTreeManager.h"
 #include "../../Apps/AppConfig/AppConfig.h"
 #include "../../Apps/AppComponents/AppId/AppId.h"
 
@@ -13,17 +13,17 @@ class AppDeploymentManager
 
         std::vector<AppId> GetIdsList();
 
-        void DeployApp(AppId&, AppLibraryManager&, RouteTreeManager&);
+        void DeployApp(AppId&, AppLibraryManager&, AddressTreeManager&);
 
     private:
         std::vector<AppConfig> ConfiguredApps;
 
         AppConfig& FindAppConfigById(AppId&);
 
-        void DeployAppRouteTree(
+        void DeployAppAddressTree(
             AppConfig&,
             AppTemplate&,
-            RouteTreeManager&);
+            AddressTreeManager&);
 };
 
 #endif

@@ -7,7 +7,7 @@
 
 #include "../../ComponentClasses/JsonToClass/JsonToClass.h"
 #include "RouteDeployment/RouteDeployment.h"
-#include "../../ServerInfrastructure/Routing/RouteNode/RouteNode.h"
+#include "../../ServerInfrastructure/Routing/AddressNode/AddressNode.h"
 #include "../AppComponents/AppVersion/AppVersion.h"
 #include "../AppComponents/AppId/AppId.h"
 

@@ -1,8 +1,8 @@
-#include "RouteNodeAddress.h"
+#include "AddressNodeAddress.h"
 
 #include "../../../ComponentFunctions/UtilityFunctions/UtilityFunctions.h"
 
-RouteNodeAddress::RouteNodeAddress(std::string addressString)
+AddressNodeAddress::AddressNodeAddress(std::string addressString)
 {
     // Split address on first / to get domain and  path
     std::size_t hostEnd = addressString.find('/');
@@ -29,7 +29,7 @@ RouteNodeAddress::RouteNodeAddress(std::string addressString)
     SetDomainMatch(true);
 };
 
-bool RouteNodeAddress::MatchRequest(MatchCriteria* criteria)
+bool AddressNodeAddress::MatchRequest(MatchCriteria* criteria)
 {
     if(*CurrentSegment == criteria->GetMatchString())
     {
@@ -47,12 +47,12 @@ bool RouteNodeAddress::MatchRequest(MatchCriteria* criteria)
     return false;
 };
 
-bool RouteNodeAddress::RoutingComplete()
+bool AddressNodeAddress::RoutingComplete()
 {
     return CurrentSegment == FinalSegment;
 };
 
-void RouteNodeAddress::SetDomainMatch(bool domain)
+void AddressNodeAddress::SetDomainMatch(bool domain)
 {
     if (domain)
     {

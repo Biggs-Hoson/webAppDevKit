@@ -1,4 +1,4 @@
-#include "RouteNode.h"
+#include "AddressNode.h"
 
 
 constexpr struct JsonKeyNodeType {
@@ -10,7 +10,7 @@ constexpr struct JsonKeyNodeType {
 };
 
 
-RouteNode::RouteNode(Json::Value& _nodeData, RouteSection parentType, std::string currentRoute)
+AddressNode::AddressNode(Json::Value& _nodeData, RouteSection parentType, std::string currentRoute)
 {
     bool typeFound;
 
@@ -72,7 +72,7 @@ RouteNode::RouteNode(Json::Value& _nodeData, RouteSection parentType, std::strin
     }
 };
 
-void RouteNode::SetSubRoutes(Json::Value& _subRoutes, std::string& _newRoute)
+void AddressNode::SetSubRoutes(Json::Value& _subRoutes, std::string& _newRoute)
 {    
     // Construct subpaths
 	if (!_subRoutes.isArray()) {
@@ -80,21 +80,21 @@ void RouteNode::SetSubRoutes(Json::Value& _subRoutes, std::string& _newRoute)
     }
 
     for (Json::ArrayIndex i = 0; i < _subRoutes.size(); ++i) {
-        SubRoutes.push_back(RouteNode(_subRoutes[i], NodeRouteSection, _newRoute));
+        SubRoutes.push_back(AddressNode(_subRoutes[i], NodeRouteSection, _newRoute));
     }
 }
 
-void RouteNode::ThrowFormatError(const int errorCode, const std::string ErrorMessage)
+void AddressNode::ThrowFormatError(const int errorCode, const std::string ErrorMessage)
 {
     throw std::make_pair(errorCode, ErrorMessage);
 };
 
-void RouteNode::DeployAppNodeHere(AppNodeTemplate _appNodeTemplate)
+void AddressNode::DeployAppNodeHere(AppNodeTemplate _appNodeTemplate)
 {
-    SubRoutes.push_back(RouteNode(_appNodeTemplate, DOMAIN, ""));
+    SubRoutes.push_back(AddressNode(_appNodeTemplate, DOMAIN, ""));
 }
 
-RouteNode::RouteNode(RouteNodeTemplate _RouteTemplate, RouteSection parentType, std::string currentRoute)
+AddressNode::AddressNode(AddressNodeTemplate _RouteTemplate, RouteSection parentType, std::string currentRoute)
 {
 
 }

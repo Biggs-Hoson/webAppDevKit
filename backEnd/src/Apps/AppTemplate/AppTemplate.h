@@ -50,7 +50,7 @@ class AppTemplate : public JsonToClass
         void ParseAppVersion(const Json::Value&);
 
         // Front end fields
-        std::vector<AppNodeTemplate> AppRouteNodes;
+        std::vector<AppNodeTemplate> AppAddressNodes;
         void ParseRouteMap(const Json::Value&);
 
 };

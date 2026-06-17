@@ -1,11 +1,11 @@
 
 
-#include "RouteNodeTemplate.h"
+#include "AddressNodeTemplate.h"
 #include "json/value.h"
 #include <optional>
 #include <string>
 
-RouteNodeTemplate::RouteNodeTemplate(const std::optional<const Json::Value>& RouteNodeJson)
+AddressNodeTemplate::AddressNodeTemplate(const std::optional<const Json::Value>& AddressNodeJson)
 {
     //Register ExpectedKeys
     ExpectedKeys.push_back({"path", 
@@ -19,33 +19,33 @@ RouteNodeTemplate::RouteNodeTemplate(const std::optional<const Json::Value>& Rou
             { ParseSubRoutes(value); }
         });
 
-    if(RouteNodeJson.has_value())
+    if(AddressNodeJson.has_value())
     {
-        ParseJson(RouteNodeJson.value());
+        ParseJson(AddressNodeJson.value());
     }
 };
 
-void RouteNodeTemplate::ParseSubRoutes(const Json::Value& subRoutesArr)
+void AddressNodeTemplate::ParseSubRoutes(const Json::Value& subRoutesArr)
 {
     for(Json::Value subRoute : subRoutesArr)
     {
-        SubRoutes.push_back(RouteNodeTemplate(subRoute));
+        SubRoutes.push_back(AddressNodeTemplate(subRoute));
     }
 }
 
-void RouteNodeTemplate::CollectChildErrors(std::vector<std::string>& jsonErrors, std::string currentPath)
+void AddressNodeTemplate::CollectChildErrors(std::vector<std::string>& jsonErrors, std::string currentPath)
 {
     for (int i = 0; i < SubRoutes.size(); i++) {
         SubRoutes[i].CollectErrors(jsonErrors, currentPath + "/subPaths/" + std::to_string(i));
     }
 };
 
-std::string RouteNodeTemplate::GetMatchCritera()
+std::string AddressNodeTemplate::GetMatchCritera()
 {
     return MatchCriteria;
 }
 
-std::vector<RouteNodeTemplate>& RouteNodeTemplate::GetSubRoutes()
+std::vector<AddressNodeTemplate>& AddressNodeTemplate::GetSubRoutes()
 {
     return SubRoutes;
 }

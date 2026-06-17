@@ -1,8 +1,6 @@
-#include "RouteNode.h"
-#include <cstddef>
-#include <memory>
+#include "AddressNode.h"
 
-RouteNode::RouteNode(RouteNodeTemplate& _nodeTemplate)
+AddressNode::AddressNode(AddressNodeTemplate& _nodeTemplate)
 {
     // Set Match Critera
     MatchCriteraPtr = MatchCriteria::GetMatchCriteraPtr(_nodeTemplate.GetMatchCritera());
@@ -11,19 +9,19 @@ RouteNode::RouteNode(RouteNodeTemplate& _nodeTemplate)
 }
 
 // Used so can create with an AppNodeTemplate, that doesn't have a match string
-void RouteNode::StructureFromTemplate(RouteNodeTemplate& _nodeTemplate)
+void AddressNode::StructureFromTemplate(AddressNodeTemplate& _nodeTemplate)
 {
     // Set Endpoint
     // Endpoint = ...
 
     // Create subroutes
-    for(RouteNodeTemplate& subRoute : _nodeTemplate.GetSubRoutes())
+    for(AddressNodeTemplate& subRoute : _nodeTemplate.GetSubRoutes())
     {
         CreateSubRoute(subRoute);
     }
 }
 
-int RouteNode::RouteRequest(
+int AddressNode::RouteRequest(
     const drogon::HttpRequestPtr& req,
     drogon::HttpResponsePtr& resp, 
     RequestedRoute* route
@@ -32,7 +30,7 @@ int RouteNode::RouteRequest(
     // Match Request
 
     if (!MatchRequest(route)){
-    	// Match Unsuccessful, return 0 to attempt next RouteNode
+    	// Match Unsuccessful, return 0 to attempt next AddressNode
         return 0;
     }
 
@@ -44,20 +42,20 @@ int RouteNode::RouteRequest(
     return RouteRequestInSubroutes(req, resp, route);
 }
 
-bool RouteNode::MatchRequest(
+bool AddressNode::MatchRequest(
     RequestedRoute* _route
 )
 {
     return _route->MatchRequest(MatchCriteraPtr.get());
 };
 
-bool RouteNode::RouteRequestInSubroutes(
+bool AddressNode::RouteRequestInSubroutes(
     const drogon::HttpRequestPtr& req,
     drogon::HttpResponsePtr& resp,
     RequestedRoute* _route
 )
 {
-    for (std::unique_ptr<RouteNode>& subRoutePtr : SubRoutes){
+    for (std::unique_ptr<AddressNode>& subRoutePtr : SubRoutes){
 		int responseCode = subRoutePtr->RouteRequest(req, resp, _route);
 		if (responseCode != 0) {
 			return responseCode;
@@ -67,12 +65,12 @@ bool RouteNode::RouteRequestInSubroutes(
     return 404;
 };
 
-void RouteNode::CreateSubRoute(RouteNodeTemplate _subNodeTemplate)
+void AddressNode::CreateSubRoute(AddressNodeTemplate _subNodeTemplate)
 {
-    SubRoutes.push_back(std::make_unique<RouteNode>(_subNodeTemplate));
+    SubRoutes.push_back(std::make_unique<AddressNode>(_subNodeTemplate));
 };
 
-int RouteNode::ResolveRequest(
+int AddressNode::ResolveRequest(
 	const drogon::HttpRequestPtr& req,
 	drogon::HttpResponsePtr& resp
 )
@@ -85,11 +83,11 @@ int RouteNode::ResolveRequest(
     return 200;
 };
 
-RouteNode* RouteNode::GetRouteNodeInSubRoutes(RouteNodeAddress& _address, bool createMode)
+AddressNode* AddressNode::GetAddressNodeInSubRoutes(AddressNodeAddress& _address, bool createMode)
 {
-    for(std::unique_ptr<RouteNode>& nodePtr : SubRoutes)
+    for(std::unique_ptr<AddressNode>& nodePtr : SubRoutes)
     {
-        RouteNode* addressNodePtr = nodePtr->GetRouteNode(_address, createMode);
+        AddressNode* addressNodePtr = nodePtr->GetAddressNode(_address, createMode);
 
         if (addressNodePtr != std::nullptr_t())
         {
@@ -105,7 +103,7 @@ RouteNode* RouteNode::GetRouteNodeInSubRoutes(RouteNodeAddress& _address, bool c
     return std::nullptr_t();
 }
 
-RouteNode* RouteNode::GetRouteNode(RouteNodeAddress& _address, bool createMode)
+AddressNode* AddressNode::GetAddressNode(AddressNodeAddress& _address, bool createMode)
 {
     if(!_address.MatchRequest(MatchCriteraPtr.get()))
     {
@@ -117,12 +115,12 @@ RouteNode* RouteNode::GetRouteNode(RouteNodeAddress& _address, bool createMode)
         return AddressFound(_address, createMode);
     }
 
-    return GetRouteNodeInSubRoutes(_address, createMode);
+    return GetAddressNodeInSubRoutes(_address, createMode);
 
     
 };
 
-RouteNode* RouteNode::AddressFound(RouteNodeAddress&, bool)
+AddressNode* AddressNode::AddressFound(AddressNodeAddress&, bool)
 {
     return this;
 }

@@ -1,13 +1,13 @@
-#include "RouteTree.h"
+#include "AddressTree.h"
 
-#include "../RouteNodeAddress/RouteNodeAddress.h"
+#include "../AddressNodeAddress/AddressNodeAddress.h"
 
-void RouteTree::RouteRequest(
+void AddressTree::RouteRequest(
     const drogon::HttpRequestPtr& req,
     drogon::HttpResponsePtr& resp
 )
 {
-    if (ServerDomainNodes.size() == 0)
+    if (RootNodes.size() == 0)
     {
         throw std::pair(503, "Server has no domains set up for routing.");
     }
@@ -16,9 +16,9 @@ void RouteTree::RouteRequest(
 
     RequestedDomain domainRequest(host);
 
-	for (RouteNode& DomainNode: ServerDomainNodes)
+	for (AddressNode& RootNodes: RootNodes)
     {
-        int responseCode = DomainNode.RouteRequest(req, resp, &domainRequest);
+        int responseCode = RootNodes.RouteRequest(req, resp, &domainRequest);
 
         if (responseCode != 0) {
             return;
@@ -29,12 +29,12 @@ void RouteTree::RouteRequest(
     throw std::make_pair(404, "Domain could not be found");
 };
 
-//Create or add the routeNodes to fulfill the routeString
-RouteNode* RouteTree::GetFinalRouteNode(RouteDeployment& _routeDeployment)
+//Create or add the AddressNodes to fulfill the routeString
+AddressNode* AddressTree::GetFinalAddressNode(RouteDeployment& _routeDeployment)
 {
-    RouteNodeAddress routeAddress(_routeDeployment.GetRoute());
+    AddressNodeAddress routeAddress(_routeDeployment.GetRoute());
 
-    return ServerDomainNodes[_routeDeployment.GetAppNodeId()].GetRouteNode(routeAddress);
+    return RootNodes[_routeDeployment.GetAppNodeId()].GetAddressNode(routeAddress);
 };
 
 //throw std::pair(503, "Server routing is not functioning currently.");

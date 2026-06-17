@@ -1,24 +1,24 @@
-#ifndef routeTreeManager
-#define routeTreeManager
+#ifndef AddressTreeManager
+#define AddressTreeManager
 
 #include <vector>
 
-#include "../../ServerInfrastructure/Routing/RouteNode/RouteNode.h"
-#include "../../ServerInfrastructure/Routing/RouteTree/RouteTree.h"
+#include "../../ServerInfrastructure/Routing/AddressNode/AddressNode.h"
+#include "../../ServerInfrastructure/Routing/AddressTree/AddressTree.h"
 #include "../../Apps/AppConfig/RouteDeployment/RouteDeployment.h"
 
-class RouteTreeManager 
+class AddressTreeManager 
 {
     public:
-        RouteTreeManager();
+        AddressTreeManager();
 
         void DeployAppRoute(RouteDeployment&, AppNodeTemplate&);
 
-        RouteTree* GetRouteTreePtr();
+        AddressTree* GetAddressTreePtr();
 
     private:
         // Top level route nodes of the server
-    	RouteTree ServerRoutingTree;
+    	AddressTree ServerRoutingTree;
 };
 
 

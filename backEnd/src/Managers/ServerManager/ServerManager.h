@@ -7,12 +7,12 @@
 #include <drogon/drogon.h>
 
 #include "../AppLibraryManager/AppLibraryManager.h"
-#include "../RouteTreeManager/RouteTreeManager.h"
+#include "../AddressTreeManager/AddressTreeManager.h"
 #include "../AppDeploymentManager/AppDeploymentManager.h"
-#include "../../ServerInfrastructure/Routing/RouteTree/RouteTree.h"
+#include "../../ServerInfrastructure/Routing/AddressTree/AddressTree.h"
 
-#include "../../ServerInfrastructure/Routing/RouteNode/RouteNode.h"
-#include "../../Apps/AppTemplate/RouteNodeTemplate/RouteNodeTemplate.h"
+#include "../../ServerInfrastructure/Routing/AddressNode/AddressNode.h"
+#include "../../Apps/AppTemplate/AddressNodeTemplate/AddressNodeTemplate.h"
 #include "../../ServerInfrastructure/ServerConfig/ServerConfig.h"
 
 
@@ -24,12 +24,12 @@ class ServerManager
 
 		void StartServer();
 
-		RouteTreeManager* GetRouteTreeManagerPtr();
+		AddressTreeManager* GetAddressTreeManagerPtr();
 
 	private:
 
 		// Manager Classes
-		RouteTreeManager ServerRouteTreeManager;
+		AddressTreeManager ServerAddressTreeManager;
 		AppDeploymentManager ServerAppDeploymentManager;
 		AppLibraryManager ServerAppLibraryManager;
 

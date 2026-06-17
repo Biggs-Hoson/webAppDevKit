@@ -11,11 +11,11 @@ void ServerManager::StartServer()
 
     for (AppId& Id : DeployedAppsList )
     {
-        ServerAppDeploymentManager.DeployApp(Id, ServerAppLibraryManager, ServerRouteTreeManager);
+        ServerAppDeploymentManager.DeployApp(Id, ServerAppLibraryManager, ServerAddressTreeManager);
     }
 };
 
-RouteTreeManager* ServerManager::GetRouteTreeManagerPtr()
+AddressTreeManager* ServerManager::GetAddressTreeManagerPtr()
 {
-    return &ServerRouteTreeManager;
+    return &ServerAddressTreeManager;
 }

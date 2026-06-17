@@ -12,7 +12,7 @@
 #include <drogon/HttpTypes.h>
 */
 
-#include "../../ServerInfrastructure/Routing/RouteNode/RouteNode.h"
+#include "../../ServerInfrastructure/Routing/AddressNode/AddressNode.h"
 
 std::string HtmlErrorPage(const std::string&);
 

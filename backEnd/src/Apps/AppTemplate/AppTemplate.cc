@@ -69,11 +69,11 @@ void AppTemplate::ParseRouteMap(const Json::Value& _routeMap)
 
         if(!appRouteJson.isObject())
         {
-            JsonErrors.push_back("routeMap/" + std::to_string(appRouteCount) + ": element is not of type object, expecting AppRouteNode object");
+            JsonErrors.push_back("routeMap/" + std::to_string(appRouteCount) + ": element is not of type object, expecting AppAddressNode object");
         }
         else 
         {
-            AppRouteNodes.push_back(AppNodeTemplate(appRouteJson));
+            AppAddressNodes.push_back(AppNodeTemplate(appRouteJson));
         }
         ++appRouteCount;
     }
@@ -81,14 +81,14 @@ void AppTemplate::ParseRouteMap(const Json::Value& _routeMap)
 
 void AppTemplate::CollectChildErrors(std::vector<std::string>& jsonErrors, std::string currentPath)
 {
-    for (int i = 0; i < AppRouteNodes.size(); i++) {
-        AppRouteNodes[i].CollectErrors(jsonErrors, currentPath + "/routeMap/" + std::to_string(i));
+    for (int i = 0; i < AppAddressNodes.size(); i++) {
+        AppAddressNodes[i].CollectErrors(jsonErrors, currentPath + "/routeMap/" + std::to_string(i));
     }
 }
 
 AppNodeTemplate& AppTemplate::GetAppNodeById(int appId)
 {
-    return AppRouteNodes[appId];
+    return AppAddressNodes[appId];
 }
 
 std::string AppTemplate::GetHash()

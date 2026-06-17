@@ -1,5 +1,5 @@
-#ifndef routeNodeAddress
-#define routeNodeAddress
+#ifndef AddressNodeAddress
+#define AddressNodeAddress
 
 #include <string>
 #include <vector>
@@ -8,10 +8,10 @@
 
 // Introduce some way to mark an address as relative
 
-class RouteNodeAddress
+class AddressNodeAddress
 {
     public:
-        RouteNodeAddress(std::string);
+        AddressNodeAddress(std::string);
 
         bool RoutingComplete();
 

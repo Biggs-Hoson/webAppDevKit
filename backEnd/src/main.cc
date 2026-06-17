@@ -1,15 +1,15 @@
 #include "./Managers/ServerManager/ServerManager.h"
 #include "./ComponentFunctions/MainFunctions/MainFunctions.h"
-#include "./ServerInfrastructure/Routing/RouteTree/RouteTree.h"
+#include "./ServerInfrastructure/Routing/AddressTree/AddressTree.h"
 #include "drogon/HttpResponse.h"
 
-RouteTree* ServerRouteTreePtr = nullptr;
+AddressTree* ServerAddressTreePtr = nullptr;
 ServerManager ServerManagerObj;
 
 int main() {
     ServerManagerObj.StartServer();
 
-    ServerRouteTreePtr = ServerManagerObj.GetRouteTreeManagerPtr()->GetRouteTreePtr();
+    ServerAddressTreePtr = ServerManagerObj.GetAddressTreeManagerPtr()->GetAddressTreePtr();
 
     drogon::app().registerHandlerViaRegex(".*", &commonHandler);
 
@@ -30,7 +30,7 @@ void commonHandler(
 
     try
     {
-        ServerRouteTreePtr->RouteRequest(req, resp);
+        ServerAddressTreePtr->RouteRequest(req, resp);
     }
     catch (int& errorCode)
     {

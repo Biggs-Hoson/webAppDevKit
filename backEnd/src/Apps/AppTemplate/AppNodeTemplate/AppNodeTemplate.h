@@ -5,10 +5,10 @@
 #include <vector>
 
 #include <drogon/drogon.h>
-#include "../RouteNodeTemplate/RouteNodeTemplate.h"
+#include "../AddressNodeTemplate/AddressNodeTemplate.h"
 
 
-class AppNodeTemplate : public RouteNodeTemplate
+class AppNodeTemplate : public AddressNodeTemplate
 {
     public:
         AppNodeTemplate(const Json::Value&);

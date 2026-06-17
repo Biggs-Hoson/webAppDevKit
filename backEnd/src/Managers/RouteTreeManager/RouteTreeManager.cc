@@ -1,23 +1,23 @@
-#include "RouteTreeManager.h"
+#include "AddressTreeManager.h"
 
-RouteTreeManager::RouteTreeManager() 
+AddressTreeManager::AddressTreeManager() 
 {
-    // Inform RouteTree Manager of hosts
+    // Inform AddressTree Manager of hosts
 
 };
 
-void RouteTreeManager::DeployAppRoute(
+void AddressTreeManager::DeployAppRoute(
     RouteDeployment& appRouteConfig,
     AppNodeTemplate& appRouteTemplate
 )
 {
     //Get AppRoute
-    RouteNode* AppRouteNodePtr = ServerRoutingTree.GetFinalRouteNode(appRouteConfig);
+    AddressNode* AppAddressNodePtr = ServerRoutingTree.GetFinalAddressNode(appRouteConfig);
 
-    AppRouteNodePtr->StructureFromTemplate(appRouteTemplate);
+    AppAddressNodePtr->StructureFromTemplate(appRouteTemplate);
 };
 
-RouteTree* RouteTreeManager::GetRouteTreePtr()
+AddressTree* AddressTreeManager::GetAddressTreePtr()
 {
     return &ServerRoutingTree;
 };
@@ -26,14 +26,14 @@ RouteTree* RouteTreeManager::GetRouteTreePtr()
 // Server Domains in config are places that the server can deploy to, the one it's listening too.
 // Empty means that its only deployment is at 0.0.0.0/ in path only mode
 
-// RouteNode deployments store their complete route, not relative to a routeDomain
+// AddressNode deployments store their complete route, not relative to a routeDomain
 
 // Need to decide how the reserved routes are structured (later)
 
 // Set up PathOnlyMode:
 
 // Need to consider how the server works, because it has an initial setup (path Mode, domains)
-// Before the routeNodes are Deployed.
+// Before the AddressNodes are Deployed.
 
 // Ideally, nothing should be touched after deployment so that the configs still work
 // changes should be made via the Web GUI

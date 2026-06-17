@@ -1,12 +1,12 @@
-#ifndef routeTree
-#define routeTree
+#ifndef AddressTree
+#define AddressTree
 
-#include "../RouteNode/DomainNode/DomainNode.h"
+#include "../AddressNode/DomainNode/DomainNode.h"
 #include "../RequestedRoute/RequestedDomain/RequestedDomain.h"
 #include "../../../Apps/AppConfig/RouteDeployment/RouteDeployment.h"
 #include <optional>
 
-class RouteTree
+class AddressTree
 {
 	public: 
         void RouteRequest(
@@ -14,11 +14,11 @@ class RouteTree
             drogon::HttpResponsePtr&
         );
 
-        RouteNode* GetFinalRouteNode(RouteDeployment&);
+        AddressNode* GetFinalAddressNode(RouteDeployment&);
 
 
     private:
-        std::vector<DomainNode> ServerDomainNodes;
+        std::vector<DomainNode> RootNodes;
 
 };
 

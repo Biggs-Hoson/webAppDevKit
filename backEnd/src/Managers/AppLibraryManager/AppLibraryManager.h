@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 #include <drogon/drogon.h>
-#include "../../ServerInfrastructure/Routing/RouteNode/RouteNode.h"
+#include "../../ServerInfrastructure/Routing/AddressNode/AddressNode.h"
 #include "../../Apps/AppTemplate/AppTemplate.h"
 
 class AppLibraryManager

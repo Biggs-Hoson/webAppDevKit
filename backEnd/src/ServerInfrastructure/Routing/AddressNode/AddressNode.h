@@ -1,5 +1,5 @@
-#ifndef routeNode
-#define routeNode
+#ifndef AddressNode
+#define AddressNode
 
 #include <drogon/drogon.h>
 #include <memory>
@@ -7,13 +7,13 @@
 
 #include "../../../Apps/AppTemplate/AppNodeTemplate/AppNodeTemplate.h"
 #include "../RequestedRoute/RequestedRoute.h"
-#include "../RouteNodeAddress/RouteNodeAddress.h"
+#include "../AddressNodeAddress/AddressNodeAddress.h"
 
 
 
-class RouteNode {
+class AddressNode {
 	public:
-		RouteNode(RouteNodeTemplate&);
+		AddressNode(AddressNodeTemplate&);
 
 		int RouteRequest(
 			const drogon::HttpRequestPtr&,
@@ -26,11 +26,11 @@ class RouteNode {
 			drogon::HttpResponsePtr&
 		);
 		
-		void StructureFromTemplate(RouteNodeTemplate&);
+		void StructureFromTemplate(AddressNodeTemplate&);
 
-		virtual RouteNode* GetRouteNode(RouteNodeAddress&, bool = false);
+		virtual AddressNode* GetAddressNode(AddressNodeAddress&, bool = false);
 
-		RouteNode* GetRouteNodeInSubRoutes(RouteNodeAddress&, bool = false);
+		AddressNode* GetAddressNodeInSubRoutes(AddressNodeAddress&, bool = false);
 
 	protected:
         std::unique_ptr<MatchCriteria> MatchCriteraPtr;
@@ -39,7 +39,7 @@ class RouteNode {
 			RequestedRoute*
 		);
 
-		std::vector<std::unique_ptr<RouteNode>> SubRoutes; // Automatically routed in if any RequestedRoute.RoutingComplete() == false
+		std::vector<std::unique_ptr<AddressNode>> SubRoutes; // Automatically routed in if any RequestedRoute.RoutingComplete() == false
 
 		bool RouteRequestInSubroutes(
 			const drogon::HttpRequestPtr&,
@@ -47,9 +47,9 @@ class RouteNode {
 			RequestedRoute*
 		);
 
-		virtual void CreateSubRoute(RouteNodeTemplate);
+		virtual void CreateSubRoute(AddressNodeTemplate);
 		
-		virtual RouteNode* AddressFound(RouteNodeAddress&, bool);
+		virtual AddressNode* AddressFound(AddressNodeAddress&, bool);
 };
 
 #endif

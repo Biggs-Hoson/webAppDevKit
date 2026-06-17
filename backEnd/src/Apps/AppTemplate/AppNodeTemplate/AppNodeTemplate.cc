@@ -4,8 +4,8 @@
 #include "json/value.h"
 #include <optional>
 
-AppNodeTemplate::AppNodeTemplate(const Json::Value& RouteNodeJson)
-    : RouteNodeTemplate(std::nullopt)
+AppNodeTemplate::AppNodeTemplate(const Json::Value& AddressNodeJson)
+    : AddressNodeTemplate(std::nullopt)
 {
     ExpectedKeys.push_back({
         "defaultRoute", 
@@ -17,7 +17,7 @@ AppNodeTemplate::AppNodeTemplate(const Json::Value& RouteNodeJson)
 
     // May need to remove path
 
-    ParseJson(RouteNodeJson);
+    ParseJson(AddressNodeJson);
 };
 
 void AppNodeTemplate::ParseDefaultDeployment(const Json::Value& obj)

@@ -1,5 +1,5 @@
-#ifndef routeNodeTemplate
-#define routeNodeTemplate
+#ifndef AddressNodeTemplate
+#define AddressNodeTemplate
 
 #include <optional>
 #include <string>
@@ -9,14 +9,14 @@
 #include "../../../ComponentClasses/JsonToClass/JsonToClass.h"
 
 
-class RouteNodeTemplate : public JsonToClass
+class AddressNodeTemplate : public JsonToClass
 {
     public:
-        RouteNodeTemplate(const std::optional<const Json::Value>&);
+        AddressNodeTemplate(const std::optional<const Json::Value>&);
 
         std::string GetMatchCritera();
 
-        std::vector<RouteNodeTemplate>& GetSubRoutes();
+        std::vector<AddressNodeTemplate>& GetSubRoutes();
 
     protected:
         void CollectChildErrors(std::vector<std::string>&, std::string) override;
@@ -26,7 +26,7 @@ class RouteNodeTemplate : public JsonToClass
 
         void ParseSubRoutes(const Json::Value&);
 
-        std::vector<RouteNodeTemplate> SubRoutes;
+        std::vector<AddressNodeTemplate> SubRoutes;
 };
 
 #endif
