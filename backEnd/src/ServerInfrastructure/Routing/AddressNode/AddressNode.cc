@@ -1,7 +1,7 @@
 #include "AddressNode.h"
 
 
-// ---------- Constructor Functions ---------- //
+// ---------- Constructor and Setup Functions ---------- //
 
 AddressNode::AddressNode(AddressNodeTemplate& _nodeTemplate)
 {
@@ -22,62 +22,34 @@ void AddressNode::StructureFromTemplate(AddressNodeTemplate& _nodeTemplate)
     {
         CreateSubRoute(subRoute);
     }
-}
-
-
-
-// ---------- Routing Functions ---------- //
-
-int AddressNode::RouteRequest(
-    const drogon::HttpRequestPtr& req,
-    drogon::HttpResponsePtr& resp, 
-    RequestedRoute* route
-)
-{
-    // Match Request
-
-    if (!MatchRequest(route)){
-    	// Match Unsuccessful, return 0 to attempt next AddressNode
-        return 0;
-    }
-
-    if (route->RoutingComplete())
-    {
-        return ResolveRequest(req, resp);
-    }
-
-    return RouteRequestInSubroutes(req, resp, route);
-}
-
-bool AddressNode::MatchRequest(
-    RequestedRoute* _route
-)
-{
-    return _route->MatchRequest(MatchCriteraPtr.get());
 };
 
-bool AddressNode::RouteRequestInSubroutes(
-    const drogon::HttpRequestPtr& req,
-    drogon::HttpResponsePtr& resp,
-    RequestedRoute* _route
-)
+// ---------- Routing Function ---------- //
+
+AddressNode::RouteRequest(RoutingContext* routeContext)
 {
+    std::optional<bool> routingState = routeContext->MatchNode(*this)
+
+    // Match Request
+    if (routingState.hasValue()){
+    	
+        // routingState.value ==
+        // false:  Match Unsuccessful, return false to attempt next AddressNode
+        // truee:  Routing Complete, return true to end Routing Request
+        return routingState.value();
+    }
+
     for (std::unique_ptr<AddressNode>& subRoutePtr : SubRoutes){
-		int responseCode = subRoutePtr->RouteRequest(req, resp, _route);
-		if (responseCode != 0) {
-			return responseCode;
+		if (subRoutePtr->RouteRequest(routeContext)) {
+			return true;
 		}
 	}
 
-    return 404;
-};
+    return true; // Routing Performed, no more actiosn to take
+}
 
-// ---------- Routing Functions ---------- //
 
-void AddressNode::CreateSubRoute(AddressNodeTemplate _subNodeTemplate)
-{
-    SubRoutes.push_back(std::make_unique<AddressNode>(_subNodeTemplate));
-};
+// ---------- Endpoint functions ---------- //
 
 int AddressNode::ResolveRequest(
 	const drogon::HttpRequestPtr& req,
@@ -91,6 +63,14 @@ int AddressNode::ResolveRequest(
     
     return 200;
 };
+
+
+void AddressNode::CreateSubRoute(AddressNodeTemplate _subNodeTemplate)
+{
+    SubRoutes.push_back(std::make_unique<AddressNode>(_subNodeTemplate));
+};
+
+
 
 AddressNode* AddressNode::GetAddressNodeInSubRoutes(AddressNodeAddress& _address, bool createMode)
 {

@@ -6,47 +6,30 @@
 #include <string>
 
 #include "../../../Apps/AppTemplate/AppNodeTemplate/AppNodeTemplate.h"
-#include "../RequestedRoute/RequestedRoute.h"
+#include "../RoutingContext/RoutingContext.h"
 #include "../AddressNodeAddress/AddressNodeAddress.h"
 
 
 class AddressNode {
 	public:
+		// ---------- Constructor and Setup Functions ---------- //
 		AddressNode(AddressNodeTemplate&);
 
-		int RouteRequest(
-			const drogon::HttpRequestPtr&,
-			drogon::HttpResponsePtr&, 
-			RequestedRoute*
-		);
-        
-		virtual int ResolveRequest(
-			const drogon::HttpRequestPtr&,
-			drogon::HttpResponsePtr&
-		);
-		
 		void StructureFromTemplate(AddressNodeTemplate&);
 
-		virtual AddressNode* GetAddressNode(AddressNodeAddress&, bool = false);
-
-		AddressNode* GetAddressNodeInSubRoutes(AddressNodeAddress&, bool = false);
+		// ---------- Routing Function ---------- //
+		bool RouteRequest(RoutingContext*);
+        
+		MatchCriteria* GetMatchCritera();
 
 	protected:
         std::unique_ptr<MatchCriteria> MatchCriteraPtr;
 
-		bool MatchRequest(
-			RequestedRoute*
-		);
-
 		std::vector<std::unique_ptr<AddressNode>> SubRoutes; // Automatically routed in if any RequestedRoute.RoutingComplete() == false
 
-		bool RouteRequestInSubroutes(
-			const drogon::HttpRequestPtr&,
-			drogon::HttpResponsePtr&, 
-			RequestedRoute*
-		);
-
 		virtual void CreateSubRoute(AddressNodeTemplate);
+
+		bool IsAppNode;
 		
 		virtual AddressNode* AddressFound(AddressNodeAddress&, bool);
 };
