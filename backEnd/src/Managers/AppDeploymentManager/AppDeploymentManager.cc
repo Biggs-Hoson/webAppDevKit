@@ -15,7 +15,7 @@ AppDeploymentManager::AppDeploymentManager()
     notesConfig["appName"] = "myNotes";
     notesConfig["appVersion"] = "1.2.3";
     notesConfig["appHash"] = "abxyz";
-    notesConfig["appRouteDeployments"] = appDeployments;
+    notesConfig["appAppRouteDeployments"] = appDeployments;
 
     ConfiguredApps.push_back(AppConfig(notesConfig));
     
@@ -49,7 +49,7 @@ AppConfig& AppDeploymentManager::FindAppConfigById(AppId& _appId)
 
 void AppDeploymentManager::DeployAppAddressTree(AppConfig& _appConfig, AppTemplate& _appTemplate, AddressTreeManager& _AddressTreeManager)
 {
-    for (RouteDeployment& appRouteConfig : _appConfig.GetRouteDeployments())
+    for (AppRouteDeployment& appRouteConfig : _appConfig.GetAppRouteDeployments())
     {
         AppNodeTemplate& appRoute = _appTemplate.GetAppNodeById(appRouteConfig.GetAppNodeId());
 

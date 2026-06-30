@@ -1,5 +1,5 @@
-#ifndef AddressNodeAddress
-#define AddressNodeAddress
+#ifndef addressNodeAddress
+#define addressNodeAddress
 
 #include <string>
 #include <vector>

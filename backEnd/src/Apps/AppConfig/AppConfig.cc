@@ -1,5 +1,5 @@
 #include "AppConfig.h"
-#include "RouteDeployment/RouteDeployment.h"
+#include "AppRouteDeployment/AppRouteDeployment.h"
 
 AppConfig::AppConfig(const Json::Value& configData) {
 
@@ -37,11 +37,11 @@ AppConfig::AppConfig(const Json::Value& configData) {
     });
 
     ExpectedKeys.push_back({
-        "appRouteDeployments", 
+        "appAppRouteDeployments", 
         Json::arrayValue,
         true, 
         [this](const Json::Value& value) 
-            { ParseAppRouteDeployments(value); }
+            { ParseAppAppRouteDeployments(value); }
     });
 
     ParseJson(configData);  
@@ -77,19 +77,19 @@ void AppConfig::ParseAppHash(const Json::Value& appHash)
     AppHash = appHash.asString();
 };
 
-void AppConfig::ParseAppRouteDeployments(const Json::Value& appRouteDeployments)
+void AppConfig::ParseAppAppRouteDeployments(const Json::Value& appAppRouteDeployments)
 {
-    for(const Json::Value routeDeploymentJson : appRouteDeployments)
+    for(const Json::Value AppRouteDeploymentJson : appAppRouteDeployments)
     {
-        RouteDeployments.push_back(RouteDeployment(routeDeploymentJson));
+        AppRouteDeployments.push_back(AppRouteDeployment(AppRouteDeploymentJson));
     }
 };
 
 
 void AppConfig::CollectChildErrors(std::vector<std::string>& jsonErrors, std::string currentPath)
 {
-    for (int i = 0; i < RouteDeployments.size(); i++) {
-        RouteDeployments[i].CollectErrors(jsonErrors, currentPath + "/appRouteDeployments/" + std::to_string(i));
+    for (int i = 0; i < AppRouteDeployments.size(); i++) {
+        AppRouteDeployments[i].CollectErrors(jsonErrors, currentPath + "/appAppRouteDeployments/" + std::to_string(i));
     }
 };
 
@@ -109,7 +109,7 @@ std::string AppConfig::GetAppHash()
     return AppHash;
 }
 
-std::vector<RouteDeployment>& AppConfig::GetRouteDeployments()
+std::vector<AppRouteDeployment>& AppConfig::GetAppRouteDeployments()
 {
-    return RouteDeployments;
+    return AppRouteDeployments;
 };

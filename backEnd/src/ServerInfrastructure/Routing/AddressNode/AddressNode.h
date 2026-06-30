@@ -1,14 +1,14 @@
-#ifndef AddressNode
-#define AddressNode
+#ifndef addressNode
+#define addressNode
 
 #include <drogon/drogon.h>
 #include <memory>
 #include <string>
 
 #include "../../../Apps/AppTemplate/AppNodeTemplate/AppNodeTemplate.h"
-#include "../RoutingContext/RoutingContext.h"
 #include "../AddressNodeAddress/AddressNodeAddress.h"
 
+class RoutingContext;
 
 class AddressNode {
 	public:
@@ -25,13 +25,11 @@ class AddressNode {
 	protected:
         std::unique_ptr<MatchCriteria> MatchCriteraPtr;
 
-		std::vector<std::unique_ptr<AddressNode>> SubRoutes; // Automatically routed in if any RequestedRoute.RoutingComplete() == false
+		std::vector<std::unique_ptr<AddressNode>> SubRoutes; // Automatically routed in if RoutingContext.
 
 		virtual void CreateSubRoute(AddressNodeTemplate);
 
 		bool IsAppNode;
-		
-		virtual AddressNode* AddressFound(AddressNodeAddress&, bool);
 };
 
 #endif

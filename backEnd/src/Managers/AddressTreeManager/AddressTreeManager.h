@@ -1,18 +1,18 @@
-#ifndef AddressTreeManager
-#define AddressTreeManager
+#ifndef addressTreeManager
+#define addressTreeManager
 
 #include <vector>
 
 #include "../../ServerInfrastructure/Routing/AddressNode/AddressNode.h"
 #include "../../ServerInfrastructure/Routing/AddressTree/AddressTree.h"
-#include "../../Apps/AppConfig/RouteDeployment/RouteDeployment.h"
+#include "../../Apps/AppConfig/AppRouteDeployment/AppRouteDeployment.h"
 
 class AddressTreeManager 
 {
     public:
         AddressTreeManager();
 
-        void DeployAppRoute(RouteDeployment&, AppNodeTemplate&);
+        void DeployAppRoute(AppRouteDeployment&, AppNodeTemplate&);
 
         AddressTree* GetAddressTreePtr();
 

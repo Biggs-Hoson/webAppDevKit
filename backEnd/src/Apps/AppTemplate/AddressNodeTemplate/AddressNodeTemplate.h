@@ -1,5 +1,5 @@
-#ifndef AddressNodeTemplate
-#define AddressNodeTemplate
+#ifndef addressNodeTemplate
+#define addressNodeTemplate
 
 #include <optional>
 #include <string>

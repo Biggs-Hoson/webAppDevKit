@@ -1,7 +1,7 @@
-#include "RouteDeployment.h"
+#include "AppRouteDeployment.h"
 #include "json/value.h"
 
-RouteDeployment::RouteDeployment(const Json::Value& routeDeploymentJson)
+AppRouteDeployment::AppRouteDeployment(const Json::Value& AppRouteDeploymentJson)
 {
     ExpectedKeys.push_back({
         "appNodeId", 
@@ -19,30 +19,30 @@ RouteDeployment::RouteDeployment(const Json::Value& routeDeploymentJson)
             { ParseAppRoute(value); }
     });
 
-    ParseJson(routeDeploymentJson);
+    ParseJson(AppRouteDeploymentJson);
 };
 
-void RouteDeployment::ParseAppNodeId(const Json::Value& appNodeId)
+void AppRouteDeployment::ParseAppNodeId(const Json::Value& appNodeId)
 {
     AppNodeId = appNodeId.asInt();
 };
 
-void RouteDeployment::ParseAppRoute(const Json::Value& appRoute)
+void AppRouteDeployment::ParseAppRoute(const Json::Value& appRoute)
 {
     AppRoute = appRoute.asString();
 };
 
-void RouteDeployment::CollectChildErrors(std::vector<std::string>& jsonErrors, std::string currentPath)
+void AppRouteDeployment::CollectChildErrors(std::vector<std::string>& jsonErrors, std::string currentPath)
 {
 
 };
 
-int RouteDeployment::GetAppNodeId()
+int AppRouteDeployment::GetAppNodeId()
 {
     return AppNodeId;
 };
 
-std::string RouteDeployment::GetRoute()
+std::string AppRouteDeployment::GetRoute()
 {
     return AppRoute;
 }

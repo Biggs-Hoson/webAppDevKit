@@ -2,14 +2,15 @@
 #include "./ComponentFunctions/MainFunctions/MainFunctions.h"
 #include "./ServerInfrastructure/Routing/AddressTree/AddressTree.h"
 #include "drogon/HttpResponse.h"
+#include "./ServerInfrastructure/Routing/RoutingContext/HttpRoutingContext/HttpRoutingContext.h"
 
-AddressTree* ServerAddressTreePtr = nullptr;
+AddressTree* AddressTreePtr = nullptr;
 ServerManager ServerManagerObj;
 
 int main() {
     ServerManagerObj.StartServer();
 
-    ServerAddressTreePtr = ServerManagerObj.GetAddressTreeManagerPtr()->GetAddressTreePtr();
+    AddressTreePtr = ServerManagerObj.GetAddressTreeManagerPtr()->GetAddressTreePtr();
 
     drogon::app().registerHandlerViaRegex(".*", &commonHandler);
 
@@ -24,13 +25,30 @@ void commonHandler(
 )
 {
     // Create HTTP response
-    drogon::HttpResponsePtr resp = drogon::HttpResponse::newHttpResponse();
-
+    const drogon::HttpResponsePtr resp = drogon::HttpResponse::newHttpResponse();
+    
     drogon::ContentType desiredResponseType = drogon::CT_TEXT_HTML; // Detect response type in future
 
     try
     {
-        ServerAddressTreePtr->RouteRequest(req, resp);
+        if (AddressTreePtr == nullptr)
+        {
+            throw std::pair(503, "Server has no routes set up.");
+        }
+
+        if (AddressTreePtr->Empty())
+        {
+            throw std::pair(503, "Server has no routes in current tree.");
+        }
+
+
+        HttpRoutingContext requestContext = new HttpRoutingContext(req, resp, callback);
+
+        AddressTreePtr->RouteRequestInTree(&requestContext);
+        
+
+        // Top Level 404 error, other 404 errors should be handled in the DomainNode with either a raise or return based on the app's route design.
+        throw std::make_pair(404, "Domain could not be found");
     }
     catch (int& errorCode)
     {

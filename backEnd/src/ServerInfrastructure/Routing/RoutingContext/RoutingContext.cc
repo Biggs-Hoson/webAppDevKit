@@ -1,46 +1,55 @@
 #include "RoutingContext.h"
 
 #include "../../../ComponentFunctions/UtilityFunctions/UtilityFunctions.h"
+#include <optional>
 
 
 RoutingContext::RoutingContext(
     std::string _domain,
     std::string _path)
 {
-    DomainSplit = SplitStringOnChar(_domain, ".");
-    PathSplit = SplitStringOnChar(_path, "/");
+    DomainSplit = SplitStringOnChar(_domain, '.');
+    PathSplit = SplitStringOnChar(_path, '/');
 
-    CurrentSegment = DomainSplit.begin();
-    FinalSegment = DomainSplit.end();
+    CurrentSegment = DomainSplit.end();
+    FinalSegment = DomainSplit.begin();
 }
 
-std::optional<bool> MatchNode(AddressNode* _node) // Use Node Type to determine routing situation
+std::optional<bool> RoutingContext::MatchNode(AddressNode* _node) // Use Node Type to determine routing situation
 {
-    MatchCriteria* matchCriteriaPtr = _node->GetMatchCritera();
-
-    if(!) // Matching fails
+    if(!CheckMatch(_node)) // Matching fails
     {
         return false;
     }
 
-    if (CurrentSegment == FinalSegment)
+    if (RoutingDomain)
     {
-        if (RoutingDomain)
+        CurrentSegment--;
+
+        if (CurrentSegment == FinalSegment)
         {
-            RoutingDomain == false;
+            if (PathSplit.empty())
+            {
+                return ResolveWithCurrentNode(_node);
+            }
 
-            _node. 
+            RoutingDomain = false;
+            CurrentSegment = PathSplit.begin();
+            FinalSegment = PathSplit.end();
+        
+            return _node->RouteRequest(this);
         }
-        else
+    }
+    else {
+        CurrentSegment++;
+    
+        if (CurrentSegment == FinalSegment)
         {
-            // Resolve with current node
+            return ResolveWithCurrentNode(_node);
         }
-
-
-        return true;
     }
 
-    // Grab any new context
+    // Grab any new context from current node
 
-    return nullopt_t;
+    return std::nullopt;
 }

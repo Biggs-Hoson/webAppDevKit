@@ -7,7 +7,7 @@ AddressTreeManager::AddressTreeManager()
 };
 
 void AddressTreeManager::DeployAppRoute(
-    RouteDeployment& appRouteConfig,
+    AppRouteDeployment& appRouteConfig,
     AppNodeTemplate& appRouteTemplate
 )
 {

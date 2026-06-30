@@ -1,12 +1,12 @@
-#ifndef routeDeployment
-#define routeDeployment
+#ifndef appRouteDeployment
+#define appRouteDeployment
 
 #include "../../../ComponentClasses/JsonToClass/JsonToClass.h"
 
-class RouteDeployment : public JsonToClass
+class AppRouteDeployment : public JsonToClass
 {
     public: 
-        RouteDeployment(const Json::Value& routeDeploymentJson);
+        AppRouteDeployment(const Json::Value& AppRouteDeploymentJson);
 
         int GetAppNodeId();
 
