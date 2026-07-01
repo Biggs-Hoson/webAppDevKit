@@ -3,12 +3,16 @@
 HttpRoutingContext::HttpRoutingContext(
     const drogon::HttpRequestPtr& req,
     const drogon::HttpResponsePtr& resp,
-    std::function<void(const drogon::HttpResponsePtr&)>& callback
-) : RoutingContext(req->getHeader("Host"), req->getPath()) 
-{
-    requestPtr = req;
+    ResponseCallback callback
+) : RoutingContext(req->getHeader("Host"), req->getPath()),
+    RequestPtr(req),
+    ResponsePtr(resp),
+    CallbackFunction(callback)
+{}
 
-    callbackFunction = callback;
+bool HttpRoutingContext::CheckMatch(AddressNode* _node)
+{
+    return _node->GetMatchCritera()->MatchRequest(CurrentSegment);
 }
 
 void HttpRoutingContext::HandleNotFound()
@@ -32,3 +36,6 @@ bool HttpRoutingContext::ResolveWithCurrentNode(AddressNode*)
 
     return true;
 }
+
+
+

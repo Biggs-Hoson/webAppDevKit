@@ -33,7 +33,7 @@ class ServerManager
 		AppDeploymentManager ServerAppDeploymentManager;
 		AppLibraryManager ServerAppLibraryManager;
 
-		// server Config
+		// Server Config
 		ServerConfig ServerCfg;
 };
 

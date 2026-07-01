@@ -1,5 +1,8 @@
 #include "AddressTreeManager.h"
 
+#include "../../ServerInfrastructure/Routing/RoutingContext/RouteConstructorContext/RouteConstructorContext.h"
+#include <ostream>
+
 AddressTreeManager::AddressTreeManager()
 {
     // Inform AddressTree Manager of hosts
@@ -12,9 +15,28 @@ void AddressTreeManager::DeployAppRoute(
 )
 {
     //Get AppRoute
-    //AddressNode* AppAddressNodePtr = ServerRoutingTree.GetFinalAddressNode(appRouteConfig);
+    RouteConstructorContext RouteConstructor(appRouteConfig);
 
-    //AppAddressNodePtr->StructureFromTemplate(appRouteTemplate);
+    try 
+    {
+        ServerAddressTree.RouteRequestInChildren(&RouteConstructor);
+        
+        AddressNode* AppAddressNodePtr = RouteConstructor.GetFinalAddresesNodePtr();
+
+        if(AppAddressNodePtr == nullptr)
+        {
+            throw "Route could not be constructed";
+        }
+        if (!AppAddressNodePtr->Empty())
+        {
+            throw "Cannot convert node to AppRoute as it has children";
+        }
+
+        AppAddressNodePtr->StructureFromTemplate(appRouteTemplate);
+    } 
+    catch (...) {
+        std::cout << "Invalid Route Deployment Config" << std::endl;
+    }
 };
 
 AddressTree* AddressTreeManager::GetAddressTreePtr()

@@ -17,10 +17,13 @@ class AddressNodeChildren
 
         bool Empty();
 
+        virtual AddressNode* CreateSubRoute(std::string);
+
+        virtual AddressNode* CreateSubRoute(AddressNodeTemplate&);
+
     protected:
-        virtual void CreateSubRoute(AddressNodeTemplate);
-    
-    private:
+        
+        
         std::vector<std::unique_ptr<AddressNode>> Routes;
 };
 

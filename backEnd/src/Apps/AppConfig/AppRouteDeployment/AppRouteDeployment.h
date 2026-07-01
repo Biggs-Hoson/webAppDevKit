@@ -11,6 +11,10 @@ class AppRouteDeployment : public JsonToClass
         int GetAppNodeId();
 
         std::string GetRoute();
+
+        std::string GetDomain();
+
+        std::string GetPath();
         
     private:
 

@@ -25,7 +25,7 @@ void commonHandler(
 )
 {
     // Create HTTP response
-    const drogon::HttpResponsePtr resp = drogon::HttpResponse::newHttpResponse();
+    drogon::HttpResponsePtr resp = drogon::HttpResponse::newHttpResponse();
     
     drogon::ContentType desiredResponseType = drogon::CT_TEXT_HTML; // Detect response type in future
 
@@ -33,7 +33,7 @@ void commonHandler(
     {
         if (AddressTreePtr == nullptr)
         {
-            throw std::pair(503, "Server has no routes set up.");
+            throw std::pair(503, "Server has no AddressTree set.");
         }
 
         if (AddressTreePtr->Empty())
@@ -41,7 +41,7 @@ void commonHandler(
             throw std::pair(503, "Server has no routes in current tree.");
         }
 
-        HttpRoutingContext requestContext = new HttpRoutingContext(req, resp, callback);
+        HttpRoutingContext requestContext(req, resp, callback);
 
         AddressTreePtr->RouteRequestInChildren(&requestContext);
 

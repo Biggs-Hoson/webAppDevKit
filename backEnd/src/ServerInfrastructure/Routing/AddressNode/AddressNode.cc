@@ -7,9 +7,21 @@
 AddressNode::AddressNode(AddressNodeTemplate& _nodeTemplate)
 {
     // Set Match Critera
-    MatchCriteraPtr = MatchCriteria::GetMatchCriteraPtr(_nodeTemplate.GetMatchCritera());
+    SetMatchCritera(_nodeTemplate.GetMatchCritera());
 
     StructureFromTemplate(_nodeTemplate);
+}
+
+AddressNode::AddressNode(std::string criteriaString)
+{
+    // Set Match Critera
+    SetMatchCritera(criteriaString);
+}
+
+
+void AddressNode::SetMatchCritera(std::string criteriaString)
+{
+    MatchCriteraPtr = MatchCriteria::GetMatchCriteraPtr(criteriaString);
 }
 
 // Used so can create with an AppNodeTemplate, that doesn't have a match string
@@ -36,7 +48,7 @@ bool AddressNode::RouteRequest(RoutingContext* routeContext)
     	
         // routingState.value ==
         // false:  Match Unsuccessful, return false to attempt next AddressNode
-        // truee:  Routing Complete, return true to end Routing Request
+        // true:  Routing Complete, return true to end Routing Request
         return routingState.value();
     }
 
@@ -45,6 +57,15 @@ bool AddressNode::RouteRequest(RoutingContext* routeContext)
     return true; // Routing Performed, no more action to take
 }
 
+MatchCriteria* AddressNode::GetMatchCritera()
+{
+    return MatchCriteraPtr.get();
+}
+
+bool AddressNode::IsAppNode()
+{
+    return AppNode;
+}
 
 // ---------- Endpoint functions ---------- //
 

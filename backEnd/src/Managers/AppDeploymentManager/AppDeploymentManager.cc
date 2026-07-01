@@ -2,10 +2,11 @@
 
 AppDeploymentManager::AppDeploymentManager()
 {
+    // Exceedingly temporary constructor of the appropriate appDeploymentConfig
     Json::Value appDeployment1;
 
     appDeployment1["appNodeId"] = 0;
-    appDeployment1["appRoute"] = "*/notes";
+    appDeployment1["appRoute"] = "0.0.0.0/notes";
 
     Json::Value appDeployments;
     appDeployments[0] = appDeployment1;

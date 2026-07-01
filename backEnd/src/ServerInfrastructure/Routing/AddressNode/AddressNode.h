@@ -15,6 +15,8 @@ class AddressNode : public AddressNodeChildren {
 		// ---------- Constructor and Setup Functions ---------- //
 		AddressNode(AddressNodeTemplate&);
 
+		AddressNode(std::string);
+
 		virtual ~AddressNode() {};
 
 		void StructureFromTemplate(AddressNodeTemplate&);
@@ -24,12 +26,15 @@ class AddressNode : public AddressNodeChildren {
         
 		MatchCriteria* GetMatchCritera();
 
+		bool IsAppNode();
+
 	protected:
         std::unique_ptr<MatchCriteria> MatchCriteraPtr;
-
 		
+		bool AppNode;
 
-		bool IsAppNode;
+	private:
+		void SetMatchCritera(std::string);
 };
 
 #endif

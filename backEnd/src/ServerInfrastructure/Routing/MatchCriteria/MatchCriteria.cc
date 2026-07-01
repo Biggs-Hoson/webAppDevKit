@@ -31,7 +31,7 @@ bool MatchAny::MatchRequest(
     return true;
 };
 
-static std::unique_ptr<MatchCriteria> GetMatchCriteraPtr(std::string matchCriteraString)
+std::unique_ptr<MatchCriteria> MatchCriteria::GetMatchCriteraPtr(std::string matchCriteraString)
 {
     if (matchCriteraString == "*")
     {
