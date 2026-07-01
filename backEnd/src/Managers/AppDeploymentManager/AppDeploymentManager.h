@@ -20,7 +20,7 @@ class AppDeploymentManager
 
         AppConfig& FindAppConfigById(AppId&);
 
-        void DeployAppAddressTree(
+        void DeployAppAddresses(
             AppConfig&,
             AppTemplate&,
             AddressTreeManager&);

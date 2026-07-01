@@ -9,7 +9,7 @@
 #include "../AddressNode/AddressNode.h"
 
 /*
-    The RoutingContext holds the nessecary context to handle a request 
+    The RoutingContext holds the necessary context to handle a request 
 
 
 */
@@ -21,6 +21,8 @@ class RoutingContext
         RoutingContext(std::string, std::string); // combined domain and path
 
         virtual std::optional<bool> MatchNode(AddressNode*);
+
+        virtual void HandleNotFound() = 0;
     
     protected:
         std::vector<std::string> DomainSplit;
@@ -28,8 +30,6 @@ class RoutingContext
 
         std::vector<std::string>::iterator CurrentSegment;
         std::vector<std::string>::iterator FinalSegment;
-
-        bool RoutingDomain = true;
 
         // Virtual Functions:
 

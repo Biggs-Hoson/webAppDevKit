@@ -40,20 +40,11 @@ bool AddressNode::RouteRequest(RoutingContext* routeContext)
         return routingState.value();
     }
 
-    for (std::unique_ptr<AddressNode>& subRoutePtr : SubRoutes){
-		if (subRoutePtr->RouteRequest(routeContext)) {
-			return true;
-		}
-	}
+    void RouteRequestInChildren(RoutingContext*);
 
-    return true; // Routing Performed, no more actiosn to take
+    return true; // Routing Performed, no more action to take
 }
 
 
 // ---------- Endpoint functions ---------- //
-
-void AddressNode::CreateSubRoute(AddressNodeTemplate _subNodeTemplate)
-{
-    SubRoutes.push_back(std::make_unique<AddressNode>(_subNodeTemplate));
-};
 

@@ -5,15 +5,17 @@
 #include <memory>
 #include <string>
 
-#include "../../../Apps/AppTemplate/AppNodeTemplate/AppNodeTemplate.h"
-#include "../AddressNodeAddress/AddressNodeAddress.h"
+#include "../AddressNodeChildren/AddressNodeChildren.h"
+#include "../MatchCriteria/MatchCriteria.h"
 
 class RoutingContext;
 
-class AddressNode {
+class AddressNode : public AddressNodeChildren {
 	public:
 		// ---------- Constructor and Setup Functions ---------- //
 		AddressNode(AddressNodeTemplate&);
+
+		virtual ~AddressNode() {};
 
 		void StructureFromTemplate(AddressNodeTemplate&);
 
@@ -25,9 +27,7 @@ class AddressNode {
 	protected:
         std::unique_ptr<MatchCriteria> MatchCriteraPtr;
 
-		std::vector<std::unique_ptr<AddressNode>> SubRoutes; // Automatically routed in if RoutingContext.
-
-		virtual void CreateSubRoute(AddressNodeTemplate);
+		
 
 		bool IsAppNode;
 };

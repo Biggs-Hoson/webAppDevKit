@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "../../ServerInfrastructure/Routing/AddressNode/AddressNode.h"
-#include "../../ServerInfrastructure/Routing/AddressTree/AddressTree.h"
+#include "../../ServerInfrastructure/Routing/AddressNodeChildren/AddressTree/AddressTree.h"
 #include "../../Apps/AppConfig/AppRouteDeployment/AppRouteDeployment.h"
 
 class AddressTreeManager 
@@ -18,7 +18,7 @@ class AddressTreeManager
 
     private:
         // Top level route nodes of the server
-    	AddressTree ServerRoutingTree;
+    	AddressTree ServerAddressTree;
 };
 
 

@@ -11,20 +11,21 @@ class HttpRoutingContext : public RoutingContext
 {
     public:
         HttpRoutingContext(
-            const drogon::HttpRequestPtr& req,
-            const drogon::HttpResponsePtr& resp,
-            std::function<void(const drogon::HttpResponsePtr&)>& callback
+            const drogon::HttpRequestPtr&,
+            const drogon::HttpResponsePtr&,
+            std::function<void(const drogon::HttpResponsePtr&)>&
         );
+
+        void HandleNotFound() override;
     
     protected:
         drogon::HttpRequestPtr requestPtr;
 
         std::function<void(const drogon::HttpResponsePtr&)>&& callbackFunction;
 
-        bool CheckMatch(AddressNode*);
+        bool CheckMatch(AddressNode*) override;
 
-        bool ResolveWithCurrentNode(AddressNode*);
-
+        bool ResolveWithCurrentNode(AddressNode*) override;
 
 };
 

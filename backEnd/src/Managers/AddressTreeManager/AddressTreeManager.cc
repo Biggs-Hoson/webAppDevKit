@@ -1,6 +1,6 @@
 #include "AddressTreeManager.h"
 
-AddressTreeManager::AddressTreeManager() 
+AddressTreeManager::AddressTreeManager()
 {
     // Inform AddressTree Manager of hosts
 
@@ -12,14 +12,14 @@ void AddressTreeManager::DeployAppRoute(
 )
 {
     //Get AppRoute
-    AddressNode* AppAddressNodePtr = ServerRoutingTree.GetFinalAddressNode(appRouteConfig);
+    //AddressNode* AppAddressNodePtr = ServerRoutingTree.GetFinalAddressNode(appRouteConfig);
 
-    AppAddressNodePtr->StructureFromTemplate(appRouteTemplate);
+    //AppAddressNodePtr->StructureFromTemplate(appRouteTemplate);
 };
 
 AddressTree* AddressTreeManager::GetAddressTreePtr()
 {
-    return &ServerRoutingTree;
+    return &ServerAddressTree;
 };
 
 
