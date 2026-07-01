@@ -14,6 +14,11 @@ void RouteConstructorContext::HandleNotFound()
     // Called when RouteConstructorContext arrives at an end route.
     // Handle by constructing AddressNode and DomainNodes in children
 
+    if (CurrentNode == nullptr)
+    {
+        // If in AddressTree;
+    }
+
     if(PathSplit.end() != FinalSegment) // still some domain to route
     {
         DomainNode* _domainNode = dynamic_cast<DomainNode*>(CurrentNode);
