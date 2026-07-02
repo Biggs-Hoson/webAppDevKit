@@ -5,7 +5,8 @@
 
 class AddressTree : public AddressNodeChildren
 {
-
+    public:
+        AddressNode* CreateDomain(std::string);
 };
 
 

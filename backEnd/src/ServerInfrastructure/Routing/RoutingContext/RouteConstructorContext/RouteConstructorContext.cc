@@ -3,23 +3,38 @@
 #include "../../AddressNode/DomainNode/DomainNode.h"
 
 RouteConstructorContext::RouteConstructorContext(
-    AppRouteDeployment& routeDeploymentConfig
+    AppRouteDeployment& routeDeploymentConfig,
+    AddressTree* initialTree
 ) : RoutingContext(
         routeDeploymentConfig.GetDomain(), 
-        routeDeploymentConfig.GetPath())
-{}
+        routeDeploymentConfig.GetPath()),
+    InitialAddressTree(initialTree)
+{
+    InitialAddressTree->RouteRequestInChildren(this);
+}
 
 void RouteConstructorContext::HandleNotFound()
 {
     // Called when RouteConstructorContext arrives at an end route.
     // Handle by constructing AddressNode and DomainNodes in children
-
     if (CurrentNode == nullptr)
     {
-        // If in AddressTree;
+        if (RoutingInPath())
+        {
+            CurrentNode = InitialAddressTree->CreateSubRoute(*CurrentSegment);
+
+            CurrentSegment++;
+        }
+        else
+        {
+            CurrentNode = InitialAddressTree->CreateDomain(*CurrentSegment);
+
+            CurrentSegment--;
+        }
     }
 
-    if(PathSplit.end() != FinalSegment) // still some domain to route
+
+    if(!RoutingInPath()) // still some domain to route
     {
         DomainNode* _domainNode = dynamic_cast<DomainNode*>(CurrentNode);
         
@@ -73,12 +88,14 @@ bool RouteConstructorContext::CheckMatch(AddressNode* _node)
         return false;
     }
 
-    if (_node->IsAppNode() && FinalSegment == PathSplit.end())
+    if (_node->IsAppNode() && RoutingInPath())
     {
         throw "Route already contains an AppNode in the path";
     }
     
     CurrentNode = _node;
+
+    return true;
 }
 
 // return current Node to be converted to an AppNode
@@ -92,4 +109,9 @@ bool RouteConstructorContext::ResolveWithCurrentNode(AddressNode* _node)
 AddressNode* RouteConstructorContext::GetFinalAddresesNodePtr()
 {
     return CurrentNode;
+}
+
+bool RouteConstructorContext::RoutingInPath()
+{
+    return PathSplit.end() == FinalSegment;
 }

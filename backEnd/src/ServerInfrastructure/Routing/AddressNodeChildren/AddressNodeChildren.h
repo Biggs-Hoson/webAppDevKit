@@ -21,6 +21,8 @@ class AddressNodeChildren
 
         virtual AddressNode* CreateSubRoute(AddressNodeTemplate&);
 
+        void Explore(int);
+
     protected:
         
         

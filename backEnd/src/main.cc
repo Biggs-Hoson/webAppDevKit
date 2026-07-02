@@ -12,6 +12,8 @@ int main() {
 
     AddressTreePtr = ServerManagerObj.GetAddressTreeManagerPtr()->GetAddressTreePtr();
 
+    AddressTreePtr->Explore(0);
+
     drogon::app().registerHandlerViaRegex(".*", &commonHandler);
 
     drogon::app().run();

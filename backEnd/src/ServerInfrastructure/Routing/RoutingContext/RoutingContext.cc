@@ -14,8 +14,8 @@ RoutingContext::RoutingContext(
     DomainSplit = SplitStringOnChar(_domain, '.');
     PathSplit = SplitStringOnChar(_path, '/');
 
-    CurrentSegment = DomainSplit.end()--;
-    FinalSegment = DomainSplit.begin()--;
+    CurrentSegment = --DomainSplit.end();
+    FinalSegment = --DomainSplit.begin();
 }
 
 

@@ -14,12 +14,10 @@ void AddressTreeManager::DeployAppRoute(
     AppNodeTemplate& appRouteTemplate
 )
 {
-    //Get AppRoute
-    RouteConstructorContext RouteConstructor(appRouteConfig);
-
     try 
     {
-        ServerAddressTree.RouteRequestInChildren(&RouteConstructor);
+        //Get AppRoute
+        RouteConstructorContext RouteConstructor(appRouteConfig, GetAddressTreePtr());
         
         AddressNode* AppAddressNodePtr = RouteConstructor.GetFinalAddresesNodePtr();
 

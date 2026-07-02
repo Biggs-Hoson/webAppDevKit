@@ -1,6 +1,7 @@
 #include "AddressNodeChildren.h"
 #include "../AddressNode/AddressNode.h"
 #include "../RoutingContext/RoutingContext.h"
+#include <memory>
 #include <string>
 
 void AddressNodeChildren::RouteRequestInChildren(
@@ -33,3 +34,13 @@ AddressNode* AddressNodeChildren::CreateSubRoute(std::string matchCritera)
 
 	return Routes.back().get();
 };
+
+void AddressNodeChildren::Explore(int depth)
+{
+	std::cout << std::string(depth, '-') << Routes.size() << std::endl;
+
+	for(std::unique_ptr<AddressNode>& node : Routes)
+	{
+		node->Explore(++depth);
+	}
+}
