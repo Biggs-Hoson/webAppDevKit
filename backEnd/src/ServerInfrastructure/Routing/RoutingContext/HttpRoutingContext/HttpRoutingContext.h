@@ -23,7 +23,7 @@ class HttpRoutingContext : public RoutingContext
 
         drogon::HttpResponsePtr ResponsePtr;
 
-        ResponseCallback CallbackFunction;
+        ResponseCallback& CallbackFunction;
 
         bool CheckMatch(AddressNode*) override;
 

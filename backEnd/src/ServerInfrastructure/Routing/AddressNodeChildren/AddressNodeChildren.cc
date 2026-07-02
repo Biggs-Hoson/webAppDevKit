@@ -8,6 +8,7 @@ void AddressNodeChildren::RouteRequestInChildren(
     RoutingContext* routeContext)
 {
     for (std::unique_ptr<AddressNode>& subRoutePtr : Routes){
+
 		if (subRoutePtr->RouteRequest(routeContext)) {
 			return;
 		}
@@ -37,10 +38,17 @@ AddressNode* AddressNodeChildren::CreateSubRoute(std::string matchCritera)
 
 void AddressNodeChildren::Explore(int depth)
 {
+	CallIn();
+
 	std::cout << std::string(depth, '-') << Routes.size() << std::endl;
 
 	for(std::unique_ptr<AddressNode>& node : Routes)
 	{
 		node->Explore(++depth);
 	}
+}
+
+void AddressNodeChildren::CallIn()
+{
+	std::cout << "AddressNodeChildSet" << std::endl;
 }

@@ -25,3 +25,19 @@ DomainNode* DomainNode::CreateSubDomain(std::string matchCritera)
     return dynamic_cast<DomainNode*>(Routes.back().get());
 }
 
+void DomainNode::Explore(int depth)
+{
+	CallIn();
+
+	std::cout << std::string(depth, '-') << Routes.size() << std::endl;
+
+	for(std::unique_ptr<AddressNode>& node : Routes)
+	{
+		node->Explore(++depth);
+	}
+
+    if(!PathRoutes.Empty())
+    {
+        PathRoutes.Explore(++depth);
+    }
+}

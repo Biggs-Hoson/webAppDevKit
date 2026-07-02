@@ -14,6 +14,8 @@ class DomainNode : public AddressNode
 
         AddressNode* CreateSubRoute(std::string) override;
 
+        void Explore(int) override;
+
     protected:
         AddressNode* CreateSubRoute(AddressNodeTemplate&) override;
 

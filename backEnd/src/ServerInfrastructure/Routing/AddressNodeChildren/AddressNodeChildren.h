@@ -21,11 +21,13 @@ class AddressNodeChildren
 
         virtual AddressNode* CreateSubRoute(AddressNodeTemplate&);
 
-        void Explore(int);
+        virtual void Explore(int);
+
 
     protected:
         
         
+        virtual void CallIn();
         std::vector<std::unique_ptr<AddressNode>> Routes;
 };
 

@@ -12,8 +12,6 @@ int main() {
 
     AddressTreePtr = ServerManagerObj.GetAddressTreeManagerPtr()->GetAddressTreePtr();
 
-    AddressTreePtr->Explore(0);
-
     drogon::app().registerHandlerViaRegex(".*", &commonHandler);
 
     drogon::app().run();
@@ -26,6 +24,8 @@ void commonHandler(
     std::function<void(const drogon::HttpResponsePtr&)>&& callback
 )
 {
+    std::cout << "Request recieved" << std::endl;
+
     // Create HTTP response
     drogon::HttpResponsePtr resp = drogon::HttpResponse::newHttpResponse();
     

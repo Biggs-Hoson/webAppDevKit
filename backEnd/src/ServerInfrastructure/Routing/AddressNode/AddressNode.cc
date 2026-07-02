@@ -45,14 +45,13 @@ bool AddressNode::RouteRequest(RoutingContext* routeContext)
 
     // Match Request
     if (routingState.has_value()){
-    	
         // routingState.value ==
         // false:  Match Unsuccessful, return false to attempt next AddressNode
         // true:  Routing Complete, return true to end Routing Request
         return routingState.value();
     }
 
-    void RouteRequestInChildren(RoutingContext*);
+    RouteRequestInChildren(routeContext);
 
     return true; // Routing Performed, no more action to take
 }
@@ -69,3 +68,7 @@ bool AddressNode::IsAppNode()
 
 // ---------- Endpoint functions ---------- //
 
+void AddressNode::CallIn()
+{
+    std::cout << GetMatchCritera()->GetMatchString() << std::endl;
+}

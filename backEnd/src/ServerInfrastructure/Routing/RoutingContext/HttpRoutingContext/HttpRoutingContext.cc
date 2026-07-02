@@ -27,12 +27,15 @@ void HttpRoutingContext::HandleNotFound()
     // else 
 
     throw std::make_pair(404, "Route could not be found");
-
 }
 
 bool HttpRoutingContext::ResolveWithCurrentNode(AddressNode*)
 {
-    //callbackFunction(resp)
+    std::cout << "Resolving" << std::endl;
+
+    ResponsePtr->setBody("Success");
+
+    CallbackFunction(ResponsePtr);
 
     return true;
 }

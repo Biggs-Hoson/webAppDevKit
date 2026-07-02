@@ -31,6 +31,7 @@ class AddressNode : public AddressNodeChildren {
 	protected:
         std::unique_ptr<MatchCriteria> MatchCriteraPtr;
 		
+        void CallIn() override;
 		bool AppNode;
 
 	private:
