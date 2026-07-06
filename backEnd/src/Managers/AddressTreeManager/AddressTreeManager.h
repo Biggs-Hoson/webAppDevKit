@@ -1,10 +1,10 @@
 #ifndef addressTreeManager
 #define addressTreeManager
 
+#include <memory>
 #include <vector>
 
 #include "../../ServerInfrastructure/Routing/AddressNode/AddressNode.h"
-#include "../../ServerInfrastructure/Routing/AddressNodeChildren/AddressTree/AddressTree.h"
 #include "../../Apps/AppConfig/AppRouteDeployment/AppRouteDeployment.h"
 
 class AddressTreeManager 
@@ -14,11 +14,11 @@ class AddressTreeManager
 
         void DeployAppRoute(AppRouteDeployment&, AppNodeTemplate&);
 
-        AddressTree* GetAddressTreePtr();
+        AddressNodeChildren* GetAddressTreePtr();
 
     private:
         // Top level route nodes of the server
-    	AddressTree ServerAddressTree;
+    	std::unique_ptr<AddressNodeChildren> AddressTreePtr;
 };
 
 

@@ -9,13 +9,22 @@
 
 RoutingContext::RoutingContext(
     std::string _domain,
-    std::string _path)
+    std::string _path,
+    AddressNodeChildren* AddressNodeChildrenPtr)
 {
     DomainSplit = SplitStringOnChar(_domain, '.');
     PathSplit = SplitStringOnChar(_path, '/');
 
-    CurrentSegment = --DomainSplit.end();
-    FinalSegment = --DomainSplit.begin();
+    if (dynamic_cast<DomainNodeChildren*>(AddressNodeChildrenPtr) == nullptr)
+    {
+        SetupPathRouting();
+    }
+    else
+    {
+        CurrentSegment = --DomainSplit.end();
+        FinalSegment = --DomainSplit.begin();
+    }
+
 }
 
 
@@ -30,28 +39,21 @@ std::optional<bool> RoutingContext::MatchNode(AddressNode* _node) // Use Node Ty
         return false;
     }
 
-    DomainNode* _domainNode = dynamic_cast<DomainNode*>(_node);
-
-    if (_domainNode != nullptr)
-    {
-        CurrentSegment--;
-    }
-    else {
-        CurrentSegment++;
-    }
+    IncrementSegment();
 
     // Grab any new context from current node
 
-    if (CurrentSegment != FinalSegment)
+    if (!RoutingComplete())
     {
         return std::nullopt;
     }
 
+    DomainNode* _domainNode = dynamic_cast<DomainNode*>(_node);
+
     if (_domainNode != nullptr && !PathSplit.empty())
     {
         // Route in path:
-        CurrentSegment = PathSplit.begin();
-        FinalSegment = PathSplit.end();
+        SetupPathRouting();
 
         _domainNode->RoutePath(this);
 
@@ -59,4 +61,54 @@ std::optional<bool> RoutingContext::MatchNode(AddressNode* _node) // Use Node Ty
     }
     
     return ResolveWithCurrentNode(_node);
+}
+
+bool RoutingContext::RoutingInPath()
+{
+    return PathSplit.end() == FinalSegment; 
+}
+
+void RoutingContext::IncrementSegment()
+{
+    if (RoutingInPath())
+    {
+        CurrentSegment++;
+    }
+    else {
+        CurrentSegment--;
+    }
+}
+
+void RoutingContext::SetupPathRouting()
+{
+    CurrentSegment = PathSplit.begin();
+    FinalSegment = PathSplit.end();
+}
+
+bool RoutingContext::RoutingComplete()
+{
+    return CurrentSegment == FinalSegment;
+}
+
+bool RoutingContext::CheckMatch(AddressNode* _node)
+{
+    std::string matchCriteria = _node->GetMatchCritera();
+
+    if(matchCriteria == "*") // Handle Wildcard
+    {
+        CurrentSegment = FinalSegment;
+
+        if (RoutingInPath())
+        {
+            CurrentSegment--;
+        }
+        else 
+        {
+            CurrentSegment++;
+        }
+
+        return true;
+    }
+
+    return *CurrentSegment == matchCriteria;
 }

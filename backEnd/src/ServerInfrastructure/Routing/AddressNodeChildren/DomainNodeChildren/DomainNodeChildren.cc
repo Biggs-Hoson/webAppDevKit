@@ -1,10 +1,8 @@
-#include "AddressTree.h"
+#include "./DomainNodeChildren.h"
 #include "../../AddressNode/DomainNode/DomainNode.h"
 
-#include <memory>
-
-AddressNode* AddressTree::CreateDomain(std::string matchCritera)
-{    
+AddressNode* DomainNodeChildren::CreateSubRoute(std::string matchCritera)
+{
     Routes.push_back(std::make_unique<DomainNode>(matchCritera));
 
 	return Routes.back().get();

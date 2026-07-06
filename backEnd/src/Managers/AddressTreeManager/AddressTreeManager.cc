@@ -1,11 +1,15 @@
 #include "AddressTreeManager.h"
 
 #include "../../ServerInfrastructure/Routing/RoutingContext/RouteConstructorContext/RouteConstructorContext.h"
+#include "../../ServerInfrastructure/Routing/AddressNodeChildren/DomainNodeChildren/DomainNodeChildren.h"
+#include <memory>
 #include <ostream>
 
 AddressTreeManager::AddressTreeManager()
 {
     // Inform AddressTree Manager of hosts
+
+    AddressTreePtr = std::make_unique<AddressNodeChildren>();
 
 };
 
@@ -18,7 +22,7 @@ void AddressTreeManager::DeployAppRoute(
     {
         //Get AppRoute
         RouteConstructorContext RouteConstructor(appRouteConfig, GetAddressTreePtr());
-        
+
         AddressNode* AppAddressNodePtr = RouteConstructor.GetFinalAddresesNodePtr();
 
         if(AppAddressNodePtr == nullptr)
@@ -37,9 +41,9 @@ void AddressTreeManager::DeployAppRoute(
     }
 };
 
-AddressTree* AddressTreeManager::GetAddressTreePtr()
+AddressNodeChildren* AddressTreeManager::GetAddressTreePtr()
 {
-    return &ServerAddressTree;
+    return AddressTreePtr.get();
 };
 
 

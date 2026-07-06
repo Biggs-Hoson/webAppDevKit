@@ -6,11 +6,10 @@
 #include <string>
 
 #include "../AddressNodeChildren/AddressNodeChildren.h"
-#include "../MatchCriteria/MatchCriteria.h"
 
 class RoutingContext;
 
-class AddressNode : public AddressNodeChildren {
+class AddressNode : public virtual AddressNodeChildren {
 	public:
 		// ---------- Constructor and Setup Functions ---------- //
 		AddressNode(AddressNodeTemplate&);
@@ -24,12 +23,12 @@ class AddressNode : public AddressNodeChildren {
 		// ---------- Routing Function ---------- //
 		bool RouteRequest(RoutingContext*);
         
-		MatchCriteria* GetMatchCritera();
+		std::string GetMatchCritera();
 
 		bool IsAppNode();
 
 	protected:
-        std::unique_ptr<MatchCriteria> MatchCriteraPtr;
+        std::string MatchCritera;
 		
         void CallIn() override;
 		bool AppNode;

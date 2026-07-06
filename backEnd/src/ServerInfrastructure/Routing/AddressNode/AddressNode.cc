@@ -1,27 +1,24 @@
 #include "AddressNode.h"
 
 #include "../RoutingContext/RoutingContext.h"
+#include <string>
 
 // ---------- Constructor and Setup Functions ---------- //
 
 AddressNode::AddressNode(AddressNodeTemplate& _nodeTemplate)
+: MatchCritera(_nodeTemplate.GetMatchCritera())
 {
     // Set Match Critera
-    SetMatchCritera(_nodeTemplate.GetMatchCritera());
-
     StructureFromTemplate(_nodeTemplate);
 }
 
 AddressNode::AddressNode(std::string criteriaString)
-{
-    // Set Match Critera
-    SetMatchCritera(criteriaString);
-}
+: MatchCritera(criteriaString) {}
 
 
 void AddressNode::SetMatchCritera(std::string criteriaString)
 {
-    MatchCriteraPtr = MatchCriteria::GetMatchCriteraPtr(criteriaString);
+    MatchCritera = criteriaString;
 }
 
 // Used so can create with an AppNodeTemplate, that doesn't have a match string
@@ -29,7 +26,7 @@ void AddressNode::StructureFromTemplate(AddressNodeTemplate& _nodeTemplate)
 {
     // Set Endpoint
     // Endpoint = ...
-
+    
     // Create subroutes
     for(AddressNodeTemplate& subRoute : _nodeTemplate.GetSubRoutes())
     {
@@ -56,9 +53,9 @@ bool AddressNode::RouteRequest(RoutingContext* routeContext)
     return true; // Routing Performed, no more action to take
 }
 
-MatchCriteria* AddressNode::GetMatchCritera()
+std::string AddressNode::GetMatchCritera()
 {
-    return MatchCriteraPtr.get();
+    return MatchCritera;
 }
 
 bool AddressNode::IsAppNode()
@@ -70,5 +67,5 @@ bool AddressNode::IsAppNode()
 
 void AddressNode::CallIn()
 {
-    std::cout << GetMatchCritera()->GetMatchString() << std::endl;
+    std::cout << GetMatchCritera() << std::endl;
 }

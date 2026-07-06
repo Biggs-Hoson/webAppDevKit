@@ -4,10 +4,12 @@
 
 RouteConstructorContext::RouteConstructorContext(
     AppRouteDeployment& routeDeploymentConfig,
-    AddressTree* initialTree
+    AddressNodeChildren* initialTree
 ) : RoutingContext(
         routeDeploymentConfig.GetDomain(), 
-        routeDeploymentConfig.GetPath()),
+        routeDeploymentConfig.GetPath(),
+        initialTree),
+        
     InitialAddressTree(initialTree)
 {
     InitialAddressTree->RouteRequestInChildren(this);
@@ -19,72 +21,47 @@ void RouteConstructorContext::HandleNotFound()
     // Handle by constructing AddressNode and DomainNodes in children
     if (CurrentNode == nullptr)
     {
-        if (RoutingInPath())
-        {
-            CurrentNode = InitialAddressTree->CreateSubRoute(*CurrentSegment);
+        CurrentNode = InitialAddressTree->CreateSubRoute(*CurrentSegment);
 
-            CurrentSegment++;
-        }
-        else
-        {
-            CurrentNode = InitialAddressTree->CreateDomain(*CurrentSegment);
-
-            CurrentSegment--;
-        }
+        IncrementSegment();
     }
 
+    ConstructRoute();
 
-    if(!RoutingInPath()) // still some domain to route
+    if(RoutingInPath()) // Segment above was path segment
+    {        
+        return;        
+    }
+
+    SetupPathRouting();
+
+    if (RoutingComplete())
     {
-        DomainNode* _domainNode = dynamic_cast<DomainNode*>(CurrentNode);
-        
-        while(CurrentSegment != FinalSegment)
-        {
-            _domainNode = _domainNode->CreateSubDomain(*CurrentSegment);
-
-            if (_domainNode == nullptr)
-            {
-                throw "Domain node constructed, but cast to domain Node failed.";
-            }
-
-            CurrentSegment--;
-        }
-
-        CurrentNode = _domainNode;
-
-        CurrentSegment = PathSplit.begin();
-        FinalSegment = PathSplit.end();
+        return;
     }
 
-    while(CurrentSegment != FinalSegment)
+    // Set up first path route
+    DomainNode* currentDomain = dynamic_cast<DomainNode*>(CurrentNode);
+
+    if (currentDomain == nullptr)
     {
-        CurrentNode = CurrentNode->CreateSubRoute(*CurrentSegment);
-
-        if (CurrentNode == nullptr)
-        {
-            throw "Path node was not constructed.";
-        }
-
-        CurrentSegment++;
+        throw "Domain Cast failed when switching to path";
     }
+
+    CurrentNode = currentDomain->ConstructFirstPath(*CurrentSegment);
+
+    CurrentSegment++;
+
+    ConstructRoute();
 }
 
 // Match Only static MatchCriteria, reject fail if at AddressNode.AppNode == true;
 bool RouteConstructorContext::CheckMatch(AddressNode* _node)
 {
-    MatchCriteria* match = _node->GetMatchCritera();
+    std::string matchCritera = _node->GetMatchCritera();
 
-    MatchStaticString* staticMatch = dynamic_cast<MatchStaticString*>(match);
-
-    if (staticMatch == nullptr)
+    if (matchCritera == "*" || matchCritera != *CurrentSegment)
     {
-        // MatchCriteria is not static
-        return false;
-    }
-
-    if (staticMatch->GetMatchString() != *CurrentSegment)
-    {
-        // MatchCriteria does not match
         return false;
     }
 
@@ -111,7 +88,17 @@ AddressNode* RouteConstructorContext::GetFinalAddresesNodePtr()
     return CurrentNode;
 }
 
-bool RouteConstructorContext::RoutingInPath()
+void RouteConstructorContext::ConstructRoute()
 {
-    return PathSplit.end() == FinalSegment;
+    while(!RoutingComplete())
+    {
+        CurrentNode = CurrentNode->CreateSubRoute(*CurrentSegment);
+
+        if (CurrentNode == nullptr)
+        {
+            throw "Node Construction failure";
+        }
+
+        IncrementSegment();
+    }
 }

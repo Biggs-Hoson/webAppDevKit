@@ -1,6 +1,7 @@
 #ifndef addressNodeTemplate
 #define addressNodeTemplate
 
+#include "json/value.h"
 #include <optional>
 #include <string>
 #include <vector>
@@ -25,6 +26,8 @@ class AddressNodeTemplate : public JsonToClass
         std::string MatchCriteria;
 
         void ParseSubRoutes(const Json::Value&);
+
+        void ParsePath(const Json::Value&);
 
         std::vector<AddressNodeTemplate> SubRoutes;
 };

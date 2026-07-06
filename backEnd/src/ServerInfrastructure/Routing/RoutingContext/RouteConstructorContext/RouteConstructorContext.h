@@ -3,14 +3,13 @@
 
 #include "../RoutingContext.h"
 
-#include "../../AddressNodeChildren/AddressTree/AddressTree.h"
 
 class RouteConstructorContext : public RoutingContext
 {
     public:
         RouteConstructorContext(
             AppRouteDeployment&,
-            AddressTree*
+            AddressNodeChildren*
         );
 
         // Do this by Constructing AddressNodes
@@ -21,7 +20,7 @@ class RouteConstructorContext : public RoutingContext
     protected:
         AddressNode* CurrentNode = nullptr;
 
-        AddressTree* InitialAddressTree;
+        AddressNodeChildren* InitialAddressTree;
 
         // Match Only static MatchCriteria, reject fail if at AddressNode.AppNode == true or if child routes not empty
         bool CheckMatch(AddressNode*) override;
@@ -29,7 +28,8 @@ class RouteConstructorContext : public RoutingContext
         // return current Node to be converted to an AppNode
         bool ResolveWithCurrentNode(AddressNode*) override;
 
-        bool RoutingInPath();
+    private:
+        void ConstructRoute();
 
 };
 

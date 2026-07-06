@@ -8,22 +8,6 @@ void DomainNode::RoutePath(RoutingContext* _route)
     PathRoutes.RouteRequestInChildren(_route);
 };
 
-AddressNode* DomainNode::CreateSubRoute(AddressNodeTemplate& nodeTemplate)
-{
-    return PathRoutes.CreateSubRoute(nodeTemplate);
-}
-
-AddressNode* DomainNode::CreateSubRoute(std::string matchCritera)
-{
-    return PathRoutes.CreateSubRoute(matchCritera);
-}
-
-DomainNode* DomainNode::CreateSubDomain(std::string matchCritera)
-{
-    Routes.push_back(std::make_unique<DomainNode>(matchCritera));
-
-    return dynamic_cast<DomainNode*>(Routes.back().get());
-}
 
 void DomainNode::Explore(int depth)
 {
@@ -40,4 +24,14 @@ void DomainNode::Explore(int depth)
     {
         PathRoutes.Explore(++depth);
     }
+}
+
+AddressNode* DomainNode::ConstructFirstPath(std::string _matchCriteria)
+{
+    return PathRoutes.CreateSubRoute(_matchCriteria);
+}
+
+AddressNode* DomainNode::CreateSubRoute(AddressNodeTemplate& _appTemplate)
+{
+    return PathRoutes.CreateSubRoute(_appTemplate);   
 }

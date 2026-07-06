@@ -1,17 +1,16 @@
 #include "./Managers/ServerManager/ServerManager.h"
 #include "./ComponentFunctions/MainFunctions/MainFunctions.h"
-#include "ServerInfrastructure/Routing/AddressNodeChildren/AddressTree/AddressTree.h"
 #include "drogon/HttpResponse.h"
 #include "./ServerInfrastructure/Routing/RoutingContext/HttpRoutingContext/HttpRoutingContext.h"
 
-AddressTree* AddressTreePtr = nullptr;
+AddressNodeChildren* AddressTreePtr = nullptr;
 ServerManager ServerManagerObj;
 
 int main() {
     ServerManagerObj.StartServer();
 
     AddressTreePtr = ServerManagerObj.GetAddressTreeManagerPtr()->GetAddressTreePtr();
-
+    
     drogon::app().registerHandlerViaRegex(".*", &commonHandler);
 
     drogon::app().run();
@@ -24,8 +23,6 @@ void commonHandler(
     std::function<void(const drogon::HttpResponsePtr&)>&& callback
 )
 {
-    std::cout << "Request recieved" << std::endl;
-
     // Create HTTP response
     drogon::HttpResponsePtr resp = drogon::HttpResponse::newHttpResponse();
     
@@ -43,9 +40,7 @@ void commonHandler(
             throw std::pair(503, "Server has no routes in current tree.");
         }
 
-        HttpRoutingContext requestContext(req, resp, callback);
-
-        AddressTreePtr->RouteRequestInChildren(&requestContext);
+        HttpRoutingContext requestContext(req, resp, callback, AddressTreePtr);
 
         return;
     }

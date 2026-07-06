@@ -5,7 +5,6 @@
 #include <vector>
 #include <optional>
 
-#include "../MatchCriteria/MatchCriteria.h"
 #include "../AddressNode/AddressNode.h"
 
 /*
@@ -18,7 +17,7 @@ class RoutingContext
     public:
         //RoutingContext(std::string) // combined domain and path
 
-        RoutingContext(std::string, std::string); // combined domain and path
+        RoutingContext(std::string, std::string, AddressNodeChildren*); // combined domain and path
 
         virtual std::optional<bool> MatchNode(AddressNode*);
 
@@ -33,10 +32,17 @@ class RoutingContext
 
         // Virtual Functions:
 
-        virtual bool CheckMatch(AddressNode*) = 0;
+        virtual bool CheckMatch(AddressNode*);
 
         virtual bool ResolveWithCurrentNode(AddressNode*) = 0;
 
+        void IncrementSegment();
+
+        bool RoutingInPath();
+
+        void SetupPathRouting();
+        
+        bool RoutingComplete();
 };
 
 #endif

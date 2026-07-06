@@ -13,7 +13,8 @@ class HttpRoutingContext : public RoutingContext
         HttpRoutingContext(
             const drogon::HttpRequestPtr&,
             const drogon::HttpResponsePtr&,
-            std::function<void(const drogon::HttpResponsePtr&)>
+            ResponseCallback,
+            AddressNodeChildren*
         );
 
         void HandleNotFound() override;
@@ -25,9 +26,11 @@ class HttpRoutingContext : public RoutingContext
 
         ResponseCallback& CallbackFunction;
 
-        bool CheckMatch(AddressNode*) override;
+        AddressNodeChildren* ServerAddressTree;
 
         bool ResolveWithCurrentNode(AddressNode*) override;
+
+        bool TopLevel = false;
 
 };
 

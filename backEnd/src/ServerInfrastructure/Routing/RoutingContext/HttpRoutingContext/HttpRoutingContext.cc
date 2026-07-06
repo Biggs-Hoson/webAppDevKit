@@ -3,36 +3,42 @@
 HttpRoutingContext::HttpRoutingContext(
     const drogon::HttpRequestPtr& req,
     const drogon::HttpResponsePtr& resp,
-    ResponseCallback callback
-) : RoutingContext(req->getHeader("Host"), req->getPath()),
+    ResponseCallback callback,
+    AddressNodeChildren* initialTree
+) : RoutingContext(req->getHeader("Host"), req->getPath(), initialTree),
     RequestPtr(req),
     ResponsePtr(resp),
-    CallbackFunction(callback)
-{}
-
-bool HttpRoutingContext::CheckMatch(AddressNode* _node)
+    CallbackFunction(callback),
+    ServerAddressTree(initialTree)
 {
-    return _node->GetMatchCritera()->MatchRequest(CurrentSegment);
+    ServerAddressTree->RouteRequestInChildren(this);
 }
 
 void HttpRoutingContext::HandleNotFound()
 {
-    if (true) // current node == 0 or current depth == 0
-    {
-        throw std::make_pair(404, "Domain could not be found");
-    }
-
     // else handle with current error handler node
-    
-    // else 
 
-    throw std::make_pair(404, "Route could not be found");
+    if (RoutingInPath()) // May want to give more descriptive location errors later
+    {
+        if(CurrentSegment == PathSplit.begin())
+        {
+            throw std::make_pair(404, "First Path Segment could not be found at this domain");
+        }
+
+        throw std::make_pair(404, "Path could not be found");
+    }
+    else {
+        if (CurrentSegment == --DomainSplit.end() || ++CurrentSegment == --DomainSplit.end())
+        {
+            throw std::make_pair(404, "Domain could not be found");
+        }
+
+        throw std::make_pair(404, "Subdomain could not be found");
+    }
 }
 
 bool HttpRoutingContext::ResolveWithCurrentNode(AddressNode*)
 {
-    std::cout << "Resolving" << std::endl;
-
     ResponsePtr->setBody("Success");
 
     CallbackFunction(ResponsePtr);

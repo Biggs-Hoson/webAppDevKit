@@ -23,12 +23,10 @@ class AddressNodeChildren
 
         virtual void Explore(int);
 
-
     protected:
-        
+        std::vector<std::unique_ptr<AddressNode>> Routes;
         
         virtual void CallIn();
-        std::vector<std::unique_ptr<AddressNode>> Routes;
 };
 
 
