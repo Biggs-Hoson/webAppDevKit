@@ -2,10 +2,11 @@
 
 AppDeploymentManager::AppDeploymentManager()
 {
+    // Exceedingly temporary constructor of the appropriate appDeploymentConfig
     Json::Value appDeployment1;
 
     appDeployment1["appNodeId"] = 0;
-    appDeployment1["appRoute"] = "*/notes";
+    appDeployment1["appRoute"] = "0.0.0.0/notes";
 
     Json::Value appDeployments;
     appDeployments[0] = appDeployment1;
@@ -15,7 +16,7 @@ AppDeploymentManager::AppDeploymentManager()
     notesConfig["appName"] = "myNotes";
     notesConfig["appVersion"] = "1.2.3";
     notesConfig["appHash"] = "abxyz";
-    notesConfig["appRouteDeployments"] = appDeployments;
+    notesConfig["appAppRouteDeployments"] = appDeployments;
 
     ConfiguredApps.push_back(AppConfig(notesConfig));
     
@@ -30,8 +31,8 @@ void AppDeploymentManager::DeployApp(AppId& _appId, AppLibraryManager& _appLibra
     // Get AppTemplate
     AppTemplate appTempate = _appLibraryManager.FindApp(AppName);
 
-    // Deploy App AddressTree
-    DeployAppAddressTree(appCfg, appTempate, _AddressTreeManager);
+    // Deploy App Addresses
+    DeployAppAddresses(appCfg, appTempate, _AddressTreeManager);
 };
 
 AppConfig& AppDeploymentManager::FindAppConfigById(AppId& _appId)
@@ -47,9 +48,9 @@ AppConfig& AppDeploymentManager::FindAppConfigById(AppId& _appId)
     throw "App config not found by configId: " + _appId.GetIdString();
 };
 
-void AppDeploymentManager::DeployAppAddressTree(AppConfig& _appConfig, AppTemplate& _appTemplate, AddressTreeManager& _AddressTreeManager)
+void AppDeploymentManager::DeployAppAddresses(AppConfig& _appConfig, AppTemplate& _appTemplate, AddressTreeManager& _AddressTreeManager)
 {
-    for (RouteDeployment& appRouteConfig : _appConfig.GetRouteDeployments())
+    for (AppRouteDeployment& appRouteConfig : _appConfig.GetAppRouteDeployments())
     {
         AppNodeTemplate& appRoute = _appTemplate.GetAppNodeById(appRouteConfig.GetAppNodeId());
 

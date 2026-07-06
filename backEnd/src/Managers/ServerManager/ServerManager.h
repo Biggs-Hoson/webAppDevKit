@@ -9,7 +9,6 @@
 #include "../AppLibraryManager/AppLibraryManager.h"
 #include "../AddressTreeManager/AddressTreeManager.h"
 #include "../AppDeploymentManager/AppDeploymentManager.h"
-#include "../../ServerInfrastructure/Routing/AddressTree/AddressTree.h"
 
 #include "../../ServerInfrastructure/Routing/AddressNode/AddressNode.h"
 #include "../../Apps/AppTemplate/AddressNodeTemplate/AddressNodeTemplate.h"
@@ -33,7 +32,7 @@ class ServerManager
 		AppDeploymentManager ServerAppDeploymentManager;
 		AppLibraryManager ServerAppLibraryManager;
 
-		// server Config
+		// Server Config
 		ServerConfig ServerCfg;
 };
 

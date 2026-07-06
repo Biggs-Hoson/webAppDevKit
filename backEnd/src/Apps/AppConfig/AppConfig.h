@@ -6,7 +6,7 @@
 
 
 #include "../../ComponentClasses/JsonToClass/JsonToClass.h"
-#include "RouteDeployment/RouteDeployment.h"
+#include "AppRouteDeployment/AppRouteDeployment.h"
 #include "../../ServerInfrastructure/Routing/AddressNode/AddressNode.h"
 #include "../AppComponents/AppVersion/AppVersion.h"
 #include "../AppComponents/AppId/AppId.h"
@@ -22,7 +22,7 @@ class AppConfig : public JsonToClass
 
         std::string GetAppHash();
 
-        std::vector<RouteDeployment>& GetRouteDeployments();
+        std::vector<AppRouteDeployment>& GetAppRouteDeployments();
 
     private:
 
@@ -38,8 +38,8 @@ class AppConfig : public JsonToClass
         void ParseAppHash(const Json::Value&);
         std::string AppHash;
 
-        void ParseAppRouteDeployments(const Json::Value&);
-        std::vector<RouteDeployment> RouteDeployments;
+        void ParseAppAppRouteDeployments(const Json::Value&);
+        std::vector<AppRouteDeployment> AppRouteDeployments;
 
         void CollectChildErrors(std::vector<std::string>& jsonErrors, std::string currentPath);
     };

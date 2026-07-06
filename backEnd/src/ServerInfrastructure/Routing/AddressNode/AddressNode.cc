@@ -1,14 +1,24 @@
 #include "AddressNode.h"
 
+#include "../RoutingContext/RoutingContext.h"
+#include <string>
 
-// ---------- Constructor Functions ---------- //
+// ---------- Constructor and Setup Functions ---------- //
 
 AddressNode::AddressNode(AddressNodeTemplate& _nodeTemplate)
+: MatchCritera(_nodeTemplate.GetMatchCritera())
 {
     // Set Match Critera
-    MatchCriteraPtr = MatchCriteria::GetMatchCriteraPtr(_nodeTemplate.GetMatchCritera());
-
     StructureFromTemplate(_nodeTemplate);
+}
+
+AddressNode::AddressNode(std::string criteriaString)
+: MatchCritera(criteriaString) {}
+
+
+void AddressNode::SetMatchCritera(std::string criteriaString)
+{
+    MatchCritera = criteriaString;
 }
 
 // Used so can create with an AppNodeTemplate, that doesn't have a match string
@@ -16,120 +26,46 @@ void AddressNode::StructureFromTemplate(AddressNodeTemplate& _nodeTemplate)
 {
     // Set Endpoint
     // Endpoint = ...
-
+    
     // Create subroutes
     for(AddressNodeTemplate& subRoute : _nodeTemplate.GetSubRoutes())
     {
         CreateSubRoute(subRoute);
     }
-}
+};
 
+// ---------- Routing Function ---------- //
 
-
-// ---------- Routing Functions ---------- //
-
-int AddressNode::RouteRequest(
-    const drogon::HttpRequestPtr& req,
-    drogon::HttpResponsePtr& resp, 
-    RequestedRoute* route
-)
+bool AddressNode::RouteRequest(RoutingContext* routeContext)
 {
+    std::optional<bool> routingState = routeContext->MatchNode(this);
+
     // Match Request
-
-    if (!MatchRequest(route)){
-    	// Match Unsuccessful, return 0 to attempt next AddressNode
-        return 0;
+    if (routingState.has_value()){
+        // routingState.value ==
+        // false:  Match Unsuccessful, return false to attempt next AddressNode
+        // true:  Routing Complete, return true to end Routing Request
+        return routingState.value();
     }
 
-    if (route->RoutingComplete())
-    {
-        return ResolveRequest(req, resp);
-    }
+    RouteRequestInChildren(routeContext);
 
-    return RouteRequestInSubroutes(req, resp, route);
+    return true; // Routing Performed, no more action to take
 }
 
-bool AddressNode::MatchRequest(
-    RequestedRoute* _route
-)
+std::string AddressNode::GetMatchCritera()
 {
-    return _route->MatchRequest(MatchCriteraPtr.get());
-};
-
-bool AddressNode::RouteRequestInSubroutes(
-    const drogon::HttpRequestPtr& req,
-    drogon::HttpResponsePtr& resp,
-    RequestedRoute* _route
-)
-{
-    for (std::unique_ptr<AddressNode>& subRoutePtr : SubRoutes){
-		int responseCode = subRoutePtr->RouteRequest(req, resp, _route);
-		if (responseCode != 0) {
-			return responseCode;
-		}
-	}
-
-    return 404;
-};
-
-// ---------- Routing Functions ---------- //
-
-void AddressNode::CreateSubRoute(AddressNodeTemplate _subNodeTemplate)
-{
-    SubRoutes.push_back(std::make_unique<AddressNode>(_subNodeTemplate));
-};
-
-int AddressNode::ResolveRequest(
-	const drogon::HttpRequestPtr& req,
-	drogon::HttpResponsePtr& resp
-)
-{
-	resp->setContentTypeCode(drogon::CT_TEXT_HTML);
-    resp->setBody("<html> Endpoint found at host: " + req->getHeader("Host") + "</html>");
-
-    resp->setBody("<html> Hello Mum! </html>");
-    
-    return 200;
-};
-
-AddressNode* AddressNode::GetAddressNodeInSubRoutes(AddressNodeAddress& _address, bool createMode)
-{
-    for(std::unique_ptr<AddressNode>& nodePtr : SubRoutes)
-    {
-        AddressNode* addressNodePtr = nodePtr->GetAddressNode(_address, createMode);
-
-        if (addressNodePtr != std::nullptr_t())
-        {
-            return addressNodePtr;
-        }
-    }
-
-    if (createMode)
-    {
-        //CreateRemainingAddress(_address);
-    }
-    
-    return std::nullptr_t();
+    return MatchCritera;
 }
 
-AddressNode* AddressNode::GetAddressNode(AddressNodeAddress& _address, bool createMode)
+bool AddressNode::IsAppNode()
 {
-    if(!_address.MatchRequest(MatchCriteraPtr.get()))
-    {
-        return nullptr;
-    }
+    return AppNode;
+}
 
-    if(_address.RoutingComplete())
-    {
-        return AddressFound(_address, createMode);
-    }
+// ---------- Endpoint functions ---------- //
 
-    return GetAddressNodeInSubRoutes(_address, createMode);
-
-    
-};
-
-AddressNode* AddressNode::AddressFound(AddressNodeAddress&, bool)
+void AddressNode::CallIn()
 {
-    return this;
+    std::cout << GetMatchCritera() << std::endl;
 }

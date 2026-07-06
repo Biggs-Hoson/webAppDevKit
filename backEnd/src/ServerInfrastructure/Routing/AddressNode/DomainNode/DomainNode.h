@@ -1,40 +1,28 @@
 #ifndef domainNode
 #define domainNode
 
-#include <memory>
-
 #include "../AddressNode.h"
+#include "../../AddressNodeChildren/DomainNodeChildren/DomainNodeChildren.h"
 
-#include "../../RequestedRoute/RequestedPath/RequestedPath.h"
-
-class DomainNode : public AddressNode
+class DomainNode : public AddressNode, public DomainNodeChildren
 {
 	public: 
-		int ResolveRequest(
-			const drogon::HttpRequestPtr&,
-			drogon::HttpResponsePtr&
-		) override;
+        DomainNode(std::string);
 
-		void CreateSubRoute(
-			AddressNodeTemplate _subNodeTemplate
-		) override;
+        void RoutePath(RoutingContext*);
 
+        void Explore(int) override;
+
+        AddressNode* ConstructFirstPath(std::string);
+
+        AddressNode* CreateSubRoute(AddressNodeTemplate&) override; // Overriden here so AppNodeTemplate doesn't create pathNodes in the DomainNodeChildren
+
+    protected:
 
     private:
-        std::vector<AddressNode> PathNodes;
+        AddressNodeChildren PathRoutes;
 
-        int RoutePath(
-            const drogon::HttpRequestPtr&,
-			drogon::HttpResponsePtr&, 
-			RequestedRoute*
-        );
 
-		int HitEndpoint(
-			const drogon::HttpRequestPtr&,
-			drogon::HttpResponsePtr&
-		);
-
-		AddressNode* AddressFound(AddressNodeAddress&, bool) override;
 };
 
 

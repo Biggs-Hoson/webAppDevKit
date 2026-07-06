@@ -3,7 +3,7 @@
     "appName": "myNotes",
     "appVersion": "1.2.3",
     "appHash": "abxyz",
-    "appRouteDeployments": [
+    "appAppRouteDeployments": [
         {
             "appNodeId": 0,
             "appRoute": "*/notes"

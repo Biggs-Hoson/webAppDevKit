@@ -10,7 +10,10 @@ AddressNodeTemplate::AddressNodeTemplate(const std::optional<const Json::Value>&
     //Register ExpectedKeys
     ExpectedKeys.push_back({"path", 
             Json::stringValue, 
-            true});
+            true,
+        [this](const Json::Value& value) 
+            { ParsePath(value); }
+        });
 
     ExpectedKeys.push_back({"subPaths", 
             Json::arrayValue, 
@@ -31,6 +34,11 @@ void AddressNodeTemplate::ParseSubRoutes(const Json::Value& subRoutesArr)
     {
         SubRoutes.push_back(AddressNodeTemplate(subRoute));
     }
+}
+
+void AddressNodeTemplate::ParsePath(const Json::Value& pathStr)
+{
+    MatchCriteria = pathStr.asString();
 }
 
 void AddressNodeTemplate::CollectChildErrors(std::vector<std::string>& jsonErrors, std::string currentPath)
