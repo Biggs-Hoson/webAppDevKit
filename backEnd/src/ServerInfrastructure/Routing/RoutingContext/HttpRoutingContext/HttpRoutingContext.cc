@@ -2,12 +2,10 @@
 
 HttpRoutingContext::HttpRoutingContext(
     const drogon::HttpRequestPtr& req,
-    const drogon::HttpResponsePtr& resp,
     ResponseCallback callback,
     AddressNodeChildren* initialTree
 ) : RoutingContext(req->getHeader("Host"), req->getPath(), initialTree),
     RequestPtr(req),
-    ResponsePtr(resp),
     CallbackFunction(callback),
     ServerAddressTree(initialTree)
 {
@@ -39,9 +37,11 @@ void HttpRoutingContext::HandleNotFound()
 
 bool HttpRoutingContext::ResolveWithCurrentNode(AddressNode*)
 {
-    ResponsePtr->setBody("Success");
+    drogon::HttpResponsePtr resp = drogon::HttpResponse::newHttpResponse();
 
-    CallbackFunction(ResponsePtr);
+    resp->setBody("Success");
+
+    CallbackFunction(resp);
 
     return true;
 }

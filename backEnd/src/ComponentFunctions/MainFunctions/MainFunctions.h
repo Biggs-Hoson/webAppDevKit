@@ -14,13 +14,13 @@
 
 #include "../../ServerInfrastructure/Routing/AddressNode/AddressNode.h"
 
-std::string HtmlErrorPage(const std::string&);
+using ResponseCallback = std::function<void(const drogon::HttpResponsePtr&)>;
 
 void HandleErrorResponse(
-    std::shared_ptr<drogon::HttpResponse>,
-    drogon::ContentType&,
+    const drogon::HttpRequestPtr&,
+    ResponseCallback,
     int,
-    const std::string&);
+    const std::optional<std::string>);
 
 std::string GetDefaultErrorMessage(int);
 

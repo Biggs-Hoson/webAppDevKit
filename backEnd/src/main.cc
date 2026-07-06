@@ -23,11 +23,6 @@ void commonHandler(
     std::function<void(const drogon::HttpResponsePtr&)>&& callback
 )
 {
-    // Create HTTP response
-    drogon::HttpResponsePtr resp = drogon::HttpResponse::newHttpResponse();
-    
-    drogon::ContentType desiredResponseType = drogon::CT_TEXT_HTML; // Detect response type in future
-
     try
     {
         if (AddressTreePtr == nullptr)
@@ -40,37 +35,28 @@ void commonHandler(
             throw std::pair(503, "Server has no routes in current tree.");
         }
 
-        HttpRoutingContext requestContext(req, resp, callback, AddressTreePtr);
-
-        return;
+        HttpRoutingContext requestContext(req, callback, AddressTreePtr);
     }
     catch (int& errorCode)
     {
-        std::string defaultErrorMessage = GetDefaultErrorMessage(errorCode);
-
-        HandleErrorResponse(resp, desiredResponseType, errorCode, defaultErrorMessage);
+        HandleErrorResponse(req, callback, errorCode, std::nullopt);
     }
     catch (const std::pair<int, const std::string>& errorCodeMessage)
     {
-        HandleErrorResponse(resp, desiredResponseType, errorCodeMessage.first, errorCodeMessage.second);
+        HandleErrorResponse(req, callback, errorCodeMessage.first, errorCodeMessage.second);
     }
     catch (const std::pair<int, const char*>& errorCodeMessage)
     {
-        std::string errorMessage = std::string(errorCodeMessage.second);
-        HandleErrorResponse(resp, desiredResponseType, errorCodeMessage.first, errorMessage);
+        HandleErrorResponse(req, callback, errorCodeMessage.first, errorCodeMessage.second);
     }
     catch (const std::exception& e) // Can add specific types of errors here if they correspond to specific HTML Codes.
     {
-        std::string exceptionMessage = std::string(e.what());
-        HandleErrorResponse(resp, desiredResponseType, 500, exceptionMessage);
+        HandleErrorResponse(req, callback, 500, e.what());
     }
     catch (...) 
     {
-        std::string exceptionMessage = GetDefaultErrorMessage(500);
-        HandleErrorResponse(resp, desiredResponseType, 500, exceptionMessage);
+        HandleErrorResponse(req, callback, 500, std::nullopt);
     }
-
-    callback(resp);
 };
 
 /*

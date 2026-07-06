@@ -1,4 +1,5 @@
 #include "MainFunctions.h"
+#include <optional>
 
 std::string GetDefaultErrorMessage(int errorCode) {
 	switch(errorCode)
@@ -17,24 +18,40 @@ std::string HtmlErrorPage(const std::string& message){
 };
 
 void HandleErrorResponse(
-    std::shared_ptr<drogon::HttpResponse> resp,
-    drogon::ContentType& desiredResponseType,
-    int errorCode,
-    const std::string& errorMessage)
+    const drogon::HttpRequestPtr& req,
+    ResponseCallback callbackFunc,
+    int errorCode = 500,
+    const std::optional<std::string> errorMessage = std::nullopt)
 {
+    drogon::HttpResponsePtr resp = drogon::HttpResponse::newHttpResponse();
+    
+    drogon::ContentType desiredResponseType = drogon::CT_TEXT_HTML; // Detect response type in future
+
     resp->setStatusCode(static_cast<drogon::HttpStatusCode>(errorCode));
+
+    std::string msg = "";
+
+    if (errorMessage == std::nullopt)
+    {
+        msg = GetDefaultErrorMessage(errorCode);
+    }
+    else {
+        msg = errorMessage.value();
+    }
 
     switch(desiredResponseType)
     {
         case drogon::CT_TEXT_HTML:
             resp->setContentTypeCode(drogon::CT_TEXT_HTML);
-            resp->setBody(HtmlErrorPage(errorMessage));
+            resp->setBody(HtmlErrorPage(msg));
             break;
 
         case drogon::CT_APPLICATION_JSON:
         default:
             resp->setContentTypeCode(drogon::CT_APPLICATION_JSON);
-            resp->setBody("\"Error Message\":\"" + errorMessage + "\"}");
+            resp->setBody("\"Error Message\":\"" + msg + "\"}");
             break;
     }
+    
+    callbackFunc(resp);
 };

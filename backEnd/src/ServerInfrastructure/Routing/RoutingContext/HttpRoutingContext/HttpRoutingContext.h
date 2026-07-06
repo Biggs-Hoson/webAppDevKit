@@ -12,7 +12,6 @@ class HttpRoutingContext : public RoutingContext
 
         HttpRoutingContext(
             const drogon::HttpRequestPtr&,
-            const drogon::HttpResponsePtr&,
             ResponseCallback,
             AddressNodeChildren*
         );
@@ -21,8 +20,6 @@ class HttpRoutingContext : public RoutingContext
     
     protected:
         drogon::HttpRequestPtr RequestPtr;
-
-        drogon::HttpResponsePtr ResponsePtr;
 
         ResponseCallback& CallbackFunction;
 
@@ -33,10 +30,6 @@ class HttpRoutingContext : public RoutingContext
         bool TopLevel = false;
 
 };
-
-
-
-
 			
 
 #endif
