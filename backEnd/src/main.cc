@@ -1,7 +1,7 @@
 #include "./Managers/ServerManager/ServerManager.h"
-#include "./ComponentFunctions/MainFunctions/MainFunctions.h"
 #include "drogon/HttpResponse.h"
 #include "./ServerInfrastructure/Routing/RoutingContext/HttpRoutingContext/HttpRoutingContext.h"
+#include "drogon/HttpTypes.h"
 
 AddressNodeChildren* AddressTreePtr = nullptr;
 ServerManager ServerManagerObj;
@@ -11,52 +11,25 @@ int main() {
 
     AddressTreePtr = ServerManagerObj.GetAddressTreeManagerPtr()->GetAddressTreePtr();
     
-    drogon::app().registerHandlerViaRegex(".*", &commonHandler);
+    drogon::app().registerHandlerViaRegex(
+        ".*", 
+        [](const drogon::HttpRequestPtr &request,
+           std::function<void(const drogon::HttpResponsePtr &)> &&callback) {
+            try {
+            {
+                HttpRoutingContext requestContext(request, callback, AddressTreePtr);
+            }
+            } catch (...) {
+                drogon::HttpResponsePtr resp = drogon::HttpResponse::newHttpResponse();
+                resp->setBody("An unhandled error occured");
+                resp->setStatusCode(drogon::HttpStatusCode::k500InternalServerError);
+                callback(resp);
+            }
+        });
 
     drogon::app().run();
 
     return 0;
-};
-
-void commonHandler(
-    const drogon::HttpRequestPtr& req,
-    std::function<void(const drogon::HttpResponsePtr&)>&& callback
-)
-{
-    try
-    {
-        if (AddressTreePtr == nullptr)
-        {
-            throw std::pair(503, "Server has no AddressTree set.");
-        }
-
-        if (AddressTreePtr->Empty())
-        {
-            throw std::pair(503, "Server has no routes in current tree.");
-        }
-
-        HttpRoutingContext requestContext(req, callback, AddressTreePtr);
-    }
-    catch (int& errorCode)
-    {
-        HandleErrorResponse(req, callback, errorCode, std::nullopt);
-    }
-    catch (const std::pair<int, const std::string>& errorCodeMessage)
-    {
-        HandleErrorResponse(req, callback, errorCodeMessage.first, errorCodeMessage.second);
-    }
-    catch (const std::pair<int, const char*>& errorCodeMessage)
-    {
-        HandleErrorResponse(req, callback, errorCodeMessage.first, errorCodeMessage.second);
-    }
-    catch (const std::exception& e) // Can add specific types of errors here if they correspond to specific HTML Codes.
-    {
-        HandleErrorResponse(req, callback, 500, e.what());
-    }
-    catch (...) 
-    {
-        HandleErrorResponse(req, callback, 500, std::nullopt);
-    }
 };
 
 /*
