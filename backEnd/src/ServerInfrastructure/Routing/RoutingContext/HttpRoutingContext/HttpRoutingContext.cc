@@ -21,11 +21,21 @@ HttpRoutingContext::HttpRoutingContext(
             throw std::pair(503, "Server has no routes in current tree.");
         }
 
+	    // Handle Path only top level node:
+        if (RoutingComplete())
+        {
+            AddressNode* topNode = dynamic_cast<AddressNode*>(initialTree);
+
+            if(topNode != nullptr)
+            {
+                ResolveWithCurrentNode(topNode);
+            }
+            else {
+                throw std::pair(404, "Server has no top level resource");
+            }
+        }
+
         ServerAddressTree->RouteRequestInChildren(this);
-    }
-    catch (int& errorCode)
-    {
-        HandleErrorResponse(errorCode);
     }
     catch (const std::pair<int, const std::string>& errorCodeMessage)
     {
@@ -39,21 +49,31 @@ HttpRoutingContext::HttpRoutingContext(
     {
         HandleErrorResponse(500, e.what());
     }
+    catch (int& errorCode)
+    {
+        HandleErrorResponse(errorCode);
+    }
     catch (...) 
     {
         HandleErrorResponse();
     }
-}
+};
 
 void HttpRoutingContext::HandleNotFound()
 {
     // else handle with current error handler node
 
+    std::cout << "Not Found" << std::endl;
+
     if (RoutingInPath()) // May want to give more descriptive location errors later
     {
+        std::cout << "Path" << std::endl;
+
         if(CurrentSegment == PathSplit.begin())
         {
-            throw std::make_pair(404, "First Path Segment could not be found at this domain");
+            std::cout << "Yeah" << std::endl;
+
+            throw std::make_pair(404, "First Path Segment could not be found");
         }
 
         throw std::make_pair(404, "Path could not be found");
@@ -66,9 +86,9 @@ void HttpRoutingContext::HandleNotFound()
 
         throw std::make_pair(404, "Subdomain could not be found");
     }
-}
+};
 
-bool HttpRoutingContext::ResolveWithCurrentNode(AddressNode*)
+bool HttpRoutingContext::ResolveWithCurrentNode(AddressNode* _node)
 {
     drogon::HttpResponsePtr resp = drogon::HttpResponse::newHttpResponse();
 
@@ -77,8 +97,7 @@ bool HttpRoutingContext::ResolveWithCurrentNode(AddressNode*)
     CallbackFunction(resp);
 
     return true;
-}
-
+};
 
 void HttpRoutingContext::HandleErrorResponse(
     int errorCode,
@@ -124,6 +143,6 @@ std::string HttpRoutingContext::GetDefaultErrorMessage(int errorCode) {
 	}
 };
 
-std::string HtmlErrorPage(const std::string& message){
+std::string HttpRoutingContext::HtmlErrorPage(const std::string& message){
 	return "<html>" + message + "</html>";
 };

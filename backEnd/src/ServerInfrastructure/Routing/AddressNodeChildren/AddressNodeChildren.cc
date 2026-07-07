@@ -8,7 +8,6 @@ void AddressNodeChildren::RouteRequestInChildren(
     RoutingContext* routeContext)
 {
     for (std::unique_ptr<AddressNode>& subRoutePtr : Routes){
-
 		if (subRoutePtr->RouteRequest(routeContext)) {
 			return;
 		}
