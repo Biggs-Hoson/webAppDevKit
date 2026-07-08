@@ -14,24 +14,18 @@
 #include "../../Apps/AppTemplate/AddressNodeTemplate/AddressNodeTemplate.h"
 #include "../../ServerInfrastructure/ServerConfig/ServerConfig.h"
 
+#include "../Manager.h"
+
 
 // Purpose: a higher level class for managing the server functions the user might interact with, especially for general server functions (Start Server) 
-class ServerManager
+class ServerCentralManager : public Manager
 {
 	public: 
-    	ServerManager();
+    	ServerCentralManager(ServerContextProvider*);
 
 		void StartServer();
 
-		AddressTreeManager* GetAddressTreeManagerPtr();
-
 	private:
-
-		// Manager Classes
-		AddressTreeManager ServerAddressTreeManager;
-		AppDeploymentManager ServerAppDeploymentManager;
-		AppLibraryManager ServerAppLibraryManager;
-
 		// Server Config
 		ServerConfig ServerCfg;
 };

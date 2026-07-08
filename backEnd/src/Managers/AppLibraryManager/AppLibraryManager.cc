@@ -5,9 +5,10 @@
 
 #include "AppLibraryManager.h"
 
-AppLibraryManager::AppLibraryManager(){
+AppLibraryManager::AppLibraryManager(ServerContextProvider* _provider)
+    : Manager(_provider)
+{
     RegisterApp("myNotes");
-
 };
 
 void AppLibraryManager::RegisterApp(std::string appName)

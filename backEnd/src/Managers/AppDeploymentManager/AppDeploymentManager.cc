@@ -1,6 +1,7 @@
 #include "AppDeploymentManager.h"
 
-AppDeploymentManager::AppDeploymentManager()
+AppDeploymentManager::AppDeploymentManager(ServerContextProvider* _provider)
+    : Manager(_provider)
 {
     // Exceedingly temporary constructor of the appropriate appDeploymentConfig
     Json::Value appDeployment1;

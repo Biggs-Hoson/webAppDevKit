@@ -6,10 +6,12 @@
 #include "../../Apps/AppConfig/AppConfig.h"
 #include "../../Apps/AppComponents/AppId/AppId.h"
 
-class AppDeploymentManager 
+#include "../Manager.h"
+
+class AppDeploymentManager : public Manager
 {
     public:
-        AppDeploymentManager();
+        AppDeploymentManager(ServerContextProvider*);
 
         std::vector<AppId> GetIdsList();
 

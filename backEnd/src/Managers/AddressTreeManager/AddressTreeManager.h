@@ -7,10 +7,12 @@
 #include "../../ServerInfrastructure/Routing/AddressNode/AddressNode.h"
 #include "../../Apps/AppConfig/AppRouteDeployment/AppRouteDeployment.h"
 
-class AddressTreeManager 
+#include "../Manager.h"
+
+class AddressTreeManager  : public Manager
 {
     public:
-        AddressTreeManager();
+        AddressTreeManager(ServerContextProvider*);
 
         void DeployAppRoute(AppRouteDeployment&, AppNodeTemplate&);
 

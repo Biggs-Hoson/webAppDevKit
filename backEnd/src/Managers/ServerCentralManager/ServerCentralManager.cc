@@ -1,9 +1,10 @@
-#include "ServerManager.h"
+#include "ServerCentralManager.h"
 
-ServerManager::ServerManager() { };
+ServerCentralManager::ServerCentralManager(ServerContextProvider* _provider)
+    : Manager(_provider) { };
 
 // Sets up server and deploys any saved app configs if possible
-void ServerManager::StartServer()
+void ServerCentralManager::StartServer()
 {
     // Deploy all configured apps
 
@@ -14,8 +15,3 @@ void ServerManager::StartServer()
         ServerAppDeploymentManager.DeployApp(Id, ServerAppLibraryManager, ServerAddressTreeManager);
     }
 };
-
-AddressTreeManager* ServerManager::GetAddressTreeManagerPtr()
-{
-    return &ServerAddressTreeManager;
-}

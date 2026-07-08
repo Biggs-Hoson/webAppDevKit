@@ -1,11 +1,11 @@
 #include "AddressTreeManager.h"
 
 #include "../../ServerInfrastructure/Routing/RoutingContext/RouteConstructorContext/RouteConstructorContext.h"
-#include "../../ServerInfrastructure/Routing/AddressNodeChildren/DomainNodeChildren/DomainNodeChildren.h"
 #include <memory>
 #include <ostream>
 
-AddressTreeManager::AddressTreeManager()
+AddressTreeManager::AddressTreeManager(ServerContextProvider* _provider)
+    : Manager(_provider)
 {
     // Inform AddressTree Manager of hosts
 

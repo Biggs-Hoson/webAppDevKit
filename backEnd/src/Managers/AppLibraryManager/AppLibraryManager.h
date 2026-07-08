@@ -8,10 +8,12 @@
 #include "../../ServerInfrastructure/Routing/AddressNode/AddressNode.h"
 #include "../../Apps/AppTemplate/AppTemplate.h"
 
-class AppLibraryManager
+#include "../Manager.h"
+
+class AppLibraryManager : public Manager
 {
 	public: 
-    	AppLibraryManager();
+    	AppLibraryManager(ServerContextProvider*);
         
 		/* RegisterApp
 

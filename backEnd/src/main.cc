@@ -1,19 +1,33 @@
-#include "./Managers/ServerManager/ServerManager.h"
-#include "drogon/HttpResponse.h"
-#include "./ServerInfrastructure/Routing/RoutingContext/HttpRoutingContext/HttpRoutingContext.h"
 #include "drogon/HttpTypes.h"
 
-AddressNodeChildren* AddressTreePtr = nullptr;
-ServerManager ServerManagerObj;
+
+// Infrastructure
+#include "./ServerInfrastructure/Routing/RoutingContext/HttpRoutingContext/HttpRoutingContext.h"
+#include "./ServerInfrastructure/ServerContextProvider/ServerContextProvider.h"
+
+// Managers
+#include "./Managers/ServerCentralManager/ServerCentralManager.h"
+
 
 int main() {
-    ServerManagerObj.StartServer();
+    // Main Variables
+    AddressNodeChildren* AddressTreePtr = nullptr;
 
-    AddressTreePtr = ServerManagerObj.GetAddressTreeManagerPtr()->GetAddressTreePtr();
+    ServerContextProvider ServerContext;
+
+    // Managers 
+    ServerCentralManager ServerManager(&ServerContext);
+    AddressTreeManager ServerAddressTreeManager(&ServerContext);
+    AppDeploymentManager ServerAppDeploymentManager(&ServerContext);
+    AppLibraryManager ServerAppLibraryManager(&ServerContext);
+
+    ServerManager.StartServer();
+
+    AddressTreePtr = ServerAddressTreeManager.GetAddressTreePtr();
     
     drogon::app().registerHandlerViaRegex(
         ".*", 
-        [](const drogon::HttpRequestPtr &request,
+        [AddressTreePtr](const drogon::HttpRequestPtr &request,
            std::function<void(const drogon::HttpResponsePtr &)> &&callback) {
             try {
             {
