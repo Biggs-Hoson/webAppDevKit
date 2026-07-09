@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>HTML Text Editor</title>
+    <style>
+        .text-box{
+            font-family: Arial, sans-serif;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="text-box" id="text-box" contenteditable="true" style="margin: auto; margin-top: 10rem; width: 200rem; min-height: 500px; border: solid black 1px;"><p></p></div>
+
+
+    <script>
+        const textbox = document.getElementById("text-box");
+
+        // Intuition says you can capture inputs and replace 
+        
+        textbox.addEventListener("click", (event) => {
+            // Move cursor to paragraph if outside of paragraph
+            console.log("clicked")
+        });
+
+        textbox.addEventListener("keydown", (event) => { 
+
+            // Start with specific key then check for special keys: shift, alt ctrl, meta
+            switch(event.key)
+            {
+                case "Enter":
+                    // Break elements after this one into new paragraph
+                    break;
+                default:
+                    return;
+            }
+            event.preventDefault();
+        });
+
+
+    </script>
+  </body>
+</html>
