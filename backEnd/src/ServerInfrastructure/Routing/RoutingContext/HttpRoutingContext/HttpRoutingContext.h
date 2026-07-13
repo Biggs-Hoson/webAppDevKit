@@ -30,13 +30,24 @@ class HttpRoutingContext : public RoutingContext
 
         bool TopLevel = false;
 
-        void HandleErrorResponse(
-            int errorCode = 500,
-            std::string errorMessage = "");
+        bool HandleErrorResponse();
 
-        std::string GetDefaultErrorMessage(int);
+        bool HandleErrorResponse(int);
+
+        bool HandleErrorResponse(int, std::string);
+
+        std::string GetDefaultErrorMessage();
 
         std::string HtmlErrorPage(const std::string&);
+
+        void UpdateRoutingContext(AddressNode*) override;
+
+    private:
+        EndpointResolver* ErrorResolverPtr;
+
+        int HttpCode = 500;
+
+        std::string HttpResponseMessage = "";
 };
 			
 

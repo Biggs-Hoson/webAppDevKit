@@ -4,9 +4,10 @@
 #include <memory>
 #include <ostream>
 
-AddressTreeManager::AddressTreeManager(ServerContextProvider* _provider)
-    : Manager(_provider)
+AddressTreeManager::AddressTreeManager()
 {
+    AddressTreeManagerPtr = this;
+
     // Inform AddressTree Manager of hosts
 
     AddressTreePtr = std::make_unique<AddressNodeChildren>();

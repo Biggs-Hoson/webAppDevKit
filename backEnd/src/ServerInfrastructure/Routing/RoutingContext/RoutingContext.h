@@ -43,6 +43,8 @@ class RoutingContext
         void SetupPathRouting();
         
         bool RoutingComplete();
+
+        virtual void UpdateRoutingContext(AddressNode*) {};
 };
 
 #endif

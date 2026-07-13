@@ -69,3 +69,13 @@ void AddressNode::CallIn()
 {
     std::cout << GetMatchCritera() << std::endl;
 }
+
+EndpointMap* AddressNode::GetEndpointMap()
+{
+    return EndpointMapPtr.get();
+}
+
+EndpointResolver* AddressNode::GetErrorResolver()
+{
+    return ErrorResolverPtr.get();
+}

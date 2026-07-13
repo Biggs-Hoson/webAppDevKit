@@ -5,9 +5,10 @@
 
 #include "AppLibraryManager.h"
 
-AppLibraryManager::AppLibraryManager(ServerContextProvider* _provider)
-    : Manager(_provider)
+AppLibraryManager::AppLibraryManager()
 {
+    AppLibraryManagerPtr = this;
+
     RegisterApp("myNotes");
 };
 

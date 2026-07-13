@@ -3,7 +3,6 @@
 
 // Infrastructure
 #include "./ServerInfrastructure/Routing/RoutingContext/HttpRoutingContext/HttpRoutingContext.h"
-#include "./ServerInfrastructure/ServerContextProvider/ServerContextProvider.h"
 
 // Managers
 #include "./Managers/ServerCentralManager/ServerCentralManager.h"
@@ -13,13 +12,11 @@ int main() {
     // Main Variables
     AddressNodeChildren* AddressTreePtr = nullptr;
 
-    ServerContextProvider ServerContext;
-
     // Managers 
-    ServerCentralManager ServerManager(&ServerContext);
-    AddressTreeManager ServerAddressTreeManager(&ServerContext);
-    AppDeploymentManager ServerAppDeploymentManager(&ServerContext);
-    AppLibraryManager ServerAppLibraryManager(&ServerContext);
+    ServerCentralManager ServerManager;
+    AddressTreeManager ServerAddressTreeManager;
+    AppDeploymentManager ServerAppDeploymentManager;
+    AppLibraryManager ServerAppLibraryManager;
 
     ServerManager.StartServer();
 

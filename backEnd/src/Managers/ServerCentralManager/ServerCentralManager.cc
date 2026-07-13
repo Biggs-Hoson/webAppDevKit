@@ -1,17 +1,19 @@
 #include "ServerCentralManager.h"
 
-ServerCentralManager::ServerCentralManager(ServerContextProvider* _provider)
-    : Manager(_provider) { };
+ServerCentralManager::ServerCentralManager()
+{
+    ServerCentralManagerPtr = this;
+};
 
 // Sets up server and deploys any saved app configs if possible
 void ServerCentralManager::StartServer()
 {
     // Deploy all configured apps
 
-    std::vector<AppId> DeployedAppsList = ServerAppDeploymentManager.GetIdsList();
+    std::vector<AppId> DeployedAppsList = AppDeploymentManagerPtr->GetIdsList();
 
     for (AppId& Id : DeployedAppsList )
     {
-        ServerAppDeploymentManager.DeployApp(Id, ServerAppLibraryManager, ServerAddressTreeManager);
+        AppDeploymentManagerPtr->DeployApp(Id);
     }
 };

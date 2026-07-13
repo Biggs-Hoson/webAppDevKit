@@ -21,8 +21,8 @@
 class ServerCentralManager : public Manager
 {
 	public: 
-    	ServerCentralManager(ServerContextProvider*);
-
+    	ServerCentralManager();
+		
 		void StartServer();
 
 	private:

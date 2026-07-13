@@ -11,11 +11,11 @@
 class AppDeploymentManager : public Manager
 {
     public:
-        AppDeploymentManager(ServerContextProvider*);
+        AppDeploymentManager();
 
         std::vector<AppId> GetIdsList();
 
-        void DeployApp(AppId&, AppLibraryManager&, AddressTreeManager&);
+        void DeployApp(AppId&);
 
     private:
         std::vector<AppConfig> ConfiguredApps;
@@ -24,8 +24,7 @@ class AppDeploymentManager : public Manager
 
         void DeployAppAddresses(
             AppConfig&,
-            AppTemplate&,
-            AddressTreeManager&);
+            AppTemplate&);
 };
 
 #endif

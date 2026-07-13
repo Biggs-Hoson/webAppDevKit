@@ -13,7 +13,7 @@
 class AppLibraryManager : public Manager
 {
 	public: 
-    	AppLibraryManager(ServerContextProvider*);
+    	AppLibraryManager();
         
 		/* RegisterApp
 

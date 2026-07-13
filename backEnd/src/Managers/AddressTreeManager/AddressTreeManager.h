@@ -9,10 +9,10 @@
 
 #include "../Manager.h"
 
-class AddressTreeManager  : public Manager
+class AddressTreeManager : public Manager
 {
     public:
-        AddressTreeManager(ServerContextProvider*);
+        AddressTreeManager();
 
         void DeployAppRoute(AppRouteDeployment&, AppNodeTemplate&);
 

@@ -6,6 +6,7 @@
 #include <string>
 
 #include "../AddressNodeChildren/AddressNodeChildren.h"
+#include "../../Endpoints/EndpointMap/EndpointMap.h"
 
 class RoutingContext;
 
@@ -27,10 +28,19 @@ class AddressNode : public virtual AddressNodeChildren {
 
 		bool IsAppNode();
 
+		EndpointMap* GetEndpointMap();
+
+		EndpointResolver* GetErrorResolver();
+
 	protected:
         std::string MatchCritera;
+
+		std::unique_ptr<EndpointMap> EndpointMapPtr;
+
+		std::unique_ptr<EndpointResolver> ErrorResolverPtr;
 		
         void CallIn() override;
+
 		bool AppNode;
 
 	private:

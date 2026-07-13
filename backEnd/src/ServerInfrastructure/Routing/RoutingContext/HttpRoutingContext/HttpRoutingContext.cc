@@ -9,17 +9,20 @@ HttpRoutingContext::HttpRoutingContext(
     CallbackFunction(callback),
     ServerAddressTree(initialTree)
 {
+    if (ServerAddressTree == nullptr)
+    {
+        HandleErrorResponse(503, "Server has no AddressTree set.");
+        return;
+    }
+    else if (ServerAddressTree->Empty())
+    {
+        HandleErrorResponse(503, "Server has no routes in current tree.");
+        return;
+    }
     try
     {
-        if (ServerAddressTree == nullptr)
-        {
-            throw std::pair(503, "Server has no AddressTree set.");
-        }
+        // Handle Cookies here.
 
-        if (ServerAddressTree->Empty())
-        {
-            throw std::pair(503, "Server has no routes in current tree.");
-        }
 
 	    // Handle Path only top level node:
         if (RoutingComplete())
@@ -31,8 +34,10 @@ HttpRoutingContext::HttpRoutingContext(
                 ResolveWithCurrentNode(topNode);
             }
             else {
-                throw std::pair(404, "Server has no top level resource");
+                HandleErrorResponse(404, "Server has no top level resource");
             }
+
+            return;
         }
 
         ServerAddressTree->RouteRequestInChildren(this);
@@ -59,83 +64,133 @@ HttpRoutingContext::HttpRoutingContext(
     }
 };
 
-void HttpRoutingContext::HandleNotFound()
+void HttpRoutingContext::UpdateRoutingContext(AddressNode* _node)
 {
-    // else handle with current error handler node
-
-    std::cout << "Not Found" << std::endl;
-
-    if (RoutingInPath()) // May want to give more descriptive location errors later
+    if(_node->GetErrorResolver() != nullptr)
     {
-        std::cout << "Path" << std::endl;
-
-        if(CurrentSegment == PathSplit.begin())
-        {
-            std::cout << "Yeah" << std::endl;
-
-            throw std::make_pair(404, "First Path Segment could not be found");
-        }
-
-        throw std::make_pair(404, "Path could not be found");
-    }
-    else {
-        if (CurrentSegment == --DomainSplit.end() || ++CurrentSegment == --DomainSplit.end())
-        {
-            throw std::make_pair(404, "Domain could not be found");
-        }
-
-        throw std::make_pair(404, "Subdomain could not be found");
+        ErrorResolverPtr = _node->GetErrorResolver();
     }
 };
 
 bool HttpRoutingContext::ResolveWithCurrentNode(AddressNode* _node)
 {
-    drogon::HttpResponsePtr resp = drogon::HttpResponse::newHttpResponse();
+    if(_node == nullptr)
+    {
+        HandleErrorResponse(404);
 
-    resp->setBody("Success");
+        return true;
+    }
+
+    EndpointMap* mapPtr = _node->GetEndpointMap();
+
+    if (mapPtr == nullptr)
+    {   
+        HandleErrorResponse(404, "Current URL has no handler");
+
+        return true;
+    }
+
+    EndpointResolver* resolver = mapPtr->GetEndpoint(RequestPtr->getMethod());
+    
+    if (resolver == nullptr)
+    {
+        HandleErrorResponse(405);
+
+        return true;
+    }
+
+    drogon::HttpResponsePtr resp = resolver->Resolve(this);
 
     CallbackFunction(resp);
 
     return true;
 };
 
-void HttpRoutingContext::HandleErrorResponse(
-    int errorCode,
-    std::string errorMessage)
+void HttpRoutingContext::HandleNotFound() // Not found while routing
 {
-    drogon::HttpResponsePtr resp = drogon::HttpResponse::newHttpResponse();
-    
-    drogon::ContentType desiredResponseType = drogon::CT_TEXT_HTML; // Detect response type in future
-
-    resp->setStatusCode(static_cast<drogon::HttpStatusCode>(errorCode));
-
-    if (errorMessage == "")
+    if (RoutingInPath()) // May want to give more descriptive location errors later
     {
-        errorMessage = GetDefaultErrorMessage(errorCode);
+        if(CurrentSegment == PathSplit.begin())
+        {
+            HttpResponseMessage = "First Path Segment could not be found";
+        }
+
+        HttpResponseMessage = "Path could not be found";
+    }
+    else {
+        if (CurrentSegment == --DomainSplit.end() || ++CurrentSegment == --DomainSplit.end())
+        {
+            HttpResponseMessage = "Domain could not be found";
+        }
+
+        HttpResponseMessage = "Subdomain could not be found";
     }
 
-    switch(desiredResponseType)
-    {
-        case drogon::CT_TEXT_HTML:
-            resp->setContentTypeCode(drogon::CT_TEXT_HTML);
-            resp->setBody(HtmlErrorPage(errorMessage));
-            break;
+    HandleErrorResponse(404);
+};
 
-        case drogon::CT_APPLICATION_JSON:
-        default:
-            resp->setContentTypeCode(drogon::CT_APPLICATION_JSON);
-            resp->setBody("\"Error Message\":\"" + errorMessage + "\"}");
-            break;
+bool HttpRoutingContext::HandleErrorResponse()
+{
+    drogon::HttpResponsePtr resp;
+
+    // From context, determine the appropriate level of detail / error response
+    if(ErrorResolverPtr != nullptr)
+    {
+        resp = ErrorResolverPtr->Resolve(this);
+    }
+    else {
+        resp = drogon::HttpResponse::newHttpResponse();
+    
+        drogon::ContentType desiredResponseType = drogon::CT_TEXT_HTML; // Detect response type in future
+
+        resp->setStatusCode(static_cast<drogon::HttpStatusCode>(HttpCode));
+
+        if (HttpResponseMessage == "")
+        {
+            HttpResponseMessage = GetDefaultErrorMessage();
+        }
+
+        switch(desiredResponseType)
+        {
+            case drogon::CT_TEXT_HTML:
+                resp->setContentTypeCode(drogon::CT_TEXT_HTML);
+                resp->setBody(HtmlErrorPage(HttpResponseMessage));
+                break;
+
+            case drogon::CT_APPLICATION_JSON:
+            default:
+                resp->setContentTypeCode(drogon::CT_APPLICATION_JSON);
+                resp->setBody("\"Error Message\":\"" + HttpResponseMessage + "\"}");
+                break;
+        }
     }
     
     CallbackFunction(resp);
+
+    return true;
 };
 
-std::string HttpRoutingContext::GetDefaultErrorMessage(int errorCode) {
-	switch(errorCode)
+bool HttpRoutingContext::HandleErrorResponse(int _code)
+{
+    HttpCode = _code;
+
+    return HandleErrorResponse();
+}
+
+bool HttpRoutingContext::HandleErrorResponse(int _code, std::string _msg)
+{
+    HttpResponseMessage = _msg;
+
+    return HandleErrorResponse(_code);   
+}
+
+std::string HttpRoutingContext::GetDefaultErrorMessage() {
+	switch(HttpCode)
     {
 		case 404:
 			return "Resource not found.";
+		case 405:
+			return "Incorrect method.";
 		case 500:
             return "Something went wrong with the server. The specific problem could not be identified.";
 		default:

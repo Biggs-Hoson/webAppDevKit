@@ -42,6 +42,7 @@ std::optional<bool> RoutingContext::MatchNode(AddressNode* _node) // Use Node Ty
     IncrementSegment();
 
     // Grab any new context from current node
+    UpdateRoutingContext(_node);
 
     if (!RoutingComplete())
     {

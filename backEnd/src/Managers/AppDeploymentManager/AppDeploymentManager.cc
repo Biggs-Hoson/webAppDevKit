@@ -1,8 +1,9 @@
 #include "AppDeploymentManager.h"
 
-AppDeploymentManager::AppDeploymentManager(ServerContextProvider* _provider)
-    : Manager(_provider)
+AppDeploymentManager::AppDeploymentManager()
 {
+    AppDeploymentManagerPtr = this;
+
     // Exceedingly temporary constructor of the appropriate appDeploymentConfig
     Json::Value appDeployment1;
 
@@ -23,17 +24,17 @@ AppDeploymentManager::AppDeploymentManager(ServerContextProvider* _provider)
     
 };
 
-void AppDeploymentManager::DeployApp(AppId& _appId, AppLibraryManager& _appLibraryManager, AddressTreeManager& _AddressTreeManager)
+void AppDeploymentManager::DeployApp(AppId& _appId)
 {
     AppConfig& appCfg = FindAppConfigById(_appId);
 
     std::string AppName = appCfg.GetAppName();
 
     // Get AppTemplate
-    AppTemplate appTempate = _appLibraryManager.FindApp(AppName);
+    AppTemplate appTempate = AppLibraryManagerPtr->FindApp(AppName);
 
     // Deploy App Addresses
-    DeployAppAddresses(appCfg, appTempate, _AddressTreeManager);
+    DeployAppAddresses(appCfg, appTempate);
 };
 
 AppConfig& AppDeploymentManager::FindAppConfigById(AppId& _appId)
@@ -49,13 +50,13 @@ AppConfig& AppDeploymentManager::FindAppConfigById(AppId& _appId)
     throw "App config not found by configId: " + _appId.GetIdString();
 };
 
-void AppDeploymentManager::DeployAppAddresses(AppConfig& _appConfig, AppTemplate& _appTemplate, AddressTreeManager& _AddressTreeManager)
+void AppDeploymentManager::DeployAppAddresses(AppConfig& _appConfig, AppTemplate& _appTemplate)
 {
     for (AppRouteDeployment& appRouteConfig : _appConfig.GetAppRouteDeployments())
     {
         AppNodeTemplate& appRoute = _appTemplate.GetAppNodeById(appRouteConfig.GetAppNodeId());
 
-        _AddressTreeManager.DeployAppRoute(appRouteConfig, appRoute);
+        AddressTreeManagerPtr->DeployAppRoute(appRouteConfig, appRoute);
     }
 };
 

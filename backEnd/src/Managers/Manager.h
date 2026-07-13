@@ -1,15 +1,18 @@
 #ifndef manager
 #define manager
 
-#include "../ServerInfrastructure/ServerContextProvider/ServerContextProvider.h"
+class AddressTreeManager;
+class AppDeploymentManager;
+class AppLibraryManager;
+class ServerCentralManager;
 
 class Manager
 {
-    public:
-        Manager(ServerContextProvider* _provider) : ServerContextProviderPtr(_provider) {};
-
     protected:
-        ServerContextProvider* ServerContextProviderPtr;
+        static AddressTreeManager* AddressTreeManagerPtr;
+        static AppDeploymentManager* AppDeploymentManagerPtr;
+        static AppLibraryManager* AppLibraryManagerPtr;
+        static ServerCentralManager* ServerCentralManagerPtr;
 };
 
 #endif
