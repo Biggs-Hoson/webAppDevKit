@@ -9,7 +9,7 @@ AppLibraryManager::AppLibraryManager()
 {
     AppLibraryManagerPtr = this;
 
-    RegisterApp("myNotes");
+    RegisterApp("games");
 };
 
 void AppLibraryManager::RegisterApp(std::string appName)

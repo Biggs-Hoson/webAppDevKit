@@ -3,11 +3,13 @@
 
 #include "json/value.h"
 #include <drogon/drogon.h>
+#include <memory>
 #include <string>
 
 #include "AppNodeTemplate/AppNodeTemplate.h"
 #include "../../ComponentClasses/JsonToClass/JsonToClass.h"
 #include "../AppComponents/AppVersion/AppVersion.h"
+#include "./DatabaseObjectsTemplate/DatabaseObjectsTemplate.h"
 
 /* AppTemplate
 
@@ -23,6 +25,8 @@ containing the correctly typed fields and properties
 of app.
 
 */
+
+
 
 class AppTemplate : public JsonToClass
 {
@@ -52,6 +56,9 @@ class AppTemplate : public JsonToClass
         // Front end fields
         std::vector<AppNodeTemplate> AppAddressNodes;
         void ParseRouteMap(const Json::Value&);
+
+        std::shared_ptr<DatabaseObjectsTemplate> dboTemplate;
+        void ParseDatabaseObjects(const Json::Value&);
 
 };
 

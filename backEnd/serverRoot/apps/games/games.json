@@ -1,0 +1,130 @@
+{
+  "appName": "gamesTracker",
+  "appVersion": "0.1.0",
+  "databaseObjects": {
+    "relationalData": [
+      {
+        "comment": "DATABASE CHOSEN AT CONFIGURATION",
+        "tableName": "games",
+        "columns": [
+          {
+            "columnName": "Id",
+            "type": "GUIDPK",
+            "comment": "Special type that enforces PK, and auto Incrementing requirements"
+          }, {
+            "columnName": "Name",
+            "type": "varchar80"
+          }, {
+            "columnName": "Developer",
+            "type": "varchar40"
+          }, {
+            "columnName": "Franchise",
+            "type": "FK",
+            "nullable": true,
+            "comment": "May want to spin this off into a relations section that builds the appropriate columns and restrictions"
+          }, {
+            "columnName": "Released",
+            "type": "Boolean"
+          }, {
+            "columnName": "Duration",
+            "type": "int"
+          }, {
+            "columnName": "Rating",
+            "type": "int",
+            "comment": "0 to 10 with 0 meaning ignore and"
+          }, {
+            "columnName": "Performance",
+            "type": ["Potato", "Handheld", "Deck", "Low End Computer", "Mid End Computer", "High End Computer", "Super Computer"]
+          }, {
+            "columnName": "Ownership Platform",
+            "type": ["STEAM", "ITCH", "GOG", "OTHER"],
+            "nullable": true
+          }, {
+            "columnName": "Source",
+            "type": ["STEAM", "ITCH", "GOG", "OTHER"],
+            "Comment": "Used to indicate which extention table to connect"
+          }
+        ]
+      }, {
+        "tableName": "steamGamesExt",
+        "attributes" : {
+          "EXTENTION": {
+            "table": "games",
+            "condition": "@target.Source == 'STEAM'" 
+          }
+        },
+        "columns": [
+          {
+            "columnName": "Publisher",
+            "type": "varchar40"
+          }, {
+            "columnName": "steamId",
+            "type": "varchar20"
+          }
+        ]
+      }, {
+        "tableName": "Franchise",
+        "columns": [
+          {
+            "columnName": "Id",
+            "type": "GUIDPK"
+          }, {
+            "columnName": "Parent Franchise",
+            "type": "LK"
+          }, {
+            "columnName": "Name",
+            "type": "varchar40"
+          }, {
+            "columnName": "Game Count",
+            "type": "int"
+          }
+        ]
+      }, {
+        "tableName": "Genre",
+        "columns": [
+          {
+            "columnName": "Id",
+            "type": "GUIDPK"
+          }, {
+            "columnName": "Parent Genre",
+            "type": "LK",
+            "comment": "i.e Action Roguelike is a subgenre of Rogulike"
+          }, {
+            "columnName": "Name",
+            "type": "varchar40"
+          }
+        ]
+      }
+    ],
+    "Relations": [
+      {
+        "Name": "GameToFranchise",
+        "Table1": "Games",
+        "Table2": "Franchise",
+        "Type": "ManyToOne",
+        "Optional": true
+      },
+      {
+        "Name": "GameToGenre",
+        "Table1": "Games",
+        "Table2": "Genre",
+        "Type": "ManyToMany"
+      }
+    ]
+  },
+  "endpoints": {
+    
+  },
+  "routeMap": [
+    {
+      "defaultRoute": ["games"],
+      "endpoint":
+      {
+        "type": "html",
+        "content": "<html><h2>Games Tracker App Home</h2></html>"
+      },
+      "subPaths": []
+    }
+  ]
+}
+

@@ -1,11 +1,14 @@
 #include "AppTemplate.h"
 #include "AppNodeTemplate/AppNodeTemplate.h"
 #include "../AppComponents/AppVersion/AppVersion.h"
+#include "DatabaseObjectsTemplate/DatabaseObjectsTemplate.h"
 #include "json/value.h"
 
 #include <exception>
+#include <memory>
 #include <string>
 #include <vector>
+
 
 AppTemplate::AppTemplate(Json::Value& _appJson)
 {
@@ -26,6 +29,14 @@ AppTemplate::AppTemplate(Json::Value& _appJson)
         true, 
         [this](const Json::Value& value) 
             { ParseAppVersion(value); }
+    });
+
+    ExpectedKeys.push_back({
+        "databaseObjects", 
+        Json::arrayValue,  // Wrong but kept for testing
+        false, 
+        [this](const Json::Value& value) 
+            { ParseDatabaseObjects(value); }
     });
 
     ExpectedKeys.push_back({
@@ -61,6 +72,11 @@ void AppTemplate::ParseAppVersion(const Json::Value& _appVersion)
     
 };
 
+void AppTemplate::ParseDatabaseObjects(const Json::Value& _databaseObjects)
+{
+    dboTemplate = std::make_shared<DatabaseObjectsTemplate>(_databaseObjects);
+}
+
 void AppTemplate::ParseRouteMap(const Json::Value& _routeMap)
 {
     int appRouteCount = 0;
@@ -81,6 +97,8 @@ void AppTemplate::ParseRouteMap(const Json::Value& _routeMap)
 
 void AppTemplate::CollectChildErrors(std::vector<std::string>& jsonErrors, std::string currentPath)
 {
+    dboTemplate->CollectErrors(jsonErrors, currentPath + "/databaseObjects");
+
     for (int i = 0; i < AppAddressNodes.size(); i++) {
         AppAddressNodes[i].CollectErrors(jsonErrors, currentPath + "/routeMap/" + std::to_string(i));
     }

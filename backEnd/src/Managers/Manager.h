@@ -5,6 +5,7 @@ class AddressTreeManager;
 class AppDeploymentManager;
 class AppLibraryManager;
 class ServerCentralManager;
+class DatabaseManager;
 
 class Manager
 {
@@ -13,6 +14,7 @@ class Manager
         static AppDeploymentManager* AppDeploymentManagerPtr;
         static AppLibraryManager* AppLibraryManagerPtr;
         static ServerCentralManager* ServerCentralManagerPtr;
+        static DatabaseManager* DatabaseManagerPtr;
 };
 
 #endif

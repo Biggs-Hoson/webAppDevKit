@@ -15,7 +15,7 @@ AppDeploymentManager::AppDeploymentManager()
 
     Json::Value notesConfig;
     notesConfig["appId"] = 0;
-    notesConfig["appName"] = "myNotes";
+    notesConfig["appName"] = "games";
     notesConfig["appVersion"] = "1.2.3";
     notesConfig["appHash"] = "abxyz";
     notesConfig["appAppRouteDeployments"] = appDeployments;
@@ -32,6 +32,9 @@ void AppDeploymentManager::DeployApp(AppId& _appId)
 
     // Get AppTemplate
     AppTemplate appTempate = AppLibraryManagerPtr->FindApp(AppName);
+
+    // Deploy database Objects
+    
 
     // Deploy App Addresses
     DeployAppAddresses(appCfg, appTempate);

@@ -15,6 +15,10 @@ const std::map<Json::ValueType, std::string> TypeNames =
 };
 
 
+JsonToClass::JsonToClass(std::string _keyName)
+ : KeyName(_keyName) {};
+
+
 void JsonToClass::ParseJson(const Json::Value& _jsonObject)
 {
     // Create Mappings in constructor then run this to trigger all functions
@@ -74,6 +78,8 @@ void JsonToClass::ParseJson(const Json::Value& _jsonObject)
         }
     }
 };
+
+
 
 void JsonToClass::CollectErrors(std::vector<std::string>& _jsonErrors, std::string currentPath)
 {

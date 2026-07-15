@@ -3,6 +3,7 @@
 
 #include <string>
 
+// AppId refers to the ID of the deployed app, the AppHash is the aspect of the App file that is unchanged.
 class AppId
 {
     public:

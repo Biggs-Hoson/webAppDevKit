@@ -1,0 +1,1 @@
+class JsonArrayToClass<T template > : 
