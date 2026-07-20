@@ -1,6 +1,7 @@
 #ifndef jsonDeserializedObject
 #define jsonDeserializedObject
 
+#include "json/value.h"
 #include <drogon/drogon.h>
 #include <functional>
 #include <map>
@@ -17,9 +18,9 @@
 // Register fields using function parsers
 #define FIELD_TYPE_FUNCTIONS(TypeName, Type) 		    \
 	void Register##TypeName##Field(const std::string,	\
-        std::function<void(Type)>&); 				    \
+        std::function<void(Type)>); 				    \
 	void Register##TypeName##Field(const std::string,	\
-        std::function<int(Type)>&);
+        std::function<int(Type)>);
 
 // Integer return on parsing functions used for validation within ParsingRules set
 // Parsing functions are executed in a try catch loop where whatever error is caught is entered into the errors 
@@ -77,22 +78,18 @@ class JsonDeserializedObject
 
 		// ----- Array Fields ----- //
 
+        // Underlying Functions for arrays of:
+        // Homogenous primitive: Direct assignment
+        // Homogenous primitive: Function Applied ElementWise
+        // Homogenous Object: Creation and use of .DeserializedJson(ArrElement)
+        // - For a function, use the generic function
+        // Anything else can use the elementwise handler function defined below:
 
+        // Generic Function applied elementwise
+        REGISTER_FIELD_TYPE_FUNCTIONS(Array, const Json::Value&)
 
-        /*/
-        // Array type json fields with primitive types
-        #define X(TypeName, Type)  REGISTER_FIELD_TYPE_PTR(##TypeName##Array, vector<Type>&)
-            SIMPLE_TYPES_LIST(X)
-        #undef 
-
-	
-        template<typename T> // Type can either be derived from JsonDeserializedObject or accept a Json::Value& in its constructor, otherwise, will need to be handled by the function
-            void RegisterObjectArrayField(const std::string, T*);
-            void RegisterOptionalObjectArrayField(const std::string, T*);
-
-        // Inhomogeneous type array
-        REGISTER_FIELD_TYPE_FUNCTIONS(Array, Json::Value&)
-	    */
+        // How are rules made for arrays? (maybe just keep them simple)
+        
 
 	private:
             std::map<std::string, std::function<void(const Json::Value&)>> KeyParsers;

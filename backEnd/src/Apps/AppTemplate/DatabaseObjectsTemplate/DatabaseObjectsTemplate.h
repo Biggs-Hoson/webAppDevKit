@@ -7,13 +7,11 @@
 
 class DatabaseObjectsTemplate : public JsonDeserializedObject
 {
-    /*
-    public:
-        DatabaseObjectsTemplate(const Json::Value&);
-
-    protected:
-        void CollectChildErrors(std::vector<std::string>&, std::string) override;
     
+    public:
+        DatabaseObjectsTemplate() {};
+
+    /*
     private:
         std::vector<TableTemplate> Tables;
         void ParseRelationalDataTables(const Json::Value&);

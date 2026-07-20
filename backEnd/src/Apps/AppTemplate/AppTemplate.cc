@@ -1,7 +1,6 @@
 #include "AppTemplate.h"
 #include "AppNodeTemplate/AppNodeTemplate.h"
 #include "../AppComponents/AppVersion/AppVersion.h"
-#include "DatabaseObjectsTemplate/DatabaseObjectsTemplate.h"
 #include "json/value.h"
 
 #include <string>
@@ -10,6 +9,14 @@
 
 AppTemplate::AppTemplate(Json::Value& _appJson)
 {
+    RegisterStringField("appName", &AppName);
+
+    RegisterStringField("appVersion",
+        [this](std::string x)
+            { Version.SetVersion(x); });
+
+    RegisterObjectField("databaseObjects", &dboTemplate);
+
     /*
     Version = AppVersion("0");
 
@@ -46,6 +53,7 @@ AppTemplate::AppTemplate(Json::Value& _appJson)
             { ParseRouteMap(value); }
     });
     */
+    
     DeserializedJson(_appJson, &DeserializationErrors);
 };
 

@@ -53,6 +53,9 @@ class AppTemplate : public JsonDeserializedObject
         // Route Map:
         std::vector<AppNodeTemplate> AppAddressNodes;
 
+        //Database Objects:
+        DatabaseObjectsTemplate dboTemplate;
+
     /*
 
     private:
@@ -64,7 +67,7 @@ class AppTemplate : public JsonDeserializedObject
         // Front end fields
         void ParseRouteMap(const Json::Value&);
 
-        std::shared_ptr<DatabaseObjectsTemplate> dboTemplate;
+        std::shared_ptr<> ;
         void ParseDatabaseObjects(const Json::Value&);
 */
 };
