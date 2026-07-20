@@ -1,4 +1,5 @@
 #include "./JsonDeserializedObject.h"
+#include <string>
 
 
 // Register fields using pointer assignment
@@ -92,3 +93,20 @@ CC_SIMPLE_TYPES_LIST(CC_REGISTER_FIELD_TYPE_PTR)
 CC_REGISTER_FIELD_TYPE_FUNCTIONS(, const Json::Value&, ,)
 
 // Child Objects
+
+REGISTER_FIELD_TYPE_PTR(Object, JsonDeserializedObject*) // 2
+
+
+void JsonDeserializedObject::RegisterObjectField(
+    const std::string key, 
+    JsonDeserializedObject* obj)
+{
+    std::string parserName = key + ":obj";
+    KeyParsers[parserName] =
+        [obj, parserName, this, key](const Json::Value& value)
+        {
+            int result = obj->DeserializedJson(
+                value, ErrorsPtr, CurrentPath + key);
+            ParsersUsed.push_back(parserName + ":" + std::to_string(result));
+        };
+}

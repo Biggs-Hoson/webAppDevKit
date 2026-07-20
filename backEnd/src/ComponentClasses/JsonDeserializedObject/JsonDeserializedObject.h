@@ -39,6 +39,7 @@
     M(String, std::string)		\
     M(Boolean, bool)
 
+
 class JsonDeserializationErrors
 {
 	public: 
@@ -56,7 +57,7 @@ class JsonDeserializedObject
 {
     protected:
         // Called once at top level template class, and in sub-objects automatically
-        void DeserializedJson(
+        int DeserializedJson(
             const Json::Value&, 
             JsonDeserializationErrors*,
             std::string = "/"); 
@@ -65,25 +66,20 @@ class JsonDeserializedObject
         void RemoveParsingRule(std::string);
         
 
-        // Non-specific type handler
-        REGISTER_FIELD_TYPE_FUNCTIONS(, const Json::Value&) // 2 * 2
+        // Non-specific type handler (2 * 2)
+        REGISTER_FIELD_TYPE_FUNCTIONS(, const Json::Value&) 
 
-        
+        // Primitive type field registration functions (5 * 6)
+		SIMPLE_TYPES_LIST(REGISTER_FIELD_TYPE)
 
-        // Primitive type field registration functions
-		SIMPLE_TYPES_LIST(REGISTER_FIELD_TYPE) // 5 * 6
+        // Object type json fields (2)
+        REGISTER_FIELD_TYPE_PTR(Object, JsonDeserializedObject)
 
-        
-
-        // Object type json fields
-        REGISTER_FIELD_TYPE_PTR(Object, JsonDeserializedObject*) // 2
-
-        /*
-        
 		// ----- Array Fields ----- //
 
-        
 
+
+        /*/
         // Array type json fields with primitive types
         #define X(TypeName, Type)  REGISTER_FIELD_TYPE_PTR(##TypeName##Array, vector<Type>&)
             SIMPLE_TYPES_LIST(X)
@@ -96,8 +92,7 @@ class JsonDeserializedObject
 
         // Inhomogeneous type array
         REGISTER_FIELD_TYPE_FUNCTIONS(Array, Json::Value&)
-	
-        */
+	    */
 
 	private:
             std::map<std::string, std::function<void(const Json::Value&)>> KeyParsers;

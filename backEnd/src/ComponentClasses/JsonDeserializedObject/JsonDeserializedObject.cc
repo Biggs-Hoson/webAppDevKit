@@ -21,7 +21,7 @@ void JsonDeserializationErrors::AppendError(std::string path, std::string error)
     Errors.push_back(std::make_pair(path, error));
 }
 
-void JsonDeserializedObject::DeserializedJson(
+int JsonDeserializedObject::DeserializedJson(
     const Json::Value& jsonToDeserialize, 
     JsonDeserializationErrors* _errorsPtr,
     std::string _currentPath)
@@ -35,7 +35,7 @@ void JsonDeserializedObject::DeserializedJson(
 	if (jsonKeys.size() == 0 && ParsingRules.size() > 0)
     {
         RecordError("Object contains no data");
-        return;
+        return 0;
     }    
 
     for (std::string key : jsonKeys)
@@ -79,6 +79,10 @@ void JsonDeserializedObject::DeserializedJson(
 
 	// Loop over rules, apply parsing logic to see if they are passing or failing
 
+    // If object has any specific type or mode as defined by its present keys,
+    // return the appropriate int
+
+    return 0;
 };
 
 std::string JsonDeserializedObject::GetJsonTypeName(Json::ValueType type)
