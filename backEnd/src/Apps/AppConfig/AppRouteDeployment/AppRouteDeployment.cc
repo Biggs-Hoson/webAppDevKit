@@ -1,6 +1,8 @@
 #include "AppRouteDeployment.h"
 #include "json/value.h"
 
+/*
+
 AppRouteDeployment::AppRouteDeployment(const Json::Value& AppRouteDeploymentJson)
 {
     ExpectedKeys.push_back({
@@ -36,6 +38,8 @@ void AppRouteDeployment::CollectChildErrors(std::vector<std::string>& jsonErrors
 {
 
 };
+
+*/
 
 int AppRouteDeployment::GetAppNodeId()
 {

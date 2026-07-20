@@ -4,14 +4,13 @@
 #include "DatabaseObjectsTemplate/DatabaseObjectsTemplate.h"
 #include "json/value.h"
 
-#include <exception>
-#include <memory>
 #include <string>
 #include <vector>
 
 
 AppTemplate::AppTemplate(Json::Value& _appJson)
 {
+    /*
     Version = AppVersion("0");
 
     //Register ExpectedKeys
@@ -46,12 +45,12 @@ AppTemplate::AppTemplate(Json::Value& _appJson)
         [this](const Json::Value& value) 
             { ParseRouteMap(value); }
     });
-
-    ParseJson(_appJson);
-
-    CollectChildErrors(JsonErrors, "");
+    */
+    DeserializedJson(_appJson, &DeserializationErrors);
 };
 
+
+/*
 void AppTemplate::ParseAppName(const Json::Value& _appName)
 {
     AppName = _appName.asString();
@@ -104,6 +103,8 @@ void AppTemplate::CollectChildErrors(std::vector<std::string>& jsonErrors, std::
     }
 }
 
+*/
+
 AppNodeTemplate& AppTemplate::GetAppNodeById(int appId)
 {
     return AppAddressNodes[appId];
@@ -123,3 +124,4 @@ AppVersion& AppTemplate::GetVersion()
 {
     return Version;
 }
+

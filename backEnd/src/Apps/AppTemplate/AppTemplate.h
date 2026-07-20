@@ -7,7 +7,7 @@
 #include <string>
 
 #include "AppNodeTemplate/AppNodeTemplate.h"
-#include "../../ComponentClasses/JsonToClass/JsonToClass.h"
+#include "../../ComponentClasses/JsonDeserializedObject/JsonDeserializedObject.h"
 #include "../AppComponents/AppVersion/AppVersion.h"
 #include "./DatabaseObjectsTemplate/DatabaseObjectsTemplate.h"
 
@@ -28,9 +28,10 @@ of app.
 
 
 
-class AppTemplate : public JsonToClass
+class AppTemplate : public JsonDeserializedObject
 {
     public:
+    
         AppTemplate(Json::Value&); // For now, construct using AppJson
 
         AppNodeTemplate& GetAppNodeById(int);
@@ -41,25 +42,31 @@ class AppTemplate : public JsonToClass
 
         AppVersion& GetVersion();
 
-    protected:
-        void CollectChildErrors(std::vector<std::string>&, std::string) override;
+    private:
+        // Metadata fields
+        std::string AppName;
+
+        AppVersion Version;
+
+        JsonDeserializationErrors DeserializationErrors;
+
+        // Route Map:
+        std::vector<AppNodeTemplate> AppAddressNodes;
+
+    /*
 
     private:
 
-        // Metadata fields
-        std::string AppName;
         void ParseAppName(const Json::Value&);
 
-        AppVersion Version;
         void ParseAppVersion(const Json::Value&);
 
         // Front end fields
-        std::vector<AppNodeTemplate> AppAddressNodes;
         void ParseRouteMap(const Json::Value&);
 
         std::shared_ptr<DatabaseObjectsTemplate> dboTemplate;
         void ParseDatabaseObjects(const Json::Value&);
-
+*/
 };
 
 #endif

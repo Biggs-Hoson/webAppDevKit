@@ -1,10 +1,11 @@
 #ifndef serverConfig
 #define serverConfig
 
-#include "../../ComponentClasses/JsonToClass/JsonToClass.h"
+#include "../../ComponentClasses/JsonDeserializedObject/JsonDeserializedObject.h"
 
-class ServerConfig : public JsonToClass
+class ServerConfig : public JsonDeserializedObject
 {
+    /*
     public:
         ServerConfig(std::string = "./config.json");
 
@@ -15,6 +16,8 @@ class ServerConfig : public JsonToClass
         std::vector<std::string> RootDomains;
         
         void CollectChildErrors(std::vector<std::string>& jsonErrors, std::string currentPath);
+
+        */
 };
 
 #endif

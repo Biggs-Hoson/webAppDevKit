@@ -1,12 +1,12 @@
 #ifndef appRouteDeployment
 #define appRouteDeployment
 
-#include "../../../ComponentClasses/JsonToClass/JsonToClass.h"
+#include "../../../ComponentClasses/JsonDeserializedObject/JsonDeserializedObject.h"
 
-class AppRouteDeployment : public JsonToClass
+class AppRouteDeployment : public JsonDeserializedObject
 {
     public: 
-        AppRouteDeployment(const Json::Value& AppRouteDeploymentJson);
+        AppRouteDeployment() {};
 
         int GetAppNodeId();
 
@@ -20,12 +20,17 @@ class AppRouteDeployment : public JsonToClass
 
         // Id of the particular AppNode in the AppTemplate
         int AppNodeId;
-        void ParseAppNodeId(const Json::Value&);
 
         std::string AppRoute;
+
+        /*
+
+        void ParseAppNodeId(const Json::Value&);
         void ParseAppRoute(const Json::Value&);
 
         void CollectChildErrors(std::vector<std::string>& jsonErrors, std::string currentPath);
+
+        */
 };
 
 

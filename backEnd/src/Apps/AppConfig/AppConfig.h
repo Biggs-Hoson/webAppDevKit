@@ -5,16 +5,17 @@
 #include <vector>
 
 
-#include "../../ComponentClasses/JsonToClass/JsonToClass.h"
+#include "../../ComponentClasses/JsonDeserializedObject/JsonDeserializedObject.h"
 #include "AppRouteDeployment/AppRouteDeployment.h"
 #include "../../ServerInfrastructure/Routing/AddressNode/AddressNode.h"
 #include "../AppComponents/AppVersion/AppVersion.h"
 #include "../AppComponents/AppId/AppId.h"
 
-class AppConfig : public JsonToClass
+class AppConfig : public JsonDeserializedObject
 {
     public: 
-        AppConfig(const Json::Value&);
+    
+        AppConfig(const Json::Value&) {};
 
         AppId GetConfigId();
 
@@ -25,6 +26,19 @@ class AppConfig : public JsonToClass
         std::vector<AppRouteDeployment>& GetAppRouteDeployments();
 
     private:
+        AppId AppConfigId;
+
+        float f;
+
+        std::string AppName;
+
+        AppVersion CorrespondingAppVersion;
+
+        std::string AppHash;
+
+        std::vector<AppRouteDeployment> AppRouteDeployments;
+
+    /*
 
         void ParseAppId(const Json::Value&);
         AppId AppConfigId;
@@ -42,6 +56,8 @@ class AppConfig : public JsonToClass
         std::vector<AppRouteDeployment> AppRouteDeployments;
 
         void CollectChildErrors(std::vector<std::string>& jsonErrors, std::string currentPath);
+
+        */
     };
 
 

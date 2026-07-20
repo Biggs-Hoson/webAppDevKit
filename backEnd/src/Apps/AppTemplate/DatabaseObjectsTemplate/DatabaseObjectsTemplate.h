@@ -1,12 +1,13 @@
 #ifndef databaseObjectsTemplate
 #define databaseObjectsTemplate
 
-#include "../../../ComponentClasses/JsonToClass/JsonToClass.h"
+#include "../../../ComponentClasses/JsonDeserializedObject/JsonDeserializedObject.h"
 #include "./TableTemplate/TableTemplate.h"
 #include "json/value.h"
 
-class DatabaseObjectsTemplate : public JsonToClass
+class DatabaseObjectsTemplate : public JsonDeserializedObject
 {
+    /*
     public:
         DatabaseObjectsTemplate(const Json::Value&);
 
@@ -16,6 +17,8 @@ class DatabaseObjectsTemplate : public JsonToClass
     private:
         std::vector<TableTemplate> Tables;
         void ParseRelationalDataTables(const Json::Value&);
+
+        */
 };
 
 

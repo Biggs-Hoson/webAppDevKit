@@ -11,7 +11,7 @@
 class AppNodeTemplate : public AddressNodeTemplate
 {
     public:
-        AppNodeTemplate(const Json::Value&);
+        AppNodeTemplate() {};
 
     private:
         std::string defaultDeployment;

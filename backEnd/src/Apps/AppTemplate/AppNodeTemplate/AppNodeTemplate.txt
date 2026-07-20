@@ -5,7 +5,6 @@
 #include <optional>
 
 AppNodeTemplate::AppNodeTemplate(const Json::Value& AddressNodeJson)
-    : AddressNodeTemplate(std::nullopt)
 {
     ExpectedKeys.push_back({
         "defaultRoute", 

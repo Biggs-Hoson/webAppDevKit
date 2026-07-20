@@ -88,7 +88,7 @@
           }, {
             "columnName": "Parent Genre",
             "type": "LK",
-            "comment": "i.e Action Roguelike is a subgenre of Rogulike"
+            "comminvalid preprocessing tokenent": "i.e Action Roguelike is a subgenre of Rogulike"
           }, {
             "columnName": "Name",
             "type": "varchar40"

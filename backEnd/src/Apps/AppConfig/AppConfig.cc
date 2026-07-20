@@ -1,6 +1,8 @@
 #include "AppConfig.h"
 #include "AppRouteDeployment/AppRouteDeployment.h"
 
+/*
+
 AppConfig::AppConfig(const Json::Value& configData) {
 
     //Register ExpectedKeys
@@ -92,6 +94,8 @@ void AppConfig::CollectChildErrors(std::vector<std::string>& jsonErrors, std::st
         AppRouteDeployments[i].CollectErrors(jsonErrors, currentPath + "/appAppRouteDeployments/" + std::to_string(i));
     }
 };
+
+*/
 
 //Getters:
 AppId AppConfig::GetConfigId()

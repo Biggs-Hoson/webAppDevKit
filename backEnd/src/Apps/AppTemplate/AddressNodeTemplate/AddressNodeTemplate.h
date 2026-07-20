@@ -7,15 +7,19 @@
 #include <vector>
 
 #include <drogon/drogon.h>
-#include "../../../ComponentClasses/JsonToClass/JsonToClass.h"
+#include "../../../ComponentClasses/JsonDeserializedObject/JsonDeserializedObject.h"
 
 
-class AddressNodeTemplate : public JsonToClass
+class AddressNodeTemplate : public JsonDeserializedObject
 {
     public:
+        std::string GetMatchCritera() {return "hello";}
+        std::vector<AddressNodeTemplate>& GetSubRoutes() {return SubRoutes;}
+
+    /*
         AddressNodeTemplate(const std::optional<const Json::Value>&);
 
-        std::string GetMatchCritera();
+        
 
         std::vector<AddressNodeTemplate>& GetSubRoutes();
 
@@ -28,8 +32,9 @@ class AddressNodeTemplate : public JsonToClass
         void ParseSubRoutes(const Json::Value&);
 
         void ParsePath(const Json::Value&);
-
+        */
         std::vector<AddressNodeTemplate> SubRoutes;
+        
 };
 
 #endif
