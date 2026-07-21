@@ -12,7 +12,7 @@ std::vector<std::string> SplitStringOnChar(
 
     while (std::getline(ss, item, delimiter)) {
         if (!item.empty())
-            outputVector.push_back(item);
+            outputVector.emplace_back(item);
     }
 
     return outputVector;

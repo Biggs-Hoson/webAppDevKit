@@ -20,7 +20,7 @@ AppDeploymentManager::AppDeploymentManager()
     notesConfig["appHash"] = "abxyz";
     notesConfig["appAppRouteDeployments"] = appDeployments;
 
-    ConfiguredApps.push_back(AppConfig(notesConfig));
+    ConfiguredApps.emplace_back(notesConfig);
     
 };
 
@@ -69,7 +69,7 @@ std::vector<AppId> AppDeploymentManager::GetIdsList()
 
     for (AppConfig& config : ConfiguredApps )
     {
-        AppIds.push_back(config.GetConfigId());
+        AppIds.emplace_back(config.GetConfigId());
     }
 
     return AppIds;

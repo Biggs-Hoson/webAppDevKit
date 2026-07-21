@@ -28,7 +28,7 @@ void AppLibraryManager::RegisterApp(std::string appName)
 
     appJsonFile.close();
 
-    AppLibrary.push_back(AppTemplate(appJson));
+    AppLibrary.emplace_back(appJson);
 }
 
 

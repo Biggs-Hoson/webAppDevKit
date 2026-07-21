@@ -6,19 +6,20 @@
 
 const std::map<Json::ValueType, std::string> TypeNames = 
 {
-    {Json::nullValue, "null"},
-    {Json::intValue, "int"},
-    {Json::uintValue, "unsigned int"},
-    {Json::realValue, "real"},
-    {Json::stringValue, "string"},
-    {Json::booleanValue, "boolean"},
-    {Json::arrayValue, "array"},
-    {Json::objectValue, "object"},
+    {Json::nullValue, ":null"},
+    {Json::intValue, ":int"},
+    {Json::uintValue, ":uint"},
+    {Json::realValue, ":real"},
+    {Json::stringValue, ":str"},
+    {Json::booleanValue, ":bool"},
+    {Json::arrayValue, ":arr"},
+    {Json::objectValue, ":obj"}
 };
+
 
 void JsonDeserializationErrors::AppendError(std::string path, std::string error)
 {
-    Errors.push_back(std::make_pair(path, error));
+    Errors.emplace_back(std::make_pair(path, error));
 }
 
 int JsonDeserializedObject::DeserializedJson(
@@ -40,39 +41,39 @@ int JsonDeserializedObject::DeserializedJson(
 
     for (std::string key : jsonKeys)
     {
-    	std::string parserKey = key + GetJsonTypeName(jsonToDeserialize[key].type());
-	
-        try
+        Json::ValueType type = jsonToDeserialize[key].type();
+
+        if (type == Json::ValueType::arrayValue)
         {
-            if (KeyParsers.count(parserKey) > 0)
-            {
-                KeyParsers[parserKey](jsonToDeserialize[key]);
+            int appRouteCount = 0;
+
+            for (const Json::Value& jsonElement : jsonToDeserialize[key]) {
+
+                JsonArrayIndex[key] = appRouteCount;
+
+                type = jsonElement.type();
+
+                if (type == Json::ValueType::arrayValue)
+                {
+                    RecordError(
+                        "multi-dimensional arrays, not supported", 
+                        key + "/" + std::to_string(appRouteCount));
+                }
+                else {
+                    ParseKey(
+                    jsonElement,
+                    type, 
+                    key + ":arr", 
+                    key + "/" + std::to_string(appRouteCount));
+                }
+                
+                ++appRouteCount;
             }
-            else if (KeyParsers.count(key) > 0) // Generic Parser Fallback
-            {
-                KeyParsers[key](jsonToDeserialize[key]);
-            }
-            else
-            {
-                RecordError("No parser found for key.", key);
-            }
+
         }
-        catch (std::string err)
-        {
-            RecordError(err, key);
-        }
-        catch (char* err)
-        {
-            RecordError(err, key);
-        }
-        catch (std::exception ex)
-        {
-            RecordError(ex.what(), key);
-        }
-        catch (...)
-        {
-            RecordError("Something when wrong while parsing this value", key);
-        }
+
+
+        ParseKey(jsonToDeserialize[key],type,key);
     }
 
     // Error Checking
@@ -85,30 +86,6 @@ int JsonDeserializedObject::DeserializedJson(
     return 0;
 };
 
-std::string JsonDeserializedObject::GetJsonTypeName(Json::ValueType type)
-{
-    switch(type)
-    {
-        case Json::ValueType::nullValue:
-            return ":null";
-        case Json::ValueType::intValue:
-            return ":int";
-        case Json::ValueType::uintValue:
-            return ":uint";
-        case Json::ValueType::realValue:
-            return ":real";
-        case Json::ValueType::stringValue:
-            return ":str";
-        case Json::ValueType::booleanValue:
-            return ":bool";
-        case Json::ValueType::arrayValue:
-            return ":arr";
-        case Json::ValueType::objectValue:
-            return ":obj";
-    }
-
-    return ":unknown";
-};
 
 void JsonDeserializedObject::RecordError(std::string error, std::string key)
 {
@@ -134,4 +111,50 @@ void JsonDeserializedObject::RemoveParsingRule(std::string rule)
     if( iter != ParsingRules.end() )
         ParsingRules.erase( rule );
     else throw ( "not found" );
+};
+
+void JsonDeserializedObject::ParseKey(
+    const Json::Value& jsonToDeserialize,
+    Json::ValueType& type,
+    std::string key,
+    std::string location)
+{
+    if (location == "")
+    {
+        location = key;
+    }
+
+    std::string parserKey = key + TypeNames.at(type);
+	
+    try
+    {
+        if (KeyParsers.count(parserKey) > 0)
+        {
+            KeyParsers[parserKey](jsonToDeserialize);
+        }
+        else if (KeyParsers.count(key) > 0) // Generic Parser Fallback
+        {
+            KeyParsers[key](jsonToDeserialize);
+        }
+        else
+        {
+            RecordError("No parser found for key.", key);
+        }
+    }
+    catch (std::string err)
+    {
+        RecordError(err, location);
+    }
+    catch (char* err)
+    {
+        RecordError(err, location);
+    }
+    catch (std::exception ex)
+    {
+        RecordError(ex.what(), location);
+    }
+    catch (...)
+    {
+        RecordError("Something when wrong while parsing this value", location);
+    }
 };

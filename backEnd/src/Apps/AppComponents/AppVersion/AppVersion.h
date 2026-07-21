@@ -15,9 +15,11 @@ class AppVersion
 
         const std::vector<int>& GetVersion();
 
-        bool operator > (AppVersion& other);
+        bool operator > (AppVersion&);
 
-        bool operator == (AppVersion& other);
+        bool operator == (AppVersion&);
+
+        void operator = (std::string);
 
     private:
         std::vector<int> VersionArray;

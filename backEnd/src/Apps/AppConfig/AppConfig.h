@@ -28,8 +28,6 @@ class AppConfig : public JsonDeserializedObject
     private:
         AppId AppConfigId;
 
-        float f;
-
         std::string AppName;
 
         AppVersion CorrespondingAppVersion;
@@ -54,9 +52,6 @@ class AppConfig : public JsonDeserializedObject
 
         void ParseAppAppRouteDeployments(const Json::Value&);
         std::vector<AppRouteDeployment> AppRouteDeployments;
-
-        void CollectChildErrors(std::vector<std::string>& jsonErrors, std::string currentPath);
-
         */
     };
 

@@ -26,11 +26,13 @@ int main() {
         ".*", 
         [AddressTreePtr](const drogon::HttpRequestPtr &request,
            std::function<void(const drogon::HttpResponsePtr &)> &&callback) {
-            try {
+
+            try 
             {
                 HttpRoutingContext requestContext(request, callback, AddressTreePtr);
-            }
-            } catch (...) {
+            } 
+            catch (...) 
+            {
                 drogon::HttpResponsePtr resp = drogon::HttpResponse::newHttpResponse();
                 resp->setBody("An unhandled error occured");
                 resp->setStatusCode(drogon::HttpStatusCode::k500InternalServerError);

@@ -30,7 +30,7 @@ AddressNode* AddressNodeChildren::CreateSubRoute(AddressNodeTemplate& _subNodeTe
 
 AddressNode* AddressNodeChildren::CreateSubRoute(std::string matchCritera)
 {
-    Routes.push_back(std::make_unique<AddressNode>(matchCritera));
+    Routes.emplace_back(std::make_unique<AddressNode>(matchCritera));
 
 	return Routes.back().get();
 };

@@ -8,29 +8,28 @@
 #include <optional>
 
 // Register fields using pointer assignment
-#define FIELD_TYPE_PTR(TypeName, Type)			                \
-	void Register##TypeName##Field(const std::string, Type*);
+#define FIELD_TYPE_PTR(TypeName)			                \
+    template <typename T>                                   \
+	void Register##TypeName##Field(const std::string, T*);
 
-#define REGISTER_FIELD_TYPE_PTR(TypeName, Type)		\
-	FIELD_TYPE_PTR(TypeName, Type)			        \
-	FIELD_TYPE_PTR(Optional##TypeName, Type)
+#define REGISTER_FIELD_TYPE_PTR(TypeName)		\
+	FIELD_TYPE_PTR(TypeName)			        \
+	FIELD_TYPE_PTR(Optional##TypeName)
 
 // Register fields using function parsers
-#define FIELD_TYPE_FUNCTIONS(TypeName, Type) 		    \
-	void Register##TypeName##Field(const std::string,	\
-        std::function<void(Type)>); 				    \
-	void Register##TypeName##Field(const std::string,	\
+#define REGISTER_FIELD_TYPE_FUNCTIONS(TypeName, Type) 		    \
+	void Register##TypeName##Field(const std::string,	        \
+        std::function<void(Type)>); 				            \
+	void RegisterOptional##TypeName##Field(const std::string,	\
+        std::function<void(Type)>); 				            \
+	void RegisterOptional##TypeName##Field(const std::string,	\
         std::function<int(Type)>);
 
 // Integer return on parsing functions used for validation within ParsingRules set
 // Parsing functions are executed in a try catch loop where whatever error is caught is entered into the errors 
 
-#define REGISTER_FIELD_TYPE_FUNCTIONS(TypeName, Type)	\
-	FIELD_TYPE_FUNCTIONS(TypeName, Type)			    \
-	FIELD_TYPE_FUNCTIONS(Optional##TypeName, Type)
-
 #define REGISTER_FIELD_TYPE(TypeName, Type)       	\
-	REGISTER_FIELD_TYPE_PTR(TypeName, Type)			\
+	REGISTER_FIELD_TYPE_PTR(TypeName)			\
 	REGISTER_FIELD_TYPE_FUNCTIONS(TypeName, Type)
 
 #define SIMPLE_TYPES_LIST(M)	\
@@ -40,6 +39,33 @@
     M(String, std::string)		\
     M(Boolean, bool)
 
+// ----- Array Versions Of Above ----- //
+
+// Register fields using pointer assignment
+#define REGISTER_ARRAY_FIELD_TYPE_PTR(TypeName)			                        \
+    template <typename T>                                               \
+	void Register##TypeName##ArrayElement(const std::string, std::vector<T>*);
+
+// Register fields using function parsers
+#define REGISTER_ARRAY_FIELD_TYPE_FUNCTIONS(TypeName, Type) 		    \
+	void Register##TypeName##ArrayElement(const std::string,	\
+        std::function<void(Type)>); 				            \
+	void Register##TypeName##ArrayElement(const std::string,	\
+        std::function<int(Type)>);
+
+// Integer return on parsing functions used for validation within ParsingRules set
+// Parsing functions are executed in a try catch loop where whatever error is caught is entered into the errors 
+
+#define REGISTER_ARRAY_FIELD_TYPE(TypeName, Type)       	\
+	REGISTER_ARRAY_FIELD_TYPE_PTR(TypeName)			\
+	REGISTER_ARRAY_FIELD_TYPE_FUNCTIONS(TypeName, Type)
+
+#define SIMPLE_TYPES_LIST(M)	\
+    M(Int, int)                 \
+    M(UnsignedInt, unsigned)	\
+    M(Float, float)			    \
+    M(String, std::string)		\
+    M(Boolean, bool)
 
 class JsonDeserializationErrors
 {
@@ -56,6 +82,14 @@ class JsonDeserializationErrors
 
 class JsonDeserializedObject
 {
+    public:
+        JsonDeserializedObject()
+        {
+            RegisterStringField("test", &A);
+        };
+
+        std::string A;
+
     protected:
         // Called once at top level template class, and in sub-objects automatically
         int DeserializedJson(
@@ -67,43 +101,63 @@ class JsonDeserializedObject
         void RemoveParsingRule(std::string);
         
 
-        // Non-specific type handler (2 * 2)
+        // Non-specific type handler (4)
+        // Intended to be used for fallback and edge cases
         REGISTER_FIELD_TYPE_FUNCTIONS(, const Json::Value&) 
 
-        // Primitive type field registration functions (5 * 6)
+        // Primitive type field registration functions (5 * 5)
 		SIMPLE_TYPES_LIST(REGISTER_FIELD_TYPE)
 
-        // Object type json fields (2)
-        REGISTER_FIELD_TYPE_PTR(Object, JsonDeserializedObject)
+        // Object type json fields via JsonDeserializedObject (2)
+        void RegisterObjectField(
+            const std::string, JsonDeserializedObject*);
+        void RegisterOptionalObjectField(
+            const std::string, JsonDeserializedObject*);
+
+        // Object type json fields via function (3)
+        REGISTER_FIELD_TYPE_FUNCTIONS(Object, const Json::Value&)
 
 		// ----- Array Fields ----- //
 
-        // Underlying Functions for arrays of:
-        // Homogenous primitive: Direct assignment
-        // Homogenous primitive: Function Applied ElementWise
-        // Homogenous Object: Creation and use of .DeserializedJson(ArrElement)
-        // - For a function, use the generic function
-        // Anything else can use the elementwise handler function defined below:
+        // Registered functions are applied elementwise,
+        // Registered pointers are emplaced_back() elementwise
 
-        // Generic Function applied elementwise
-        REGISTER_FIELD_TYPE_FUNCTIONS(Array, const Json::Value&)
+        // Non-specific type handler (2)
+        REGISTER_ARRAY_FIELD_TYPE_FUNCTIONS(, const Json::Value&)
 
-        // How are rules made for arrays? (maybe just keep them simple)
+        // Primitive type field registration functions (5 * 3)
+		SIMPLE_TYPES_LIST(REGISTER_ARRAY_FIELD_TYPE)
+
+        // Object type json fields via JsonDeserializedObject (1)
+        template <typename T>
+	    void RegisterObjectArrayElement(const std::string, std::vector<T>*);
+
+        // Object type json fields via function (3)
+        REGISTER_ARRAY_FIELD_TYPE_FUNCTIONS(Object, const Json::Value&)
         
-
 	private:
             std::map<std::string, std::function<void(const Json::Value&)>> KeyParsers;
             std::map<std::string, std::string> ParsingRules; // rule, error message (for if parsing fails)
     		std::vector<std::string> ParsersUsed;
             std::string CurrentPath;
 
+            std::map<std::string, std::string> JsonArrayIndex;
+
             JsonDeserializationErrors* ErrorsPtr;
 
             void RecordError(std::string, std::string = "");
 
-            std::string GetJsonTypeName(Json::ValueType);
+            std::string GetJsonTypeName(Json::ValueType&);
+
+            void ParseKey(
+                const Json::Value&,
+                Json::ValueType&,
+                std::string,
+                std::string = ""
+            );
 };
 
+#include "./JsonDeserializedObjectParsers.tpp"
 
 #endif
 

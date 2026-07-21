@@ -11,12 +11,10 @@
 class AppNodeTemplate : public AddressNodeTemplate
 {
     public:
-        AppNodeTemplate() {};
+        AppNodeTemplate();
 
     private:
         std::string defaultDeployment;
-
-        void ParseDefaultDeployment(const Json::Value&);
 };
 
 #endif

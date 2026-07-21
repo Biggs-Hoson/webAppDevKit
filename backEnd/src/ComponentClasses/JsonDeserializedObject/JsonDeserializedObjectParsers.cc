@@ -1,35 +1,8 @@
 #include "./JsonDeserializedObject.h"
 #include <string>
 
-
-// Register fields using pointer assignment
-#define CC_FIELD_TYPE_PTR(TypeName, Type, TypeSuffix, Operation)        \
-    void JsonDeserializedObject::RegisterOptional##TypeName##Field(     \
-        const std::string key, Type* target)                            \
-        {                                                               \
-            std::string parserName = key + "TypeSuffix";                \
-            KeyParsers[parserName] =                                    \
-                [target, parserName, this](const Json::Value& value)    \
-                {									                    \
-                    *target = value Operation;                          \
-                    ParsersUsed.push_back(parserName);                  \
-                };                                                      \
-        }
-
-#define CC_REGISTER_FIELD_TYPE_PTR(                                     \
-    TypeName, Type, TypeSuffix, Operation)                              \
-    CC_FIELD_TYPE_PTR(TypeName, Type, TypeSuffix, Operation)            \
-    void JsonDeserializedObject::Register##TypeName##Field(             \
-    const std::string key, Type* target)                                \
-    {                                                                   \
-        std::string parserName = key + "TypeSuffix";                    \
-        AddParsingRule(parserName, parserName + "required");            \
-        RegisterOptional##TypeName##Field(key, target);                 \
-    }
-
-
 // Register fields using function parsers
-#define CC_FIELD_TYPE_FUNCTIONS(TypeName, Type, TypeSuffix, Operation)  \
+#define CC_REGISTER_FIELD_TYPE_FUNCTIONS(TypeName, Type, TypeSuffix, Operation)  \
     void JsonDeserializedObject::RegisterOptional##TypeName##Field(     \
         const std::string key,	                                        \
         std::function<void(Type)> func)                                 \
@@ -39,7 +12,7 @@
                 [func, parserName, this](const Json::Value& value)      \
                 {									                    \
                     func(value Operation);                              \
-                    ParsersUsed.push_back(parserName);                  \
+                    ParsersUsed.emplace_back(parserName);                  \
                 };                                                      \
         }                                                               \
     void JsonDeserializedObject::RegisterOptional##TypeName##Field(     \
@@ -51,25 +24,13 @@
                 [func, parserName, this](const Json::Value& value)      \
                 {			                                            \
                     int result = func(value Operation);                 \
-                    ParsersUsed.push_back(                              \
+                    ParsersUsed.emplace_back(                              \
                         parserName + ":" + std::to_string(result));     \
                 };                                                      \
-        }
-
-
-#define CC_REGISTER_FIELD_TYPE_FUNCTIONS(TypeName, Type, TypeSuffix, Operation)    \
-    CC_FIELD_TYPE_FUNCTIONS(TypeName, Type, TypeSuffix, Operation)      \
-    void JsonDeserializedObject::Register##TypeName##Field(             \
-        const std::string key,	                                        \
-        std::function<void(Type)> func)                                 \
-        {                                                               \
-            std::string parserName = key + "TypeSuffix";                \
-            AddParsingRule(parserName, parserName + "required");        \
-            RegisterOptional##TypeName##Field(key, func);               \
         }                                                               \
     void JsonDeserializedObject::Register##TypeName##Field(             \
         const std::string key,	                                        \
-        std::function<int(Type)> func)                                  \
+        std::function<void(Type)> func)                                 \
         {                                                               \
             std::string parserName = key + "TypeSuffix";                \
             AddParsingRule(parserName, parserName + "required");        \
@@ -85,13 +46,14 @@
     M(String, std::string, :str, .asString())   \
     M(Boolean, bool, :bool, .asBool())           
     
-// Primitive type field registration functions
-CC_SIMPLE_TYPES_LIST(CC_REGISTER_FIELD_TYPE_FUNCTIONS)
-CC_SIMPLE_TYPES_LIST(CC_REGISTER_FIELD_TYPE_PTR)
-
 
 // Non-specific type handler
 CC_REGISTER_FIELD_TYPE_FUNCTIONS(, const Json::Value&, ,)
+
+// Primitive type field registration functions
+CC_SIMPLE_TYPES_LIST(CC_REGISTER_FIELD_TYPE_FUNCTIONS)
+
+
 
 // Child Objects
 void JsonDeserializedObject::RegisterOptionalObjectField(
@@ -104,7 +66,7 @@ void JsonDeserializedObject::RegisterOptionalObjectField(
         {
             int result = obj->DeserializedJson(
                 value, ErrorsPtr, CurrentPath + key);
-            ParsersUsed.push_back(parserName + ":" + std::to_string(result));
+            ParsersUsed.emplace_back(parserName + ":" + std::to_string(result));
         };
 }
 
@@ -116,4 +78,52 @@ void JsonDeserializedObject::RegisterObjectField(
     AddParsingRule(parserName, parserName + "required");
     RegisterOptionalObjectField(key, obj);
 }
+
+
+// Object type json fields via function (4)
+CC_REGISTER_FIELD_TYPE_FUNCTIONS(Object, const Json::Value&, :Obj, )
+
+
+
+// ----- Array Regstration functions ----- //
+
+// Register fields using function parsers
+#define CC_REGISTER_ARRAY_FIELD_TYPE_FUNCTIONS(TypeName, Type, TypeSuffix, Operation)  \
+    void JsonDeserializedObject                                         \
+        ::Register##TypeName##ArrayElement(                     \
+        const std::string key,	                                        \
+        std::function<void(Type)> func)                                 \
+        {                                                               \
+            std::string parserName = key + ":arr##TypeSuffix";                \
+            KeyParsers[parserName] =                                    \
+                [func, parserName, this](const Json::Value& value)      \
+                {									                    \
+                    func(value Operation);                              \
+                    ParsersUsed.emplace_back(parserName);                  \
+                };                                                      \
+        }                                                               \
+    void JsonDeserializedObject                                         \
+        ::Register##TypeName##ArrayElement(                     \
+        const std::string key,	                                        \
+        std::function<int(Type)> func)                                  \
+        {                                                               \
+            std::string parserName = key + ":arr##TypeSuffix";                \
+            KeyParsers[parserName] =                                    \
+                [func, parserName, this](const Json::Value& value)      \
+                {			                                            \
+                    int result = func(value Operation);                 \
+                    ParsersUsed.emplace_back(                              \
+                        parserName + ":" + std::to_string(result));     \
+                };                                                      \
+        }
+
+
+// Non-specific type handler
+CC_REGISTER_ARRAY_FIELD_TYPE_FUNCTIONS(, const Json::Value&, ,)
+
+// Primitive type field registration functions
+CC_SIMPLE_TYPES_LIST(CC_REGISTER_ARRAY_FIELD_TYPE_FUNCTIONS)
+
+// Object type json fields via function (4)
+CC_REGISTER_ARRAY_FIELD_TYPE_FUNCTIONS(Object, const Json::Value&, :Obj, )
 

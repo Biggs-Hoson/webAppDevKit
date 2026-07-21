@@ -135,3 +135,9 @@ bool AppVersion::operator == (AppVersion& comparison)
         }
     }
 }
+
+
+void AppVersion::operator = (std::string other)
+{
+    SetVersion(other);
+}

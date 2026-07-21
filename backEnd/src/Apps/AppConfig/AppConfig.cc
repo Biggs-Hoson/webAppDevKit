@@ -50,7 +50,7 @@ AppConfig::AppConfig(const Json::Value& configData) {
 
     CollectChildErrors(JsonErrors, "");
 };
-        
+    /*    
             
 void AppConfig::ParseAppId(const Json::Value& _appId)
 {

@@ -32,7 +32,7 @@ class AppTemplate : public JsonDeserializedObject
 {
     public:
     
-        AppTemplate(Json::Value&); // For now, construct using AppJson
+        AppTemplate(Json::Value&);
 
         AppNodeTemplate& GetAppNodeById(int);
 
@@ -55,21 +55,6 @@ class AppTemplate : public JsonDeserializedObject
 
         //Database Objects:
         DatabaseObjectsTemplate dboTemplate;
-
-    /*
-
-    private:
-
-        void ParseAppName(const Json::Value&);
-
-        void ParseAppVersion(const Json::Value&);
-
-        // Front end fields
-        void ParseRouteMap(const Json::Value&);
-
-        std::shared_ptr<> ;
-        void ParseDatabaseObjects(const Json::Value&);
-*/
 };
 
 #endif
