@@ -35,26 +35,6 @@ class AppConfig : public JsonDeserializedObject
         std::string AppHash;
 
         std::vector<AppRouteDeployment> AppRouteDeployments;
-
-    /*
-
-        void ParseAppId(const Json::Value&);
-        AppId AppConfigId;
-
-        void ParseAppName(const Json::Value&);
-        std::string AppName;
-
-        void ParseAppVersion(const Json::Value&);
-        AppVersion CorrespondingAppVersion;
-
-        void ParseAppHash(const Json::Value&);
-        std::string AppHash;
-
-        void ParseAppAppRouteDeployments(const Json::Value&);
-        std::vector<AppRouteDeployment> AppRouteDeployments;
-        */
-    };
-
-
+};
 
 #endif

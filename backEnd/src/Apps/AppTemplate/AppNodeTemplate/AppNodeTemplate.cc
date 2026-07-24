@@ -1,5 +1,3 @@
-
-
 #include "AppNodeTemplate.h"
 
 AppNodeTemplate::AppNodeTemplate()
@@ -7,4 +5,9 @@ AppNodeTemplate::AppNodeTemplate()
     RemoveParsingRule("path:str");
 
     RegisterStringField("defaultRoute", &defaultDeployment);
+};
+
+std::string AppNodeTemplate::GetDefaultDeployment()
+{
+    return defaultDeployment;
 };

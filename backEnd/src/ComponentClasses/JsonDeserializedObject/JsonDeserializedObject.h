@@ -83,19 +83,13 @@ class JsonDeserializationErrors
 class JsonDeserializedObject
 {
     public:
-        JsonDeserializedObject()
-        {
-            RegisterStringField("test", &A);
-        };
-
-        std::string A;
-
-    protected:
         // Called once at top level template class, and in sub-objects automatically
         int DeserializedJson(
             const Json::Value&, 
             JsonDeserializationErrors*,
             std::string = "/"); 
+    
+    protected:
 
         void AddParsingRule(std::string, std::string);
         void RemoveParsingRule(std::string);

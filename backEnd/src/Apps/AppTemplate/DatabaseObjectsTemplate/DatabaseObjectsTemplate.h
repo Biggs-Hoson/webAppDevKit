@@ -9,14 +9,11 @@ class DatabaseObjectsTemplate : public JsonDeserializedObject
 {
     
     public:
-        DatabaseObjectsTemplate() {};
+        DatabaseObjectsTemplate();
 
-    /*
+
     private:
         std::vector<TableTemplate> Tables;
-        void ParseRelationalDataTables(const Json::Value&);
-
-        */
 };
 
 

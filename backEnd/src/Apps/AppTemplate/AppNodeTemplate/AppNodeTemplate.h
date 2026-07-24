@@ -13,6 +13,8 @@ class AppNodeTemplate : public AddressNodeTemplate
     public:
         AppNodeTemplate();
 
+        std::string GetDefaultDeployment();
+
     private:
         std::string defaultDeployment;
 };

@@ -5,14 +5,13 @@
 
 class TableTemplate : public JsonDeserializedObject
 {
-    /*
     public:
-        TableTemplate(const Json::Value&);
+        TableTemplate();
 
-    protected:
-        void CollectChildErrors(std::vector<std::string>&, std::string) override;
+    private:
+        std::string tableName;
+        
     
-    */
 };
 
 #endif
